@@ -1,0 +1,172 @@
+import Head from "next/head";
+import LoginLayout from "../src/components/LoginLayout";
+import axios from 'axios';
+import {
+  Grid,
+  Typography,
+  FormControl,
+  InputBase,
+  InputAdornment,
+  IconButton,
+  Button,
+  CircularProgress,
+  Card
+} from "@material-ui/core";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import classes from "../sass/main.scss";
+import { setToken } from "../src/utils/config";
+
+const Login = () => {
+  const [values, setValues] = React.useState({
+    username: "",
+    password: "",
+    loading: false,
+    showPassword: false,
+    invalid: false
+  });
+
+  const handleChange = prop => event => {
+    setValues({ ...values, [prop]: event.target.value, invalid: false });
+  };
+
+  const showPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const Login = async e => {
+    setValues({ ...values, loading: !values.loading });
+    var sha256 = require('js-sha256');
+    
+    try {
+        const result = await axios({
+            method: 'post',
+            url: 'https://api.ultige.com/ultigeapi/authenticate',
+            headers: {
+                "Client-ID": '8572d3838a0e2b9b4de63e6c72e3ab5d'
+            },
+            data: {
+                username: values.username, 
+                password: sha256(values.password)
+            }
+        });
+
+        let processedData;
+        processedData = result.data;
+
+        setToken(processedData.token);
+    } catch (error) {
+        console.log(error);
+        setValues({ ...values, invalid: true, loading: false });
+    }
+  };
+
+  return (
+    <LoginLayout>
+        <Head>
+            <title>Ultige Web</title>
+            <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <Grid
+            className={classes.register}
+            style={{ marginBottom: 60, marginTop: 30, minHeight: "50vh" }}
+        >
+            <Grid
+                container
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+                className={classes.login}
+            >
+                <Grid item xs={10} sm={8} md={6} lg={4}>
+                    <Card variant="outlined" style={{padding: 30}}>
+                        <Typography variant="h6">Login</Typography>
+
+                        <form
+                            onSubmit={e => {
+                                e.preventDefault();
+                                Login();
+                            }}
+                            autoComplete="off"
+                        >
+                            <FormControl style={{ width: "100%", marginBottom: 16 }}>
+                                <label>Username</label>
+                                <InputBase
+                                    required
+                                    type="text"
+                                    className={classes.form}
+                                    value={values.username}
+                                    onChange={handleChange("username")}
+                                />
+                            </FormControl>
+
+                            <FormControl style={{ width: "100%", marginBottom: 16 }}>
+                                <label>Password</label>
+                                <InputBase
+                                    required
+                                    className={classes.form}
+                                    type={values.showPassword ? "text" : "password"}
+                                    value={values.password}
+                                    autoComplete="off"
+                                    onChange={handleChange("password")}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={showPassword}
+                                        >
+                                            {values.showPassword ? (
+                                            <Visibility 
+                                                className={classes.icon} 
+                                            />
+                                            ) : (
+                                            <VisibilityOff 
+                                                className={classes.icon} 
+                                            />
+                                            )}
+                                        </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+
+                            {values.invalid ? (
+                                <div style={{ textAlign: "center", marginBottom: 16 }}>
+                                <small style={{color: "#CD4559"}}>Invalid Username or Password</small>
+                                </div>
+                            ) : null}
+
+                            <Button
+                                type="submit"
+                                disabled={values.loading}
+                                variant="outlined"
+                                style={{
+                                    height: 42,
+                                    width: "100%",
+                                    borderRadius: 4,
+                                    marginTop: 10
+                                }}
+                                disableElevation
+                            >
+                                {values.loading && (
+                                    <>
+                                        <CircularProgress
+                                            size={14}
+                                            style={{ marginRight: 8, color: "#FFF" }}
+                                        />
+                                        Loading...
+                                    </>
+                                )}
+                                {!values.loading && <span>Login</span>}
+                            </Button>
+                        </form>
+                    </Card>
+                </Grid>
+            </Grid>
+        </Grid>
+    </LoginLayout>
+  );
+};
+
+export default Login;
