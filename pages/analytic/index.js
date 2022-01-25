@@ -97,6 +97,8 @@ const LineColor = (column) => {
     color = '#367fe3'
   else if (column == 'Pesanan')
     color = '#f6bd16'
+  else if (column == 'Jumlah')
+    color = '#f6bd16'
   else if (column == 'Penjualan/Pesanan')
     color = '#fd5151'
   else if (column == 'Konversi')
@@ -111,7 +113,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
-          <p style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${item.name != 'Pesanan' && item.name != 'Konversi' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Konversi' ? "%" : ""}`}</p>
+          <p style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Konversi' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Konversi' ? "%" : ""}`}</p>
         ))}
       </Card>
     );
@@ -440,6 +442,7 @@ const MultiTypeChart = (props) => {
       <XAxis interval="preserveStartEnd" dataKey="label" interval={0} angle={0} dx={0}/>
       <YAxis yAxisId="Penjualan" hide={true}/>
       <YAxis yAxisId="Pesanan" hide={true}/>
+      <YAxis yAxisId="Jumlah" hide={true}/>
       <YAxis yAxisId="Penjualan/Pesanan" hide={true}/>
       <YAxis yAxisId="Konversi" hide={true}/>
       <Tooltip 
@@ -451,9 +454,9 @@ const MultiTypeChart = (props) => {
           type="linear"
           dataKey={item.column}
           stroke={LineColor(item.column)}
-          strokeWidth={2}
+          strokeWidth={item.column != 'Jumlah' ? 2 : 0}
           dot={false}
-          activeDot={{ r: 5 }}
+          activeDot={{ r: item.column != 'Jumlah' ? 5 : 0 }}
         />  
       ))}
     </LineChart>
@@ -603,6 +606,7 @@ const Home = () => {
   const [productCategoriesCacheData, setProductCategoriesCacheData] = useState();
   const [modelCategoryData, setModelCategoryData] = useState();
   const [modelCategoryDataLoading, setModelCategoryDataLoading] = React.useState(false);
+  const [totalModelCategoryData, setTotalModelCategoryData] = React.useState();
   
   const [modelFetchActive, setModelFetchActive] = React.useState(true);
   const [categoryFetchActive, setCategoryFetchActive] = React.useState(false);
@@ -2629,7 +2633,7 @@ const Home = () => {
 
       map.set(model, processedData.Data[0] ? processedData.Data : ['TIDAK ADA KATEGORI']);
 
-      console.log(map);
+      //console.log(map);
 
       let object = new Object();
       object.Data = map;
@@ -2659,8 +2663,12 @@ const Home = () => {
       addLine = new Object();
       addLine.column = 'Penjualan';
       line.push(addLine);
-      if (toggleSales)
-        chartLine.push(addLine);
+      chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Jumlah';
+      line.push(addLine);
+      chartLine.push(addLine);
     
       const chart = new Array();
       let addChart = new Object();
@@ -2679,6 +2687,9 @@ const Home = () => {
 
       let currentDate = momentStartDate;
       let monthCounter = 0;
+
+      let totalValue = 0;
+      let totalQuantity = 0;
 
       while (currentDate <= momentEndDate) { 
         currentDate.startOf('month');
@@ -2710,8 +2721,16 @@ const Home = () => {
             let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
 
             if (moment(date).isSame(currentDate) == true) {
-              object += `, "${lineItem.column}": ${dataItem.Value}`;
-                dateExist = true;
+              if (lineItem.column == 'Penjualan') {
+                object += `, "${lineItem.column}": ${dataItem.Value}`;
+                totalValue += parseFloat(dataItem.Value);
+              }
+              else if (lineItem.column == 'Jumlah') {
+                object += `, "${lineItem.column}": ${dataItem.Quantity}`;
+                totalQuantity += parseFloat(dataItem.Quantity);
+              }
+
+              dateExist = true;
             }
           });
 
@@ -2731,6 +2750,12 @@ const Home = () => {
       const result = new Object();
       result.line = chartLine;
       result.chart = chart;
+
+      const totalModelCategory = new Object();
+      totalModelCategory.value = totalValue;
+      totalModelCategory.quantity = totalQuantity;
+
+      setTotalModelCategoryData(totalModelCategory);
     
       return result;
     };
@@ -2743,8 +2768,12 @@ const Home = () => {
       addLine = new Object();
       addLine.column = 'Penjualan';
       line.push(addLine);
-      if (toggleSales)
-        chartLine.push(addLine);
+      chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Jumlah';
+      line.push(addLine);
+      chartLine.push(addLine);
     
       const chart = new Array();
       let addChart = new Object();
@@ -2763,6 +2792,9 @@ const Home = () => {
 
       let currentDate = momentStartDate;
       let weekCounter = 0;
+
+      let totalValue = 0;
+      let totalQuantity = 0;
 
       while (currentDate <= momentEndDate) { 
         weekCounter++;
@@ -2790,8 +2822,16 @@ const Home = () => {
             let week = parseInt(dataItem.Date.substring(4, 6));
 
             if (week == currentDate.isoWeek()) {
-              object += `, "${lineItem.column}": ${dataItem.Value}`;
-                dateExist = true;
+              if (lineItem.column == 'Penjualan') {
+                object += `, "${lineItem.column}": ${dataItem.Value}`;
+                totalValue += parseFloat(dataItem.Value);
+              }
+              else if (lineItem.column == 'Jumlah') {
+                object += `, "${lineItem.column}": ${dataItem.Quantity}`;
+                totalQuantity += parseFloat(dataItem.Quantity);
+              }
+
+              dateExist = true;
             }
           });
 
@@ -2811,6 +2851,12 @@ const Home = () => {
       const result = new Object();
       result.line = chartLine;
       result.chart = chart;
+
+      const totalModelCategory = new Object();
+      totalModelCategory.value = totalValue;
+      totalModelCategory.quantity = totalQuantity;
+
+      setTotalModelCategoryData(totalModelCategory);
     
       return result;
     };
@@ -2823,8 +2869,12 @@ const Home = () => {
       addLine = new Object();
       addLine.column = 'Penjualan';
       line.push(addLine);
-      if (toggleSales)
-        chartLine.push(addLine);
+      chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Jumlah';
+      line.push(addLine);
+      chartLine.push(addLine);
     
       const chart = new Array();
       let addChart = new Object();
@@ -2843,6 +2893,9 @@ const Home = () => {
 
       let currentDate = momentStartDate;
       let dateCounter = 0;
+
+      let totalValue = 0;
+      let totalQuantity = 0;
 
       while (currentDate <= momentEndDate) { 
         dateCounter++; 
@@ -2873,8 +2926,16 @@ const Home = () => {
             let date = moment(dataItem.Date, "DD/MM/YYYY");
 
             if (moment(date).isSame(currentDate) == true) {
-              object += `, "${lineItem.column}": ${dataItem.Value}`;
-                dateExist = true;
+              if (lineItem.column == 'Penjualan') {
+                object += `, "${lineItem.column}": ${dataItem.Value}`;
+                totalValue += parseFloat(dataItem.Value);
+              }
+              else if (lineItem.column == 'Jumlah') {
+                object += `, "${lineItem.column}": ${dataItem.Quantity}`;
+                totalQuantity += parseFloat(dataItem.Quantity);
+              }
+              
+              dateExist = true;
             }
           });
 
@@ -2894,6 +2955,12 @@ const Home = () => {
       const result = new Object();
       result.line = chartLine;
       result.chart = chart;
+
+      const totalModelCategory = new Object();
+      totalModelCategory.value = totalValue;
+      totalModelCategory.quantity = totalQuantity;
+
+      setTotalModelCategoryData(totalModelCategory);
     
       return result;
     };
@@ -4312,7 +4379,7 @@ const Home = () => {
                     </Typography>
                 }
                 <FormControl variant="outlined" className={classes.formControl}>
-                <Autocomplete
+                  <Autocomplete
                     value={model}
                     onChange={handleModelChange}
                     options={productModelsData}
@@ -4361,47 +4428,73 @@ const Home = () => {
                   />
                 </FormControl>
               </Box>
-
-              <Box className={classes.inline}>
-                { isMobile
-                  ? <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        marginTop: 9,
-                        marginBottom: 16,
-                        marginRight: 25,
-                        marginLeft: 9
-                      }}
-                    >
-                      Tanggal<br/>Akhir
-                    </Typography>
-                  : <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        marginTop: 22,
-                        marginBottom: 30,
-                        marginRight: 47,
-                        marginLeft: 9
-                      }}
-                    >
-                      Tanggal Akhir
-                    </Typography>
-                }
-                <MuiPickersUtilsProvider utils={MomentUtils}>
-                  <KeyboardDatePicker
-                    variant="inline"
-                    format="YYYY-MM-DD"
-                    label="End Date"
-                    value={modelCategoryEndDate}
-                    style={{marginTop: 10, width: 150}}
-                    onChange={handleModelCategoryEndDateChange}
-                  />
-                </MuiPickersUtilsProvider>
-              </Box>
+              
+              { modelCategoryData &&
+                <Grid container>
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      { isMobile
+                        ? <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              marginTop: 9,
+                              marginBottom: 16,
+                              marginRight: 25,
+                              marginLeft: 9
+                            }}
+                          >
+                            Tanggal<br/>Akhir
+                          </Typography>
+                        : <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              fontWeight: 'bold',
+                              marginTop: 22,
+                              marginBottom: 30,
+                              marginRight: 47,
+                              marginLeft: 9
+                            }}
+                          >
+                            Tanggal Akhir
+                          </Typography>
+                      }
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={modelCategoryEndDate}
+                          style={{marginTop: 10, width: 150}}
+                          onChange={handleModelCategoryEndDateChange}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Box>
+                  </Grid>
+                  { totalModelCategoryData && 
+                    <Grid item xs={12} md={4} container justifyContent="flex-end">
+                      <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            textAlign: 'right',
+                            marginTop: isMobile ? 9 : 15,
+                            marginBottom: 9,
+                            marginRight: 9,
+                            marginLeft: 9
+                          }}
+                        >
+                          Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalModelCategoryData.value)}
+                          <br/>
+                          Total Jumlah: {Intl.NumberFormat('id').format(totalModelCategoryData.quantity)}
+                        </Typography>
+                    </Grid>
+                  }
+                </Grid>
+              }
               
               <Grid container>
                 <Grid item xs={12} md={4}>
@@ -4417,20 +4510,21 @@ const Home = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={8} container justifyContent="flex-end">
-                  { toggleSalesCount && 
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
-                        }}
-                      >
-                        Penjualan
-                      </Typography>
-                    </Box>
+                  { modelCategoryData
+                    ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                        <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 16,
+                            marginRight: 8,
+                            marginTop: 3,
+                          }}
+                        >
+                          Penjualan
+                        </Typography>
+                      </Box>
+                    : <Box className={classes.inline} style={{height: 27}}/>
                   }
                 </Grid>
               </Grid>
@@ -4441,20 +4535,20 @@ const Home = () => {
               }
 
               <Grid item xs={12}>
-                  { modelCategoryDataLoading &&
-                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                      <CircularProgress size={25} />
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          marginLeft: 12
-                        }}
-                      >
-                        Loading
-                      </Typography>
-                    </Box>
-                  }
+                { modelCategoryDataLoading &&
+                  <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                    <CircularProgress size={25} />
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        marginLeft: 12
+                      }}
+                    >
+                      Loading
+                    </Typography>
+                  </Box>
+                }
               </Grid>
             </Paper>
           </Grid>
