@@ -21,6 +21,7 @@ import {
   Box,
   Card,
   CardActionArea,
+  CardContent,
   Tab,
   Link,
   CircularProgress
@@ -623,6 +624,9 @@ const Home = () => {
   const [modelCustomFetchActive, setModelCustomFetchActive] = React.useState(true);
   const [categoryCustomFetchActive, setCategoryCustomFetchActive] = React.useState(false);
 
+  const [valueStockData, setValueStockData] = useState();
+  const [valueStockDataLoading, setValueStockDataLoading] = useState(false);
+
   const moment = require('moment-timezone');
   moment.locale('id');
 
@@ -1004,7 +1008,7 @@ const Home = () => {
       setSegmentationTransactionCountDataLoading(false);
     };
 
-    const fetchegmentationCustomerTypeData = async (startDate, endDate) => {
+    const fetchSegmentationCustomerTypeData = async (startDate, endDate) => {
       setSegmentationCustomerTypeDataLoading(true);
 
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcustomersegmentationbytype?startDate=${startDate}&endDate=${endDate}`);
@@ -1014,6 +1018,20 @@ const Home = () => {
 
       setSegmentationCustomerTypeData(processedData);
       setSegmentationCustomerTypeDataLoading(false);
+    };
+
+    const fetchValueStockData = async () => {
+      setValueStockDataLoading(true);
+
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getstockvaluedata`);
+
+      let processedData;
+      processedData = result.data;
+      console.log(processedData);
+      console.log(processedData.Data.find(o => o.Key === 'StockValuePackaging').Value);
+
+      setValueStockData(processedData);
+      setValueStockDataLoading(false);
     };
 
     if (fetchActive == true && checkToken()) {
@@ -1116,9 +1134,11 @@ const Home = () => {
         previousEndDate = moment(newEndDate).subtract(1, "years").endOf('year').format("YYYY-MM-DD");
       }
 
+      fetchValueStockData();
+
       fetchSegmentationSalesData(startDate, endDate);
       fetchSegmentationTransactionCountData(startDate, endDate);
-      fetchegmentationCustomerTypeData(startDate, endDate);
+      fetchSegmentationCustomerTypeData(startDate, endDate);
 
       fetchProductSalesData(startDate, endDate);
       fetchProductSalesCountData(startDate, endDate);
@@ -4850,6 +4870,191 @@ const Home = () => {
                     </Box>
                   }
                 </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Paper className={classes.paper} elevation={3}>
+              <Grid item xs={12}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Value Stock
+                </Typography>
+              </Grid>
+
+              <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#367fe3', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock
+                        <br/>
+                        Packaging
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'StockValuePackaging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#f6bd16', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock by
+                        <br/>
+                        Harga Beli
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'StockValueByBuyPrice').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#fd5151', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock Aging {">"}90 Hari by Harga Beli
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'MoreThan90DaysStockAging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock Aging {">"}150 Hari by Harga Beli 
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key == 'MoreThan150DaysStockAging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+              { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock Aging {">"}210 Hari by Harga Beli
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'MoreThan210DaysStockAging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+              </Box>
+
+              <Grid item xs={12}>
+                { valueStockDataLoading &&
+                  <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                    <CircularProgress size={25} />
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        marginLeft: 12
+                      }}
+                    >
+                      Loading
+                    </Typography>
+                  </Box>
+                }
               </Grid>
             </Paper>
           </Grid>

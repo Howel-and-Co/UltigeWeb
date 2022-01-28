@@ -12,20 +12,12 @@ import Router from "next/router";
 
 const navButtons = [
   {
-    label: "Home",
-    path: "/"
+    label: "Analytic",
+    path: "/analytic"
   },
   {
-    label: "About Us"
-  },
-  {
-    label: "FAQ"
-  },
-  {
-    label: "News"
-  },
-  {
-    label: "Gallery"
+    label: "Report",
+    path: "/report"
   }
 ];
 
@@ -52,7 +44,7 @@ const NavBar = () => {
             alignItems="center"
           >
             <Grid item style={{ flexDirection: "column" }} xs={4}>
-              <Link href="/analytic">
+              <Link href= {checkToken() ? "/login" : "/analytic"}>
                 <a>
                   <img
                     style={{ paddingTop: 14, paddingBottom: 14, width: 100 }}
@@ -63,10 +55,10 @@ const NavBar = () => {
               </Link>
             </Grid>
 
-            <Grid item justifyContent="flex-end" container spacing={3} xs>
-              {navButtons2.map((button, i) => (
+            <Grid item justifyContent="flex-end" container spacing={0} xs>
+              { checkToken() && navButtons.map((button, i) => (
                 <Fragment key={i}>
-                    <Grid item key={i}>
+                    <Grid item key={i} style={{marginLeft: 15}}>
                       <NavButton
                         key={button.path}
                         path={button.path || ""}
@@ -84,7 +76,7 @@ const NavBar = () => {
                   style={{
                     borderRadius: 4,
                     textTransform: "none",
-                    marginLeft: 20
+                    marginLeft: 15
                   }}
                   disableRipple
                   onClick={handleSignOut}
