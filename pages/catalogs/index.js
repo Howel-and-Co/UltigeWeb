@@ -138,7 +138,7 @@ const Catalog = () => {
                               </Typography>
                             </Grid>
                             <Grid item xs={12} container justifyContent="flex-end" style={{marginTop: 20, marginBottom: 5, marginLeft: 10}}>
-                              {!row.CatalogCustomizationFileUrl != "" && 
+                              {row.CatalogCustomizationFileUrl != "" && 
                                 <Button
                                   variant="outlined"
                                   style={{
@@ -210,7 +210,7 @@ const Catalog = () => {
                                 </Typography>
                               </Grid>
                               <Grid item xs={12} container justifyContent="flex-end">
-                                {!row.CatalogCustomizationFileUrl != "" && 
+                                {row.CatalogCustomizationFileUrl != "" && 
                                   <Button
                                     variant="outlined"
                                     style={{
