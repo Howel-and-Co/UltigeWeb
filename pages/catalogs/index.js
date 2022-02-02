@@ -5,7 +5,8 @@ import {
   Typography,
   Paper,
   Box,
-  CircularProgress
+  CircularProgress,
+  Button
 } from "@material-ui/core";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -13,21 +14,15 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useState, useEffect } from 'react';
 import axios from '../../src/utils/axios';
 
-import GetAppIcon from '@material-ui/icons/GetApp';
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   paper: {
     padding: 10,
+    margin: 10
+  },
+  paper2: {
     margin: 10
   },
   inline: {
@@ -54,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const Catalog = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [dataLoading, setDataLoading] = React.useState(true);
@@ -102,47 +97,157 @@ const Catalog = () => {
                     Katalog
                   </Typography>
                 </Grid>
-                <Grid item xs={12} style={{padding: 15}}>
-                  { !dataLoading &&
-                    <TableContainer component={Paper} variant="outlined">
-                        <Table >
-                        <TableBody>
-                            {productSalesData && productSalesData.Data.map((row) => (
-                            <TableRow
-                                key={row.No}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell align="left" style={{width: isMobile ? "35%" : "20%", minWidth: 80}}>
-                                  <img 
-                                    src={row.CatalogPreviewImageUrl != "" ? row.CatalogPreviewImageUrl : "/icons/no-image.jpg"}  
-                                    width="100%"
-                                    style={{borderRadius: 5}} 
-                                    alt="Catalog Image"
-                                  />
-                                </TableCell>
-                                <TableCell align="left">
-                                  <Typography 
+                {productSalesData && productSalesData.Data.map((row) => (
+                  <Grid item xs={12} md={6}>
+                    { isMobile
+                      ? <Paper className={classes.paper2} elevation={3}>
+                          <Grid container disableGutter>
+                            <Grid item xs={12}>
+                              <img 
+                                src={row.CatalogPreviewImageUrl != "" ? row.CatalogPreviewImageUrl : "/icons/no-image.jpg"}  
+                                width="100%"
+                                style={{borderRadius: 5}} 
+                                alt="Catalog Image"
+                              />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Typography 
+                                style={{
+                                    color: "#000", 
+                                    fontSize: 16,
+                                    fontWeight: 500,
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                    marginTop: 5,
+                                    marginBottom: 10
+                                }}
+                              >
+                                {row.CatalogName}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Typography 
+                                style={{
+                                    color: "#000", 
+                                    fontSize: 12,
+                                    marginLeft: 10,
+                                    marginRight: 10
+                                }}
+                              >
+                                {row.CatalogDescription}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={12} container justifyContent="flex-end" style={{marginTop: 20, marginBottom: 5, marginLeft: 10}}>
+                              {!row.CatalogCustomizationFileUrl != "" && 
+                                <Button
+                                  variant="outlined"
+                                  style={{
+                                    borderRadius: 4,
+                                    textTransform: "none",
+                                    fontSize: 12,
+                                    marginRight: 10,
+                                    marginLeft: 10,
+                                    marginBottom: 10,
+                                    height: 40
+                                  }}
+                                  onClick={() => window.open(row.CatalogCustomizationFileUrl, '_blank')}
+                                  disableRipple
+                                >
+                                  Lihat Bordir
+                                </Button>
+                              }
+                              <Button
+                                variant="outlined"
+                                style={{
+                                  borderRadius: 4,
+                                  textTransform: "none",
+                                  fontSize: 12,
+                                  marginRight: 10,
+                                  marginBottom: 10,
+                                  height: 40
+                                }}
+                                onClick={() => window.open(row.CatalogFileUrl, '_blank')}
+                                disableRipple
+                              >
+                                Lihat Katalog
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </Paper> 
+                      : <Paper className={classes.paper} elevation={3}>
+                          <Grid container disableGutter>
+                            <Grid item xs={4} style={{height: 270}}>
+                              <img 
+                                src={row.CatalogPreviewImageUrl != "" ? row.CatalogPreviewImageUrl : "/icons/no-image.jpg"}  
+                                width="100%"
+                                style={{borderRadius: 3}} 
+                                alt="Catalog Image"
+                              />
+                            </Grid>
+                            <Grid item xs={8} container>
+                              <Grid xs={12} style={{height: 55}}>
+                                <Typography 
+                                  style={{
+                                      color: "#000", 
+                                      fontSize: 18,
+                                      fontWeight: 500,
+                                      marginLeft: 10,
+                                      height: 55
+                                  }}
+                                >
+                                  {row.CatalogName}
+                                </Typography>
+                              </Grid>
+                              <Grid xs={12} style={{height: 150}}>
+                                <Typography 
+                                  style={{
+                                      color: "#000", 
+                                      fontSize: 14,
+                                      marginLeft: 10,
+                                  }}
+                                >
+                                  {row.CatalogDescription}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} container justifyContent="flex-end">
+                                {!row.CatalogCustomizationFileUrl != "" && 
+                                  <Button
+                                    variant="outlined"
                                     style={{
-                                        color: "#000", 
-                                        fontSize: isMobile ? 16 : 20,
-                                        fontWeight: 500
+                                      borderRadius: 4,
+                                      textTransform: "none",
+                                      fontSize: 14,
+                                      marginTop: 10,
+                                      marginRight: 10,
+                                      height: 40
                                     }}
+                                    onClick={() => window.open(row.CatalogCustomizationFileUrl, '_blank')}
+                                    disableRipple
                                   >
-                                    {row.CatalogName}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right">
-                                  <a style={{color: "#555"}} target="_blank" href={row.CatalogFileUrl} rel="noopener noreferrer">
-                                    <GetAppIcon style={{fontSize: 25, marginTop: 5}}/>
-                                  </a>
-                                </TableCell>
-                            </TableRow>
-                            ))}
-                        </TableBody>
-                        </Table>
-                    </TableContainer>
-                  }
-                </Grid>
+                                    Lihat Bordir
+                                  </Button>
+                                }
+                                <Button
+                                  variant="outlined"
+                                  style={{
+                                    borderRadius: 4,
+                                    textTransform: "none",
+                                    fontSize: 14,
+                                    marginTop: 10,
+                                    height: 40
+                                  }}
+                                  onClick={() => window.open(row.CatalogFileUrl, '_blank')}
+                                  disableRipple
+                                >
+                                  Lihat Katalog
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </Paper>
+                    }
+                  </Grid>
+                ))}
                 <Grid item xs={12}>
                   { dataLoading &&
                     <Box className={classes.inline} style={{marginTop: 20, marginLeft: 30, marginBottom: 20}}>
