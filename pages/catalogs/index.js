@@ -73,6 +73,11 @@ const Catalog = () => {
     }
   }, [fetchActive]);
 
+  function NewlineText(props) {
+    const text = props.text;
+    return <div style={{whiteSpace: 'pre-wrap'}}>{text}</div>;
+  }
+
   return (
     <div className={classes.root}>
       <PublicLayout>
@@ -134,7 +139,7 @@ const Catalog = () => {
                                     marginRight: 10
                                 }}
                               >
-                                {row.CatalogDescription}
+                                <NewlineText text={row.CatalogDescription} />
                               </Typography>
                             </Grid>
                             <Grid item xs={12} container justifyContent="flex-end" style={{marginTop: 20, marginBottom: 5, marginLeft: 10}}>
@@ -184,7 +189,7 @@ const Catalog = () => {
                                 alt="Catalog Image"
                               />
                             </Grid>
-                            <Grid item xs={8} container>
+                            <Grid item xs={8}>
                               <Grid xs={12} style={{height: 55}}>
                                 <Typography 
                                   style={{
@@ -198,7 +203,7 @@ const Catalog = () => {
                                   {row.CatalogName}
                                 </Typography>
                               </Grid>
-                              <Grid xs={12} style={{height: 150}}>
+                              <Grid xs={12} style={{height: 170}}>
                                 <Typography 
                                   style={{
                                       color: "#000", 
@@ -206,7 +211,7 @@ const Catalog = () => {
                                       marginLeft: 10,
                                   }}
                                 >
-                                  {row.CatalogDescription}
+                                  <NewlineText text={row.CatalogDescription} />
                                 </Typography>
                               </Grid>
                               <Grid item xs={12} container justifyContent="flex-end">
