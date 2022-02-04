@@ -724,9 +724,14 @@ const Home = () => {
     setSelectedStartDate(date);
   };
 
+  const [valueStockBackDate, setValueStockBackDate] = React.useState(moment());
   const [modelCategoryEndDate, setModelCategoryEndDate] = React.useState(moment());
   const [modelCategoryCustomStartDate, setModelCategoryCustomStartDate] = React.useState(moment());
   const [modelCategoryCustomEndDate, setModelCategoryCustomEndDate] = React.useState(moment());
+
+  const handleValueStockBackDate = (date) => {
+    setValueStockBackDate(date);
+  };
 
   const handleModelCategoryEndDateChange = (date) => {
     setModelCategoryEndDate(date);
@@ -1020,20 +1025,6 @@ const Home = () => {
       setSegmentationCustomerTypeDataLoading(false);
     };
 
-    const fetchValueStockData = async () => {
-      setValueStockDataLoading(true);
-
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getstockvaluedata`);
-
-      let processedData;
-      processedData = result.data;
-      console.log(processedData);
-      console.log(processedData.Data.find(o => o.Key === 'StockValuePackaging').Value);
-
-      setValueStockData(processedData);
-      setValueStockDataLoading(false);
-    };
-
     if (fetchActive == true && checkToken()) {
       setNewDataLoad(false);
       setChannel(null);
@@ -1133,8 +1124,6 @@ const Home = () => {
         previousStartDate = moment(newStartDate).subtract(1, "years").startOf('year').format("YYYY-MM-DD");
         previousEndDate = moment(newEndDate).subtract(1, "years").endOf('year').format("YYYY-MM-DD");
       }
-
-      fetchValueStockData();
 
       fetchSegmentationSalesData(startDate, endDate);
       fetchSegmentationTransactionCountData(startDate, endDate);
@@ -3053,6 +3042,25 @@ const Home = () => {
   }, [category, modelCategoryEndDate]);
 
   useEffect(() => {
+    const fetchValueStockData = async (backDate) => {
+      setValueStockDataLoading(true);
+
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getstockvaluedata?backDate=${backDate}`);
+
+      let processedData;
+      processedData = result.data;
+      console.log(processedData);
+
+      setValueStockData(processedData);
+      setValueStockDataLoading(false);
+    };
+
+    if (checkToken()) {
+      fetchValueStockData(moment(valueStockBackDate).format('YYYY-MM-DD'));
+    }
+  }, [valueStockBackDate]);
+
+  useEffect(() => {
     const fetchProductModelsCustomData = async () => {
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels`);
 
@@ -4876,6 +4884,49 @@ const Home = () => {
 
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
+              <Grid item xs={12}>
+                <Box className={classes.inline}>
+                  { isMobile
+                    ? <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Belakang
+                      </Typography>
+                    : <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          fontWeight: 'bold',
+                          marginTop: 22,
+                          marginBottom: 30,
+                          marginRight: 47,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal Belakang
+                      </Typography>
+                  }
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <KeyboardDatePicker
+                      variant="inline"
+                      format="YYYY-MM-DD"
+                      label="Backdate"
+                      value={valueStockBackDate}
+                      style={{marginTop: 10, width: 150}}
+                      onChange={handleValueStockBackDate}
+                    />
+                  </MuiPickersUtilsProvider>
+                </Box>
+              </Grid>
+
               <Grid item xs={12}>
                 <Typography 
                   style={{
