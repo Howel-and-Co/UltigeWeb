@@ -627,6 +627,17 @@ const Home = () => {
   const [valueStockData, setValueStockData] = useState();
   const [valueStockDataLoading, setValueStockDataLoading] = useState(false);
 
+  const [modelStock, setModelStock] = React.useState('');
+  const [stock, setStock] = React.useState('');
+  const [modelStockData, setModelStockData] = useState([""]);
+  const [stockData, setStockData] = useState([""]);
+  const [stockCacheData, setStockCacheData] = useState();
+  const [performanceData, setPerformanceData] = useState();
+  const [performanceDataLoading, setPerformanceDataLoading] = React.useState(false);
+  
+  const [modelStockFetchActive, setModelStockFetchActive] = React.useState(true);
+  const [stockFetchActive, setStockFetchActive] = React.useState(false);
+
   const moment = require('moment-timezone');
   moment.locale('id');
 
@@ -667,6 +678,18 @@ const Home = () => {
   const handleCategoryCustomChange = (event, newValue) => {
     if (newValue !== null) {
       setCategoryCustom(newValue);
+    }
+  };
+
+  const handleModelStockChange = (event, newValue) => {
+    if (newValue !== null) {
+      setModelStock(newValue);
+      setStockFetchActive(true);
+    }
+  };
+  const handleStockChange = (event, newValue) => {
+    if (newValue !== null) {
+      setStock(newValue);
     }
   };
 
@@ -3049,7 +3072,6 @@ const Home = () => {
 
       let processedData;
       processedData = result.data;
-      console.log(processedData);
 
       setValueStockData(processedData);
       setValueStockDataLoading(false);
@@ -3532,6 +3554,108 @@ const Home = () => {
       }
     }
   }, [categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
+
+  useEffect(() => {
+    const fetchModelStockData = async () => {
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels`);
+
+      let processedData;
+      processedData = result.data;
+
+      setModelStockData(processedData.Data);
+      setModelStock(processedData.Data[0]);
+
+      let map = new Map();
+
+      let object = new Object();
+      object.Data = map;
+
+      setStockCacheData(object);
+
+      setStockFetchActive(true);
+    };
+
+    if (modelFetchActive == true && checkToken()) {
+      fetchModelStockData();
+      
+      setModelStockFetchActive(false);
+    }
+  }, [modelStockFetchActive]);
+
+  useEffect(() => {
+    const fetchStockData = async (model) => {
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getstocklistbymodelname?modelName=${model}`);
+
+      let processedData;
+      processedData = result.data;
+
+      if (processedData.Data[0]) {
+        let newArray = new Array();
+        for (let data of processedData.Data) {
+          newArray.push(data.Name);
+        }
+        setStockData(newArray);
+      }
+      else {
+        setStockData(['TIDAK ADA KATEGORI']);
+      }
+
+      setStock(processedData.Data[0] ? processedData.Data[0].Name : 'TIDAK ADA KATEGORI');
+      
+      let map = new Map();
+
+      for (let [key, value] of stockCacheData.Data) {
+        map.set(key, value);
+      }
+
+      map.set(model, processedData.Data[0] ? processedData.Data : ['TIDAK ADA KATEGORI']);
+
+      //console.log(map);
+
+      let object = new Object();
+      object.Data = map;
+
+      setStockCacheData(object);
+    };
+
+    if (stockFetchActive == true && checkToken()) {
+      if (stockCacheData.Data.has(modelStock) == false) {
+        fetchStockData(modelStock);
+      }
+      else {
+        let newArray = new Array();
+        for (let data of stockCacheData.Data.get(modelStock)) {
+          newArray.push(data.Name);
+        }
+        setStockData(newArray);
+        setStock(stockCacheData.Data.get(modelStock)[0].Name);
+      }
+      
+      setStockFetchActive(false);
+    }
+  }, [stockFetchActive]);
+
+  useEffect(() => {
+    const fetchPerformanceData = async (stockID) => {
+      setPerformanceDataLoading(true);
+
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getstockperformancedata?stockID=${stockID}`);
+
+      let processedData;
+      processedData = result.data;
+
+      setPerformanceData(processedData);
+      setPerformanceDataLoading(false);
+    };
+
+    if (checkToken() && stock && stockCacheData.Data.get(modelStock)) {
+      for (let data of stockCacheData.Data.get(modelStock)) {
+        if (data.Name == stock) {
+          fetchPerformanceData(data.StockID);
+        }
+      }
+    }
+  }, [stock, stockCacheData]);
 
   const componentRef = useRef();
   const { width, height } = useContainerDimensions(componentRef);
@@ -5544,6 +5668,309 @@ const Home = () => {
 
               <Grid item xs={12}>
                 { modelCategoryCustomDataLoading &&
+                  <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                    <CircularProgress size={25} />
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        marginLeft: 12
+                      }}
+                    >
+                      Loading
+                    </Typography>
+                  </Box>
+                }
+              </Grid>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Paper className={classes.paper} elevation={3}>
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 21,
+                        marginLeft: 9
+                      }}
+                    >
+                      Model
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 86,
+                        marginLeft: 9
+                      }}
+                    >
+                      Model
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={modelStock}
+                    onChange={handleModelStockChange}
+                    options={modelStockData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Model" />}
+                  />
+                </FormControl>
+              </Box>
+
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 34,
+                        marginLeft: 9
+                      }}
+                    >
+                      Stok
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 101,
+                        marginLeft: 9
+                      }}
+                    >
+                      Stok
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={stock}
+                    onChange={handleStockChange}
+                    options={stockData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Stock" />}
+                  />
+                </FormControl>
+              </Box>
+              
+              { performanceData && performanceData.Data.find(o => o.Key === 'LaunchDate').Value &&
+                <Box className={classes.inline}>
+                  { isMobile
+                    ? <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 9,
+                          marginBottom: 5,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Launch<br/>Date
+                      </Typography>
+                    : <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          fontWeight: 'bold',
+                          marginTop: 22,
+                          marginBottom: 5,
+                          marginRight: 44,
+                          marginLeft: 9
+                        }}
+                      >
+                        Launch Date
+                      </Typography>
+                  }
+                  { isMobile
+                    ? <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 21,
+                          marginBottom: 5,
+                          marginRight: 5
+                        }}
+                      >
+                        {moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL')}
+                      </Typography>
+                    : <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          fontWeight: 'bold',
+                          marginTop: 22,
+                          marginBottom: 5,
+                          marginRight: 5
+                        }}
+                      >
+                        {moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL')}
+                      </Typography>
+                  }
+                </Box>
+              }
+
+              <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
+                { performanceData && performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#fd5151', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        45 Days Peformance
+                      </Typography>
+                      <Grid container style={{marginTop: 15}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value}/{performanceData.Data.find(o => o.Key === 'StockQty').Value}
+                            <br/>
+                            terjual
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000",  
+                              fontSize: 18,
+                              textAlign: 'left',
+                              fontWeight: 800,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                }
+
+                { performanceData && performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value && 
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        60 Days Peformance
+                      </Typography>
+                      <Grid container style={{marginTop: 15}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value}/{performanceData.Data.find(o => o.Key === 'StockQty').Value}
+                            <br/>
+                            terjual
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000",  
+                              fontSize: 18,
+                              textAlign: 'left',
+                              fontWeight: 800,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                }
+
+                { performanceData && performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        90 Days Peformance
+                      </Typography>
+                      <Grid container style={{marginTop: 15}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value}/{performanceData.Data.find(o => o.Key === 'StockQty').Value}
+                            <br/>
+                            terjual
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000",  
+                              fontSize: 18,
+                              textAlign: 'left',
+                              fontWeight: 800,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                }
+              </Box>
+
+              <Grid item xs={12}>
+                { performanceDataLoading &&
                   <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                     <CircularProgress size={25} />
                     <Typography 
