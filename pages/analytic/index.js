@@ -5767,7 +5767,7 @@ const Home = () => {
                 </FormControl>
               </Box>
               
-              { performanceData && performanceData.Data.find(o => o.Key === 'LaunchDate').Value &&
+              { performanceData && 
                 <Box className={classes.inline}>
                   { isMobile
                     ? <Typography 
@@ -5808,7 +5808,7 @@ const Home = () => {
                           marginRight: 5
                         }}
                       >
-                        {moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL')}
+                        {performanceData.Data.find(o => o.Key === 'LaunchDate').Value ? moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL') : '-'}
                       </Typography>
                     : <Typography 
                         style={{
@@ -5820,14 +5820,14 @@ const Home = () => {
                           marginRight: 5
                         }}
                       >
-                        {moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL')}
+                        {performanceData.Data.find(o => o.Key === 'LaunchDate').Value ? moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL') : '-'}
                       </Typography>
                   }
                 </Box>
               }
 
               <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
-                { performanceData && performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value &&
+                { performanceData && 
                   <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
                     <div style={{backgroundColor: '#fd5151', height: 5, width: '100%'}}/>
                     <CardContent>
@@ -5851,7 +5851,7 @@ const Home = () => {
                               fontWeight: 500
                             }}
                           >
-                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value}/{performanceData.Data.find(o => o.Key === 'StockQty').Value}
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
                             <br/>
                             terjual
                           </Typography>
@@ -5866,7 +5866,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -5874,7 +5874,7 @@ const Home = () => {
                   </Card>
                 }
 
-                { performanceData && performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value && 
+                { performanceData && 
                   <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
                     <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
                     <CardContent>
@@ -5898,7 +5898,7 @@ const Home = () => {
                               fontWeight: 500
                             }}
                           >
-                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value}/{performanceData.Data.find(o => o.Key === 'StockQty').Value}
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
                             <br/>
                             terjual
                           </Typography>
@@ -5913,7 +5913,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -5921,7 +5921,7 @@ const Home = () => {
                   </Card>
                 }
 
-                { performanceData && performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value &&
+                { performanceData && 
                   <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
                     <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
                     <CardContent>
@@ -5945,7 +5945,7 @@ const Home = () => {
                               fontWeight: 500
                             }}
                           >
-                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value}/{performanceData.Data.find(o => o.Key === 'StockQty').Value}
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
                             <br/>
                             terjual
                           </Typography>
@@ -5960,7 +5960,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
                           </Typography>
                         </Grid>
                       </Grid>
