@@ -1,12 +1,32 @@
 import Cookies from "js-cookie";
 
 // set token
-let authToken = "";
-export const setToken = async (token) => {
+export const setToken = async (token, role, username, password) => {
   try {
+    let authToken = "";
     authToken = token ? `Bearer ${token}` : "";
     Cookies.set("token", authToken, { expires: 1 / 8 });
-    window.location.href = "/analytic";
+    Cookies.set("role", role, { expires: 1 / 8 });
+    Cookies.set("username", username, { expires: 1 / 8 });
+    Cookies.set("password", password, { expires: 1 / 8 });
+
+    if (role == "SALES CS") {
+      window.location.href = "/product";
+    }
+    else {
+      window.location.href = "/analytic";
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// set token
+export const redirectPassword = async (username, password) => {
+  try {
+    Cookies.set("username", username, { expires: 1 / 8 });
+    Cookies.set("password", password, { expires: 1 / 8 });
+    window.location.href = "/change-password";
   } catch (error) {
     console.log(error);
   }
@@ -30,6 +50,9 @@ export const checkToken = () => {
 export const removeToken = () => {
   try {
     Cookies.remove("token");
+    Cookies.remove("role");
+    Cookies.remove("username");
+    Cookies.remove("password");
     return true;
   } catch (error) {
     return false;

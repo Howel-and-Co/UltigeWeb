@@ -6,6 +6,10 @@ import Router from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container } from "@material-ui/core";
 import { checkToken, removeToken } from "../utils/config";
+import { useRouter, withRouter } from "next/router";
+import Cookies from "js-cookie";
+
+import navButtons from "../../config/buttons";
 
 const useStyles = makeStyles(theme => ({
   mainWrap: {
@@ -20,15 +24,32 @@ const useStyles = makeStyles(theme => ({
 
 const Layout = props => {
   const classes = useStyles();
+  const router = useRouter();
+  const [authorized, setAuthorized] = React.useState(true);
 
   useEffect(() => {
     if (!checkToken()) {
       removeToken();
       Router.push("/login");
     }
+    else {
+      navButtons.forEach(function (dataItem) {
+        if (router.pathname == dataItem.path) {
+          if ((dataItem.includeRole.length != 0 || dataItem.excludeRole.length != 0) && ((dataItem.excludeRole.length == 0 && dataItem.includeRole.includes(Cookies.get("role")) == false) || (dataItem.includeRole.length == 0 && dataItem.excludeRole.includes(Cookies.get("role")) == true))) {
+            setAuthorized(false);
+            if (Cookies.get("role") == "SALES CS") {
+              window.location.href = "/product";
+            }
+            else {
+              window.location.href = "/analytic";
+            }
+          }
+        }
+      }); 
+    }
   }, []);
 
-  if (checkToken()) {
+  if (checkToken() && authorized == true) {
     return (
       <div>
         <NavBar />
