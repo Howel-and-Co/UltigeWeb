@@ -1,6 +1,6 @@
 {
   "name": "ultige-web",
-  "version": "1.1.10",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,9 +18,11 @@
     "@material-ui/pickers": "^3.3.10",
     "@mui/lab": "^5.0.0-alpha.49",
     "@mui/material": "^5.0.2",
+    "@syncfusion/ej2-react-grids": "^19.4.52",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.21.4",
+    "clsx": "^1.1.1",
     "js-cookie": "^3.0.1",
     "js-sha256": "^0.9.0",
     "moment": "^2.29.1",

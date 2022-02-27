@@ -15,7 +15,7 @@ import {
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import classes from "../sass/main.scss";
-import { setToken } from "../src/utils/config";
+import { redirectPassword, setToken } from "../src/utils/config";
 
 const Login = () => {
   const [values, setValues] = React.useState({
@@ -35,13 +35,13 @@ const Login = () => {
   };
 
   const Login = async e => {
-    setValues({ ...values, loading: !values.loading });
+    setValues({ ...values, loading: !values.loading, invalid: false });
     var sha256 = require('js-sha256');
     
     try {
         const result = await axios({
             method: 'post',
-            url: 'https://api.ultige.com/ultigeapi/authenticate',
+            url: 'http://localhost:5000/ultigeapi/authenticate',
             headers: {
                 "Client-ID": '8572d3838a0e2b9b4de63e6c72e3ab5d'
             },
@@ -54,7 +54,12 @@ const Login = () => {
         let processedData;
         processedData = result.data;
 
-        setToken(processedData.token);
+        if (processedData.changePassword == true) {
+            redirectPassword(values.username, sha256(values.password));
+        }
+        else {
+            setToken(processedData.token, processedData.role, values.username, sha256(values.password));
+        }
     } catch (error) {
         console.log(error);
         setValues({ ...values, invalid: true, loading: false });
@@ -133,7 +138,7 @@ const Login = () => {
 
                             {values.invalid ? (
                                 <div style={{ textAlign: "center", marginBottom: 16 }}>
-                                <small style={{color: "#CD4559"}}>Invalid Username or Password</small>
+                                <small style={{color: "#CD4559"}}>Username atau password tidak ditemukan</small>
                                 </div>
                             ) : null}
 
