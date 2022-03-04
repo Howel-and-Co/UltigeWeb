@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import Router from "next/router";
+import Cookies from "js-cookie";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Container } from "@material-ui/core";
@@ -23,7 +24,12 @@ const LoginLayout = props => {
 
   useEffect(() => {
     if (checkToken()) {
-      Router.push("/analytic");
+      if (Cookies.get("role") == "SALES CS") {
+        Router.push("/product");
+      }
+      else {
+        Router.push("/analytic");
+      }
     }
   }, []);
 

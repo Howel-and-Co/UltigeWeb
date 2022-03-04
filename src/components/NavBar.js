@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NavBar = () => {
+const NavBar = ({isPrivate = true}) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -129,17 +129,26 @@ const NavBar = () => {
               </IconButton>
             }
 
-            <Grid item style={{ flexDirection: "column" }} md={4}>
-              <Link href= {checkToken() ? "/login" : "/analytic"}>
-                <a>
-                  <img
-                    style={{ paddingTop: 14, paddingBottom: 14, width: 100, marginLeft: checkToken() ? 0 : 15 }}
-                    src="/howel-logo.svg"
-                    alt=""
-                  />
-                </a>
-              </Link>
-            </Grid>
+            { isPrivate ?
+              <Grid item style={{ flexDirection: "column" }} md={4}>
+                <Link href= {checkToken() ? "/login" : "/analytic"}>
+                  <a>
+                    <img
+                      style={{ paddingTop: 14, paddingBottom: 14, width: 100, marginLeft: checkToken() ? 0 : 15 }}
+                      src="/howel-logo.svg"
+                      alt=""
+                    />
+                  </a>
+                </Link>
+              </Grid> :
+              <Grid item style={{ flexDirection: "column" }} md={4}>
+                <img
+                  style={{ paddingTop: 14, paddingBottom: 14, width: 100, marginLeft: 15 }}
+                  src="/howel-logo.svg"
+                  alt=""
+                />
+              </Grid>
+            }
 
             { !isMobile && 
               <Grid item justifyContent="flex-end" container spacing={0} xs>

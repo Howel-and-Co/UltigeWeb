@@ -38,10 +38,10 @@ const Layout = props => {
           if ((dataItem.includeRole.length != 0 || dataItem.excludeRole.length != 0) && ((dataItem.excludeRole.length == 0 && dataItem.includeRole.includes(Cookies.get("role")) == false) || (dataItem.includeRole.length == 0 && dataItem.excludeRole.includes(Cookies.get("role")) == true))) {
             setAuthorized(false);
             if (Cookies.get("role") == "SALES CS") {
-              window.location.href = "/product";
+              Router.push("/product");
             }
             else {
-              window.location.href = "/analytic";
+              Router.push("/analytic");
             }
           }
         }
