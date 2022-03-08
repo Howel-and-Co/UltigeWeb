@@ -8,7 +8,7 @@ const Index = () => {
       Router.push("/analytic");
     }
     else {
-        Router.push("/login");
+      Router.push("/login");
     }
   }, []);
 
