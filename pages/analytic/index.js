@@ -440,7 +440,7 @@ const MultiTypeChart = (props) => {
       }}
     >
       <CartesianGrid strokeDasharray="4 4" />
-      <XAxis interval="preserveStartEnd" dataKey="label" interval={0} angle={0} dx={0}/>
+      <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
       <YAxis yAxisId="Penjualan" hide={true}/>
       <YAxis yAxisId="Pesanan" hide={true}/>
       <YAxis yAxisId="Jumlah" hide={true}/>
@@ -506,7 +506,7 @@ const MultiChannelChart = (props) => {
       }}
     >
       <CartesianGrid strokeDasharray="4 4" />
-      <XAxis interval="preserveStartEnd" dataKey="label" interval={0} angle={0} dx={0}/>
+      <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
       <YAxis hide={true}/>
       <Tooltip 
         content={<CustomTooltip />}
@@ -637,6 +637,9 @@ const Home = () => {
   
   const [modelStockFetchActive, setModelStockFetchActive] = React.useState(true);
   const [stockFetchActive, setStockFetchActive] = React.useState(false);
+
+  const [monthlyStartDate, setMonthlyStartDate] = useState();
+  const [monthlyEndDate, setMonthlyEndDate] = useState();
 
   const moment = require('moment-timezone');
   moment.locale('id');
@@ -788,10 +791,10 @@ const Home = () => {
       return "vs. Hari Sebelumnya";
     }
     else if (dataRange == 'weekly') {
-      return "vs. 7 Hari Sebelumnya";
+      return "vs. Minggu Sebelumnya";
     }
     else if (dataRange == 'monthly') {
-      return "vs. 30 Hari Sebelumnya";
+      return "vs. Bulan Sebelumnya";
     }
   };
 
@@ -1065,6 +1068,20 @@ const Home = () => {
 
       let momentPreviousStartDate;
       let momentPreviousEndDate;
+
+      momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+      momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
+
+      while (momentStartDate.month() == momentEndDate.month()) {
+        momentStartDate = momentStartDate.subtract(1, "days");
+      }
+
+      while (momentStartDate.date() > momentEndDate.date()) {
+        momentStartDate = momentStartDate.subtract(1, "days");
+      }
+
+      setMonthlyStartDate(momentStartDate.format('DD-MM-YYYY'));
+      setMonthlyEndDate(momentEndDate.format('DD-MM-YYYY'));
       
       if (dataRange == 'realtime') {
         momentStartDate = moment().tz("Asia/Jakarta").subtract(0, "days");
@@ -1088,11 +1105,27 @@ const Home = () => {
         momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(8, "days");
       }
       else if (dataRange == 'monthly') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(30, "days");
         momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
 
-        momentPreviousStartDate = moment().tz("Asia/Jakarta").subtract(60, "days");
-        momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(31, "days");
+        while (momentStartDate.month() == momentEndDate.month()) {
+          momentStartDate = momentStartDate.subtract(1, "days");
+        }
+
+        while (momentStartDate.date() > momentEndDate.date()) {
+          momentStartDate = momentStartDate.subtract(1, "days");
+        }
+
+        momentPreviousEndDate = moment(momentStartDate).tz("Asia/Jakarta").subtract(1, "days");
+        momentPreviousStartDate = moment(momentPreviousEndDate).tz("Asia/Jakarta").subtract(28, "days");
+
+        while (momentPreviousStartDate.month() == momentPreviousEndDate.month()) {
+          momentPreviousStartDate = momentPreviousStartDate.subtract(1, "days");
+        }
+
+        while (momentPreviousStartDate.date() > momentPreviousEndDate.date()) {
+          momentPreviousStartDate = momentPreviousStartDate.subtract(1, "days");
+        }
       }
 
       let startDate;
@@ -1726,7 +1759,7 @@ const Home = () => {
             object += `, "${lineItem.column}": 0`;
           }
 
-          tempAverageSalesValue = tempSalesValue / tempSalesCountValue;
+          tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
           tempConversionRateValue /= tempConversionRateCounter;
 
           if (currentChannel == 'ALL') {
@@ -1759,7 +1792,7 @@ const Home = () => {
         currentDate.add(1, 'months');
       }
 
-      totalAverageSalesValue = totalSalesValue / totalSalesCountValue;
+      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue)
       totalConversionRateValue /= totalConversionRateCounter;
       
 
@@ -2050,7 +2083,7 @@ const Home = () => {
             object += `, "${lineItem.column}": 0`;
           }
 
-          tempAverageSalesValue = tempSalesValue / tempSalesCountValue;
+          tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
           tempConversionRateValue /= tempConversionRateCounter;
 
           if (currentChannel == 'ALL') {
@@ -2083,7 +2116,7 @@ const Home = () => {
         currentDate.add(1, 'days');
       }
 
-      totalAverageSalesValue = totalSalesValue / totalSalesCountValue;
+      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue)
       totalConversionRateValue /= totalConversionRateCounter;
 
       
@@ -2379,7 +2412,7 @@ const Home = () => {
             object += `, "${lineItem.column}": 0`;
           }
 
-          tempAverageSalesValue = tempSalesValue / tempSalesCountValue;
+          tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
           
           if (currentChannel == 'ALL') {
             if (lineItem.column == 'Penjualan') {
@@ -2405,7 +2438,7 @@ const Home = () => {
         hourCounter++;
       }
 
-      totalAverageSalesValue = totalSalesValue / totalSalesCountValue;
+      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue)
       totalConversionRateValue /= totalConversionRateCounter;
 
 
@@ -3698,8 +3731,8 @@ const Home = () => {
                       >
                         <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
                         <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>7 hari sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>30 hari sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(30, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
                         <Divider style={{margin: 12}}/>
                         <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange != '' && <br/>}{customDayRange}</MenuItem>
                         <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange != '' && <br/>}{customWeekRange}</MenuItem>
@@ -3714,8 +3747,8 @@ const Home = () => {
                       >
                         <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
                         <MenuItem disableRipple value='yesterday'>Kemarin: {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>7 hari sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>30 hari sebelumnya: {moment().tz("Asia/Jakarta").subtract(30, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
                         <Divider style={{margin: 12}}/>
                         <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange}</MenuItem>
                         <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange}</MenuItem>
