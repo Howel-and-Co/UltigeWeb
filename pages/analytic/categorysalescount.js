@@ -92,6 +92,9 @@ const CategorySalesCount = () => {
   const [cachePaginationIndex, setCachePaginationIndex] = React.useState();
   const [cachePaginationData, setCachePaginationData] = React.useState();
 
+  const [monthlyStartDate, setMonthlyStartDate] = useState();
+  const [monthlyEndDate, setMonthlyEndDate] = useState();
+
   const handlePageChange = (event, value) => {
     setPage(value);
     setNewFetchActive(true);
@@ -177,6 +180,20 @@ const CategorySalesCount = () => {
       
       let momentStartDate;
       let momentEndDate;
+
+      momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+      momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
+
+      while (momentStartDate.month() == momentEndDate.month()) {
+        momentStartDate = momentStartDate.subtract(1, "days");
+      }
+
+      while (momentStartDate.date() > momentEndDate.date()) {
+        momentStartDate = momentStartDate.subtract(1, "days");
+      }
+
+      setMonthlyStartDate(momentStartDate.format('DD-MM-YYYY'));
+      setMonthlyEndDate(momentEndDate.format('DD-MM-YYYY'));
       
       if (dataRange == 'realtime') {
         momentStartDate = moment().tz("Asia/Jakarta").subtract(0, "days");
@@ -379,8 +396,8 @@ const CategorySalesCount = () => {
                       >
                         <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
                         <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>7 hari sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>30 hari sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(30, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
                         <Divider style={{margin: 12}}/>
                         <MenuItem disableRipple value='custom-daily'>Per Hari: <br/>{customDayRange}</MenuItem>
                         <MenuItem disableRipple value='custom-weekly'>Per Minggu: <br/>{customWeekRange}</MenuItem>
@@ -395,8 +412,8 @@ const CategorySalesCount = () => {
                       >
                         <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
                         <MenuItem disableRipple value='yesterday'>Kemarin: {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>7 hari sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>30 hari sebelumnya: {moment().tz("Asia/Jakarta").subtract(30, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
                         <Divider style={{margin: 12}}/>
                         <MenuItem disableRipple value='custom-daily'>Per Hari: {customDayRange}</MenuItem>
                         <MenuItem disableRipple value='custom-weekly'>Per Minggu: {customWeekRange}</MenuItem>
