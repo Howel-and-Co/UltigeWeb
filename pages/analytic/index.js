@@ -4628,12 +4628,7 @@ const Home = () => {
                       alignItems: "center",
                       textDecoration: "none"
                     }}
-                    href={productTab == 1 ? "/analytic/modelsales" 
-                        : productTab == 2 ? "/analytic/modelsalescount"
-                        : productTab == 3 ? "/analytic/categorysales"
-                        : productTab == 4 ? "/analytic/categorysalescount"
-                        : productTab == 5 ? "/analytic/productsales"
-                        : "/analytic/productsalescount" }
+                    href={`/analytic/productranking`}
                   >
                     <Typography
                       gutterBottom
