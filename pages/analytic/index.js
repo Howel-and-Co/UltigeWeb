@@ -557,6 +557,7 @@ const Home = () => {
   const [fetchActive, setFetchActive] = React.useState(true);
   const [dateOption, setDateOption] = React.useState('realtime');
   const [dataRange, setDataRange] = React.useState('realtime');
+  const [dataRangeCount, setDataRangeCount] = React.useState(0);
   const [channel, setChannel] = React.useState('');
   const [channelList, setChannelList] = React.useState();
   const [newDataLoad, setNewDataLoad] = React.useState(false);
@@ -599,6 +600,7 @@ const Home = () => {
   const [customWeekRange, setCustomWeekRange] = React.useState('');
   const [customMonthRange, setCustomMonthRange] = React.useState('');
   const [customYearRange, setCustomYearRange] = React.useState('');
+  const [customDateRange, setCustomDateRange] = React.useState('');
 
   const [model, setModel] = React.useState('');
   const [category, setCategory] = React.useState('');
@@ -650,7 +652,8 @@ const Home = () => {
     if (event.target.value != 'custom-daily' 
       && event.target.value != 'custom-weekly' 
       && event.target.value != 'custom-monthly' 
-      && event.target.value != 'custom-yearly') {
+      && event.target.value != 'custom-yearly'
+      && event.target.value != 'custom-date') {
       setDataRange(event.target.value);
       setFetchActive(true);
     }
@@ -743,11 +746,16 @@ const Home = () => {
 
 
   const [selectedStartDate, setSelectedStartDate] = React.useState(moment());
+  const [selectedEndDate, setSelectedEndDate] = React.useState(moment());
   const [newStartDate, setNewStartDate] = React.useState(moment());
   const [newEndDate, setNewEndDate] = React.useState(moment());
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setSelectedEndDate(date);
   };
 
   const [valueStockBackDate, setValueStockBackDate] = React.useState(moment());
@@ -772,7 +780,7 @@ const Home = () => {
   };
 
   const vsLabel = () => {
-    if (dateOption == 'custom-daily') {
+    if (dateOption == 'custom-daily' || dataRangeCount == 0) {
       return "vs. Hari Sebelumnya";
     }
     else if (dateOption == 'custom-weekly') {
@@ -783,6 +791,9 @@ const Home = () => {
     }
     else if (dateOption == 'custom-yearly') {
       return "vs. Tahun Sebelumnya";
+    }
+    else if (dateOption == 'custom-date') {
+      return `vs. ${dataRangeCount + 1} Hari Sebelumnya`;
     }
     else if (dataRange == 'realtime') {
       return `vs. Kemarin pada 00:00-${moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00`;
@@ -818,6 +829,29 @@ const Home = () => {
       setNewStartDate(moment(selectedStartDate).startOf('year').format("YYYY-MM-DD"));
       setNewEndDate(moment(selectedStartDate).endOf('year').format("YYYY-MM-DD"));
       setDataRange('yearly');
+    }
+    else if (dateOption == 'custom-date') {
+      setNewStartDate(moment(selectedStartDate).format("YYYY-MM-DD"));
+      setNewEndDate(moment(selectedEndDate).format("YYYY-MM-DD"));
+
+      let endDate = moment(selectedEndDate);
+      let startDate = moment(selectedStartDate);
+      let dateRange = Math.abs(endDate.diff(startDate, 'days'));
+
+      setDataRangeCount(dateRange);
+
+      if (dateRange == 0) {
+        setDataRange('realtime');
+      }
+      else if (dateRange > 0 && dateRange <= 14) {
+        setDataRange('weekly');
+      }
+      else if (dateRange > 14 && dateRange <= 31) {
+        setDataRange('monthly');
+      }
+      else if (dateRange > 31) {
+        setDataRange('yearly');
+      }
     }
 
     setFetchActive(true);
@@ -1060,6 +1094,7 @@ const Home = () => {
       setCustomWeekRange('');
       setCustomMonthRange('');
       setCustomYearRange('');
+      setCustomDateRange('');
 
       const moment = require('moment-timezone');
       
@@ -1137,7 +1172,8 @@ const Home = () => {
       if (dateOption != 'custom-daily' 
         && dateOption != 'custom-weekly' 
         && dateOption != 'custom-monthly' 
-        && dateOption != 'custom-yearly') {
+        && dateOption != 'custom-yearly'
+        && dateOption != 'custom-date') {
         startDate = momentStartDate.format("YYYY-MM-DD");
         endDate = momentEndDate.format("YYYY-MM-DD");
 
@@ -1179,6 +1215,15 @@ const Home = () => {
 
         previousStartDate = moment(newStartDate).subtract(1, "years").startOf('year').format("YYYY-MM-DD");
         previousEndDate = moment(newEndDate).subtract(1, "years").endOf('year').format("YYYY-MM-DD");
+      }
+      else if (dateOption == 'custom-date') {
+        startDate = newStartDate;
+        endDate = newEndDate;
+
+        setCustomDateRange(`${moment(newStartDate).format('DD-MM-YYYY')} - ${moment(newEndDate).format('DD-MM-YYYY')}`);
+
+        previousStartDate = moment(newStartDate).subtract(dataRangeCount + 1, "days").format("YYYY-MM-DD");
+        previousEndDate = moment(newEndDate).subtract(dataRangeCount + 1, "days").format("YYYY-MM-DD");
       }
 
       fetchSegmentationSalesData(startDate, endDate);
@@ -2642,7 +2687,8 @@ const Home = () => {
       if (dateOption != 'custom-daily' 
         && dateOption != 'custom-weekly' 
         && dateOption != 'custom-monthly' 
-        && dateOption != 'custom-yearly') {
+        && dateOption != 'custom-yearly'
+        && dateOption != 'custom-date') {
         startDate = momentStartDate.format("YYYY-MM-DD");
         endDate = momentEndDate.format("YYYY-MM-DD");
 
@@ -2676,6 +2722,13 @@ const Home = () => {
 
         previousStartDate = moment(newStartDate).subtract(1, "years").startOf('year').format("YYYY-MM-DD");
         previousEndDate = moment(newEndDate).subtract(1, "years").endOf('year').format("YYYY-MM-DD");
+      }
+      else if (dateOption == 'custom-date') {
+        startDate = newStartDate;
+        endDate = newEndDate;
+
+        previousStartDate = moment(newStartDate).subtract(dataRangeCount + 1, "days").format("YYYY-MM-DD");
+        previousEndDate = moment(newEndDate).subtract(dataRangeCount + 1, "days").format("YYYY-MM-DD");
       }
       
       fetchMasterSalesData(startDate, endDate, previousStartDate, previousEndDate, dataRange);
@@ -3738,6 +3791,7 @@ const Home = () => {
                         <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange != '' && <br/>}{customWeekRange}</MenuItem>
                         <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange != '' && <br/>}{customMonthRange}</MenuItem>
                         <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange != '' && <br/>}{customYearRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange != '' && <br/>}{customDateRange}</MenuItem>
                       </Select>
                     : <Select
                         value={dateOption}
@@ -3754,16 +3808,18 @@ const Home = () => {
                         <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange}</MenuItem>
                         <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange}</MenuItem>
                         <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange}</MenuItem>
                       </Select>
                   }
                 </FormControl>
                 { (dateOption == "custom-daily" 
                   || dateOption == "custom-weekly"
-                  ||dateOption == "custom-monthly"
-                  ||dateOption == "custom-yearly") && !isMobile &&
+                  || dateOption == "custom-monthly"
+                  || dateOption == "custom-yearly"
+                  || dateOption == "custom-date") && !isMobile &&
                   <Grid style={{margin: 10}}>  
                     <MuiPickersUtilsProvider utils={MomentUtils}>
-                      { (dateOption == "custom-daily" || dateOption == "custom-weekly") &&
+                      { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
                         <KeyboardDatePicker
                           orientation="landscape"
                           variant="inline"
@@ -3798,6 +3854,17 @@ const Home = () => {
                           onChange={handleStartDateChange}
                         />
                       }
+                      { dateOption == "custom-date" &&
+                        <KeyboardDatePicker
+                          orientation="landscape"
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={selectedEndDate}
+                          style={{marginRight: 15, width: 150}}
+                          onChange={handleEndDateChange}
+                        />
+                      }
                     </MuiPickersUtilsProvider>
                     <Button 
                       variant="outlined"
@@ -3816,11 +3883,12 @@ const Home = () => {
               </Box>
               { (dateOption == "custom-daily" 
                 || dateOption == "custom-weekly"
-                ||dateOption == "custom-monthly"
-                ||dateOption == "custom-yearly") && isMobile &&
+                || dateOption == "custom-monthly"
+                || dateOption == "custom-yearly"
+                || dateOption == "custom-date") && isMobile &&
                 <Grid style={{margin: 10}}>  
                   <MuiPickersUtilsProvider utils={MomentUtils}>
-                    { (dateOption == "custom-daily" || dateOption == "custom-weekly") &&
+                    { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
                       <KeyboardDatePicker
                         variant="inline"
                         format="YYYY-MM-DD"
@@ -3850,6 +3918,16 @@ const Home = () => {
                         value={selectedStartDate}
                         style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
+                      />
+                    }
+                    { dateOption == "custom-date" &&
+                      <KeyboardDatePicker
+                        variant="inline"
+                        format="YYYY-MM-DD"
+                        label="End Date"
+                        value={selectedEndDate}
+                        style={{marginRight: 15, width: 150}}
+                        onChange={handleEndDateChange}
                       />
                     }
                   </MuiPickersUtilsProvider>

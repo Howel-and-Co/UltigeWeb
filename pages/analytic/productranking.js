@@ -404,6 +404,7 @@ const ProductRanking = () => {
   const [customWeekRange, setCustomWeekRange] = React.useState('');
   const [customMonthRange, setCustomMonthRange] = React.useState('');
   const [customYearRange, setCustomYearRange] = React.useState('');
+  const [customDateRange, setCustomDateRange] = React.useState('');
   
   const [modelSalesPageCount, setModelSalesPageCount] = useState(1);
   const [modelSalesCountPageCount, setModelSalesCountPageCount] = useState(1);
@@ -412,7 +413,12 @@ const ProductRanking = () => {
   const [productSalesPageCount, setProductSalesPageCount] = useState(1);
   const [productSalesCountPageCount, setProductSalesCountPageCount] = useState(1);
   
-  const [page, setPage] = React.useState(1);
+  const [modelSalesPage, setModelSalesPage] = useState(1);
+  const [modelSalesCountPage, setModelSalesCountPage] = useState(1);
+  const [categorySalesPage, setCategorySalesPage] = useState(1);
+  const [categorySalesCountPage, setCategorySalesCountPage] = useState(1);
+  const [productSalesPage, setProductSalesPage] = useState(1);
+  const [productSalesCountPage, setProductSalesCountPage] = useState(1);
 
   const [modelSalesCachePaginationIndex, setModelSalesCachePaginationIndex] = React.useState();
   const [modelSalesCountCachePaginationIndex, setModelSalesCountCachePaginationIndex] = React.useState();
@@ -438,7 +444,6 @@ const ProductRanking = () => {
     
     if (newValue == '1') {
       if (modelSalesCachePaginationIndex) {
-        setPage(1);
         setNewFetchActive(true);
       }
       else {
@@ -447,7 +452,6 @@ const ProductRanking = () => {
     }
     else if (newValue == '2') {
       if (modelSalesCountCachePaginationIndex) {
-        setPage(1);
         setNewFetchActive(true);
       }
       else {
@@ -456,7 +460,6 @@ const ProductRanking = () => {
     }
     else if (newValue == '3') {
       if (categorySalesCachePaginationIndex) {
-        setPage(1);
         setNewFetchActive(true);
       }
       else {
@@ -465,7 +468,6 @@ const ProductRanking = () => {
     }
     else if (newValue == '4') {
       if (categorySalesCountCachePaginationIndex) {
-        setPage(1);
         setNewFetchActive(true);
       }
       else {
@@ -474,7 +476,6 @@ const ProductRanking = () => {
     }
     else if (newValue == '5') {
       if (productSalesCachePaginationIndex) {
-        setPage(1);
         setNewFetchActive(true);
       }
       else {
@@ -483,7 +484,6 @@ const ProductRanking = () => {
     }
     else if (newValue == '6') {
       if (productSalesCountCachePaginationIndex) {
-        setPage(1);
         setNewFetchActive(true);
       }
       else {
@@ -499,6 +499,13 @@ const ProductRanking = () => {
     setCategorySalesCountPageCount(1);
     setProductSalesPageCount(1);
     setProductSalesCountPageCount(1);
+    
+    setModelSalesPage(1);
+    setModelSalesCountPage(1);
+    setCategorySalesPage(1);
+    setCategorySalesCountPage(1);
+    setProductSalesPage(1);
+    setProductSalesCountPage(1);
 
     setModelSalesCachePaginationIndex(null);
     setModelSalesCountCachePaginationIndex(null);
@@ -509,7 +516,25 @@ const ProductRanking = () => {
   };
 
   const handlePageChange = (event, value) => {
-    setPage(value);
+    if (productTab == '1') {
+      setModelSalesPage(value);
+    }
+    else if (productTab == '2') {
+      setModelSalesCountPage(value);
+    }
+    else if (productTab == '3') {
+      setCategorySalesPage(value);
+    }
+    else if (productTab == '4') {
+      setCategorySalesCountPage(value);
+    }
+    else if (productTab == '5') {
+      setProductSalesPage(value);
+    }
+    else if (productTab == '6') {
+      setProductSalesCountPage(value);
+    }
+    
     setNewFetchActive(true);
   };
 
@@ -522,7 +547,8 @@ const ProductRanking = () => {
     if (event.target.value != 'custom-daily' 
       && event.target.value != 'custom-weekly' 
       && event.target.value != 'custom-monthly' 
-      && event.target.value != 'custom-yearly') {
+      && event.target.value != 'custom-yearly'
+      && event.target.value != 'custom-date') {
       setDataRange(event.target.value);
 
       resetData();
@@ -531,11 +557,16 @@ const ProductRanking = () => {
   };
 
   const [selectedStartDate, setSelectedStartDate] = React.useState(moment());
+  const [selectedEndDate, setSelectedEndDate] = React.useState(moment());
   const [newStartDate, setNewStartDate] = React.useState(moment());
   const [newEndDate, setNewEndDate] = React.useState(moment());
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setSelectedEndDate(date);
   };
 
   const applyCustomDate = () => {
@@ -558,6 +589,27 @@ const ProductRanking = () => {
       setNewStartDate(moment(selectedStartDate).startOf('year').format("YYYY-MM-DD"));
       setNewEndDate(moment(selectedStartDate).endOf('year').format("YYYY-MM-DD"));
       setDataRange('yearly');
+    }
+    else if (dateOption == 'custom-date') {
+      setNewStartDate(moment(selectedStartDate).format("YYYY-MM-DD"));
+      setNewEndDate(moment(selectedEndDate).format("YYYY-MM-DD"));
+
+      let endDate = moment(selectedEndDate);
+      let startDate = moment(selectedStartDate);
+      let dateRange = Math.abs(endDate.diff(startDate, 'days'));
+
+      if (dateRange == 0) {
+        setDataRange('realtime');
+      }
+      else if (dateRange > 0 && dateRange <= 14) {
+        setDataRange('weekly');
+      }
+      else if (dateRange > 14 && dateRange <= 31) {
+        setDataRange('monthly');
+      }
+      else if (dateRange > 31) {
+        setDataRange('yearly');
+      }
     }
 
     resetData();
@@ -696,6 +748,7 @@ const ProductRanking = () => {
       setCustomWeekRange('');
       setCustomMonthRange('');
       setCustomYearRange('');
+      setCustomDateRange('');
 
       const moment = require('moment-timezone');
       
@@ -739,7 +792,8 @@ const ProductRanking = () => {
       if (dateOption != 'custom-daily' 
         && dateOption != 'custom-weekly' 
         && dateOption != 'custom-monthly' 
-        && dateOption != 'custom-yearly') {
+        && dateOption != 'custom-yearly'
+        && dateOption != 'custom-date') {
         startDate = momentStartDate.format("YYYY-MM-DD");
         endDate = momentEndDate.format("YYYY-MM-DD");
       }
@@ -767,8 +821,12 @@ const ProductRanking = () => {
 
         setCustomYearRange(`${moment(newStartDate).format('DD-MM-YYYY')} - ${moment(newEndDate).format('DD-MM-YYYY')}`);
       }
+      else if (dateOption == 'custom-date') {
+        startDate = newStartDate;
+        endDate = newEndDate;
 
-      setPage(1);
+        setCustomDateRange(`${moment(newStartDate).format('DD-MM-YYYY')} - ${moment(newEndDate).format('DD-MM-YYYY')}`);
+      }
 
       let indexArray = new Array();
       indexArray.push(1);
@@ -825,7 +883,7 @@ const ProductRanking = () => {
   useEffect(() => {
     const fetchModelSalesData = async (startDate, endDate, dataRange) => {
       setModelSalesDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=${modelSalesPage}`);
 
       let processedData;
       processedData = result.data;
@@ -850,7 +908,7 @@ const ProductRanking = () => {
 
     const fetchModelSalesCountData = async (startDate, endDate, dataRange) => {
       setModelSalesCountDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsalescount?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsalescount?startDate=${startDate}&endDate=${endDate}&limit=10&page=${modelSalesCountPage}`);
 
       let processedData;
       processedData = result.data;
@@ -875,7 +933,7 @@ const ProductRanking = () => {
 
     const fetchCategorySalesData = async (startDate, endDate, dataRange) => {
       setCategorySalesDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysales?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysales?startDate=${startDate}&endDate=${endDate}&limit=10&page=${categorySalesPage}`);
 
       let processedData;
       processedData = result.data;
@@ -900,7 +958,7 @@ const ProductRanking = () => {
 
     const fetchCategorySalesCountData = async (startDate, endDate, dataRange) => {
       setCategorySalesCountDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysalescount?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysalescount?startDate=${startDate}&endDate=${endDate}&limit=10&page=${categorySalesCountPage}`);
 
       let processedData;
       processedData = result.data;
@@ -925,7 +983,7 @@ const ProductRanking = () => {
 
     const fetchProductSalesData = async (startDate, endDate, dataRange) => {
       setProductSalesDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=${productSalesPage}`);
 
       let processedData;
       processedData = result.data;
@@ -950,7 +1008,7 @@ const ProductRanking = () => {
 
     const fetchProductSalesCountData = async (startDate, endDate, dataRange) => {
       setProductSalesCountDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductsalescount?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductsalescount?startDate=${startDate}&endDate=${endDate}&limit=10&page=${productSalesCountPage}`);
 
       let processedData;
       processedData = result.data;
@@ -975,7 +1033,7 @@ const ProductRanking = () => {
 
     if (newFetchActive == true && checkToken()) {
       if (productTab == '1') {
-        if (modelSalesCachePaginationIndex.Data.includes(page) == false) {  
+        if (modelSalesCachePaginationIndex.Data.includes(modelSalesPage) == false) {  
           const moment = require('moment-timezone');
       
           let momentStartDate;
@@ -1004,7 +1062,8 @@ const ProductRanking = () => {
           if (dateOption != 'custom-daily' 
             && dateOption != 'custom-weekly' 
             && dateOption != 'custom-monthly' 
-            && dateOption != 'custom-yearly') {
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
             startDate = momentStartDate.format("YYYY-MM-DD");
             endDate = momentEndDate.format("YYYY-MM-DD");
           }
@@ -1017,7 +1076,7 @@ const ProductRanking = () => {
           for (const data of modelSalesCachePaginationIndex.Data) {
             indexArray.push(data);
           }
-          indexArray.push(page);
+          indexArray.push(modelSalesPage);
           let object = new Object();
           object.Data = indexArray;
           setModelSalesCachePaginationIndex(object);
@@ -1029,7 +1088,7 @@ const ProductRanking = () => {
           let newData = new Array();
   
           for (const data of modelSalesData.Data) {
-            if (data.Rank > ((page - 1) * 10) && data.Rank <= page * 10)
+            if (data.Rank > ((modelSalesPage - 1) * 10) && data.Rank <= modelSalesPage * 10)
               newData.push(data);
           }
   
@@ -1038,7 +1097,7 @@ const ProductRanking = () => {
         }
       }
       else if (productTab == '2') {
-        if (modelSalesCountCachePaginationIndex.Data.includes(page) == false) {  
+        if (modelSalesCountCachePaginationIndex.Data.includes(modelSalesCountPage) == false) {  
           const moment = require('moment-timezone');
       
           let momentStartDate;
@@ -1067,7 +1126,8 @@ const ProductRanking = () => {
           if (dateOption != 'custom-daily' 
             && dateOption != 'custom-weekly' 
             && dateOption != 'custom-monthly' 
-            && dateOption != 'custom-yearly') {
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
             startDate = momentStartDate.format("YYYY-MM-DD");
             endDate = momentEndDate.format("YYYY-MM-DD");
           }
@@ -1080,7 +1140,7 @@ const ProductRanking = () => {
           for (const data of modelSalesCountCachePaginationIndex.Data) {
             indexArray.push(data);
           }
-          indexArray.push(page);
+          indexArray.push(modelSalesCountPage);
           let object = new Object();
           object.Data = indexArray;
           setModelSalesCountCachePaginationIndex(object);
@@ -1092,7 +1152,7 @@ const ProductRanking = () => {
           let newData = new Array();
   
           for (const data of modelSalesCountData.Data) {
-            if (data.Rank > ((page - 1) * 10) && data.Rank <= page * 10)
+            if (data.Rank > ((modelSalesCountPage - 1) * 10) && data.Rank <= modelSalesCountPage * 10)
               newData.push(data);
           }
   
@@ -1101,7 +1161,7 @@ const ProductRanking = () => {
         }
       }
       else if (productTab == '3') {
-        if (categorySalesCachePaginationIndex.Data.includes(page) == false) {  
+        if (categorySalesCachePaginationIndex.Data.includes(categorySalesPage) == false) {  
           const moment = require('moment-timezone');
       
           let momentStartDate;
@@ -1130,7 +1190,8 @@ const ProductRanking = () => {
           if (dateOption != 'custom-daily' 
             && dateOption != 'custom-weekly' 
             && dateOption != 'custom-monthly' 
-            && dateOption != 'custom-yearly') {
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
             startDate = momentStartDate.format("YYYY-MM-DD");
             endDate = momentEndDate.format("YYYY-MM-DD");
           }
@@ -1143,7 +1204,7 @@ const ProductRanking = () => {
           for (const data of categorySalesCachePaginationIndex.Data) {
             indexArray.push(data);
           }
-          indexArray.push(page);
+          indexArray.push(categorySalesPage);
           let object = new Object();
           object.Data = indexArray;
           setCategorySalesCachePaginationIndex(object);
@@ -1155,7 +1216,7 @@ const ProductRanking = () => {
           let newData = new Array();
   
           for (const data of categorySalesData.Data) {
-            if (data.Rank > ((page - 1) * 10) && data.Rank <= page * 10)
+            if (data.Rank > ((categorySalesPage - 1) * 10) && data.Rank <= categorySalesPage * 10)
               newData.push(data);
           }
   
@@ -1164,7 +1225,7 @@ const ProductRanking = () => {
         }
       }
       else if (productTab == '4') {
-        if (categorySalesCountCachePaginationIndex.Data.includes(page) == false) {  
+        if (categorySalesCountCachePaginationIndex.Data.includes(categorySalesCountPage) == false) {  
           const moment = require('moment-timezone');
       
           let momentStartDate;
@@ -1193,7 +1254,8 @@ const ProductRanking = () => {
           if (dateOption != 'custom-daily' 
             && dateOption != 'custom-weekly' 
             && dateOption != 'custom-monthly' 
-            && dateOption != 'custom-yearly') {
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
             startDate = momentStartDate.format("YYYY-MM-DD");
             endDate = momentEndDate.format("YYYY-MM-DD");
           }
@@ -1206,7 +1268,7 @@ const ProductRanking = () => {
           for (const data of categorySalesCountCachePaginationIndex.Data) {
             indexArray.push(data);
           }
-          indexArray.push(page);
+          indexArray.push(categorySalesCountPage);
           let object = new Object();
           object.Data = indexArray;
           setCategorySalesCountCachePaginationIndex(object);
@@ -1218,7 +1280,7 @@ const ProductRanking = () => {
           let newData = new Array();
   
           for (const data of categorySalesCountData.Data) {
-            if (data.Rank > ((page - 1) * 10) && data.Rank <= page * 10)
+            if (data.Rank > ((categorySalesCountPage - 1) * 10) && data.Rank <= categorySalesCountPage * 10)
               newData.push(data);
           }
   
@@ -1227,7 +1289,7 @@ const ProductRanking = () => {
         }
       }
       else if (productTab == '5') {
-        if (productSalesCachePaginationIndex.Data.includes(page) == false) {  
+        if (productSalesCachePaginationIndex.Data.includes(productSalesPage) == false) {  
           const moment = require('moment-timezone');
       
           let momentStartDate;
@@ -1256,7 +1318,8 @@ const ProductRanking = () => {
           if (dateOption != 'custom-daily' 
             && dateOption != 'custom-weekly' 
             && dateOption != 'custom-monthly' 
-            && dateOption != 'custom-yearly') {
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
             startDate = momentStartDate.format("YYYY-MM-DD");
             endDate = momentEndDate.format("YYYY-MM-DD");
           }
@@ -1269,7 +1332,7 @@ const ProductRanking = () => {
           for (const data of productSalesCachePaginationIndex.Data) {
             indexArray.push(data);
           }
-          indexArray.push(page);
+          indexArray.push(productSalesPage);
           let object = new Object();
           object.Data = indexArray;
           setProductSalesCachePaginationIndex(object);
@@ -1281,7 +1344,7 @@ const ProductRanking = () => {
           let newData = new Array();
   
           for (const data of productSalesData.Data) {
-            if (data.Rank > ((page - 1) * 10) && data.Rank <= page * 10)
+            if (data.Rank > ((productSalesPage - 1) * 10) && data.Rank <= productSalesPage * 10)
               newData.push(data);
           }
   
@@ -1290,7 +1353,7 @@ const ProductRanking = () => {
         }
       }
       else if (productTab == '6') {
-        if (productSalesCountCachePaginationIndex.Data.includes(page) == false) {  
+        if (productSalesCountCachePaginationIndex.Data.includes(productSalesCountPage) == false) {  
           const moment = require('moment-timezone');
       
           let momentStartDate;
@@ -1319,7 +1382,8 @@ const ProductRanking = () => {
           if (dateOption != 'custom-daily' 
             && dateOption != 'custom-weekly' 
             && dateOption != 'custom-monthly' 
-            && dateOption != 'custom-yearly') {
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
             startDate = momentStartDate.format("YYYY-MM-DD");
             endDate = momentEndDate.format("YYYY-MM-DD");
           }
@@ -1332,7 +1396,7 @@ const ProductRanking = () => {
           for (const data of productSalesCountCachePaginationIndex.Data) {
             indexArray.push(data);
           }
-          indexArray.push(page);
+          indexArray.push(productSalesCountPage);
           let object = new Object();
           object.Data = indexArray;
           setProductSalesCountCachePaginationIndex(object);
@@ -1344,7 +1408,7 @@ const ProductRanking = () => {
           let newData = new Array();
   
           for (const data of productSalesCountData.Data) {
-            if (data.Rank > ((page - 1) * 10) && data.Rank <= page * 10)
+            if (data.Rank > ((productSalesCountPage - 1) * 10) && data.Rank <= productSalesCountPage * 10)
               newData.push(data);
           }
   
@@ -1399,10 +1463,11 @@ const ProductRanking = () => {
                         <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
                         <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
                         <Divider style={{margin: 12}}/>
-                        <MenuItem disableRipple value='custom-daily'>Per Hari: <br/>{customDayRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-weekly'>Per Minggu: <br/>{customWeekRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-monthly'>Per Bulan: <br/>{customMonthRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun: <br/>{customYearRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange != '' && <br/>}{customDayRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange != '' && <br/>}{customWeekRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange != '' && <br/>}{customMonthRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange != '' && <br/>}{customYearRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange != '' && <br/>}{customDateRange}</MenuItem>
                       </Select>
                     : <Select
                         value={dateOption}
@@ -1415,20 +1480,22 @@ const ProductRanking = () => {
                         <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
                         <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
                         <Divider style={{margin: 12}}/>
-                        <MenuItem disableRipple value='custom-daily'>Per Hari: {customDayRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-weekly'>Per Minggu: {customWeekRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-monthly'>Per Bulan: {customMonthRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun: {customYearRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange}</MenuItem>
+                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange}</MenuItem>
                       </Select>
                   }
                 </FormControl>
                 { (dateOption == "custom-daily" 
                   || dateOption == "custom-weekly"
-                  ||dateOption == "custom-monthly"
-                  ||dateOption == "custom-yearly") && !isMobile &&
+                  || dateOption == "custom-monthly"
+                  || dateOption == "custom-yearly"
+                  || dateOption == "custom-date") && !isMobile &&
                   <Grid style={{margin: 10}}>  
                     <MuiPickersUtilsProvider utils={MomentUtils}>
-                      { (dateOption == "custom-daily" || dateOption == "custom-weekly") &&
+                      { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
                         <KeyboardDatePicker
                           orientation="landscape"
                           variant="inline"
@@ -1463,11 +1530,26 @@ const ProductRanking = () => {
                           onChange={handleStartDateChange}
                         />
                       }
+                      { dateOption == "custom-date" &&
+                        <KeyboardDatePicker
+                          orientation="landscape"
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={selectedEndDate}
+                          style={{marginRight: 15, width: 150}}
+                          onChange={handleEndDateChange}
+                        />
+                      }
                     </MuiPickersUtilsProvider>
                     <Button 
-                      variant="contained" 
-                      color="primary" 
-                      style={{marginTop: 8}}
+                      variant="outlined"
+                      style={{
+                        borderRadius: 4,
+                        textTransform: "none",
+                        marginTop: 8
+                      }}
+                      disableRipple
                       onClick={applyCustomDate}
                     >
                       Apply
@@ -1477,11 +1559,12 @@ const ProductRanking = () => {
               </Box>
               { (dateOption == "custom-daily" 
                 || dateOption == "custom-weekly"
-                ||dateOption == "custom-monthly"
-                ||dateOption == "custom-yearly") && isMobile &&
+                || dateOption == "custom-monthly"
+                || dateOption == "custom-yearly"
+                || dateOption == "custom-date") && isMobile &&
                 <Grid style={{margin: 10}}>  
                   <MuiPickersUtilsProvider utils={MomentUtils}>
-                    { (dateOption == "custom-daily" || dateOption == "custom-weekly") &&
+                    { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
                       <KeyboardDatePicker
                         variant="inline"
                         format="YYYY-MM-DD"
@@ -1513,11 +1596,25 @@ const ProductRanking = () => {
                         onChange={handleStartDateChange}
                       />
                     }
+                    { dateOption == "custom-date" &&
+                      <KeyboardDatePicker
+                        variant="inline"
+                        format="YYYY-MM-DD"
+                        label="End Date"
+                        value={selectedEndDate}
+                        style={{marginRight: 15, width: 150}}
+                        onChange={handleEndDateChange}
+                      />
+                    }
                   </MuiPickersUtilsProvider>
                   <Button 
-                    variant="contained" 
-                    color="primary" 
-                    style={{marginTop: 8}}
+                    variant="outlined"
+                    style={{
+                      borderRadius: 4,
+                      textTransform: "none",
+                      marginTop: 8
+                    }}
+                    disableRipples
                     onClick={applyCustomDate}
                   >
                     Apply
@@ -1961,8 +2058,13 @@ const ProductRanking = () => {
                         : productTab == 3 ? categorySalesPageCount
                         : productTab == 4 ? categorySalesCountPageCount
                         : productTab == 5 ? productSalesPageCount
-                        : productSalesCountPageCount }
-                      page={page}
+                        : productSalesCountPageCount}
+                      page={productTab == 1 ? modelSalesPage 
+                        : productTab == 2 ? modelSalesCountPage
+                        : productTab == 3 ? categorySalesPage
+                        : productTab == 4 ? categorySalesCountPage
+                        : productTab == 5 ? productSalesPage
+                        : productSalesCountPage}
                       onChange={handlePageChange}
                       color='primary'
                     />
