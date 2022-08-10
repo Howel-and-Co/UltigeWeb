@@ -200,7 +200,7 @@ const Product = () => {
   }, [fetchActive]);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={componentRef}>
       <Layout>
         <Head>
             <title>Ultige Web</title>
@@ -208,7 +208,7 @@ const Product = () => {
         </Head>
 
         <Grid container style={{padding: 5}}>
-          <Grid item xs={12} ref={componentRef}>
+          <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
               <Grid container>
                 <Grid item xs={12}>
@@ -260,7 +260,7 @@ const Product = () => {
                         ref={(grid) => setGridInstance(grid)}
                         allowFiltering={true}
                         filterSettings={filterSettings}
-                        height={height * 1.35}
+                        height={height - (isMobile ? 430 : 370)}
                         enableVirtualization={true}
                         resizeSettings={{mode: 'Normal'}}
                         style={{margin: 10}}
