@@ -62,6 +62,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const ProductImageTemplate = (props) => {
+  return (
+    <img 
+      src={props.ProductImage != "" ? props.ProductImage : "/icons/no-image.jpg"}  
+      width={75} 
+      height={75} 
+      style={{borderRadius: 5}} 
+      alt="Product Image"
+    />
+  );    
+};
+
 const ProductNameTemplate = (props) => {
   if (props.Availability == 'TERSEDIA') {
     return (
@@ -135,6 +147,10 @@ const AvailabilityTemplate = (props) => {
   }  
 };
 
+const RowSelected = (props) => {
+  window.open(props.data.ProductImage, '_blank')
+};
+
 const Product = () => {
   const classes = useStyles();
   const theme = useTheme();
@@ -179,6 +195,7 @@ const Product = () => {
 
         object.ProductID = dataItem.ProductID;
         object.ProductName = dataItem.ProductName;
+        object.ProductImage = dataItem.ProductImage;
         object.ProductCategoryName = dataItem.ProductCategoryName;
         object.SellPrice = Intl.NumberFormat('id').format(dataItem.SellPrice);
         object.Availability = dataItem.Availability == 1 ? "TERSEDIA" : "TIDAK";
@@ -265,8 +282,16 @@ const Product = () => {
                         resizeSettings={{mode: 'Normal'}}
                         style={{margin: 10}}
                         allowTextWrap={true}
+                        rowSelected={RowSelected}
                     >
                         <ColumnsDirective>
+                            <ColumnDirective
+                                field="ProductImage"
+                                headerText="Foto"
+                                width="75"
+                                template={ProductImageTemplate}
+                                allowFiltering={false}
+                            ></ColumnDirective> 
                             <ColumnDirective
                                 field="ProductName"
                                 headerText="Produk"
