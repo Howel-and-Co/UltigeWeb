@@ -121,6 +121,19 @@ const ProductCategoryTemplate = (props) => {
   }  
 };
 
+const QuantityTemplate = (props) => {
+  if (props.Availability == 'TERSEDIA') {
+    return (
+      <span>{props.Quantity}</span>
+    );     
+  }
+  if (props.Availability == 'TIDAK') {
+    return (
+      <span style={{color: 'red'}}>{props.Quantity}</span>
+    );
+  }      
+};
+
 const ProductIDTemplate = (props) => {
   if (props.Availability == 'TERSEDIA') {
     return (
@@ -197,6 +210,7 @@ const Product = () => {
         object.ProductName = dataItem.ProductName;
         object.ProductImage = dataItem.ProductImage;
         object.ProductCategoryName = dataItem.ProductCategoryName;
+        object.Quantity = dataItem.Quantity;
         object.SellPrice = Intl.NumberFormat('id').format(dataItem.SellPrice);
         object.Availability = dataItem.Availability == 1 ? "TERSEDIA" : "TIDAK";
 
@@ -311,6 +325,13 @@ const Product = () => {
                                 headerText="Kategori"
                                 width="130"
                                 template={ProductCategoryTemplate}
+                            />
+                            <ColumnDirective
+                                field="Quantity"
+                                headerText="Jumlah"
+                                width="100"
+                                textAlign="Right"
+                                template={QuantityTemplate}
                             />
                             <ColumnDirective
                                 field="Availability"
