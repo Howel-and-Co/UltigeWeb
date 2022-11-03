@@ -5526,7 +5526,6 @@ const Home = () => {
             </Paper>
           </Grid>
           
-          {/*
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
               <Box className={classes.inline}>
@@ -6280,7 +6279,6 @@ const Home = () => {
               </Grid>
             </Paper>
           </Grid>
-          */}
         </Grid>
       </Layout>
     </div>
