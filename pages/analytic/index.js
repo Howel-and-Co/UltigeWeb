@@ -3448,7 +3448,7 @@ const Home = () => {
 
       fetchModelCategorySalesData(endDate, model, category)
     }
-  }, [category, modelCategoryEndDate]);
+  }, [model, category, modelCategoryEndDate]);
 
   useEffect(() => {
     const fetchValueStockData = async (backDate) => {
@@ -3932,14 +3932,9 @@ const Home = () => {
       let endDate;
       endDate = moment(modelCategoryCustomEndDate).format("YYYY-MM-DD");
 
-      if (categoryCustom != 'ALL') {
-        fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
-      }
-      else {
-        fetchModelCategorySalesCustomAllData(startDate, endDate, modelCustom, categoryCustom);
-      }
+      fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
     }
-  }, [categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
+  }, [modelCustom, categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
 
   useEffect(() => {
     const fetchModelStockData = async () => {
@@ -5526,7 +5521,6 @@ const Home = () => {
             </Paper>
           </Grid>
           
-          {/*
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
               <Box className={classes.inline}>
@@ -6280,7 +6274,6 @@ const Home = () => {
               </Grid>
             </Paper>
           </Grid>
-          */}
         </Grid>
       </Layout>
     </div>
