@@ -3448,7 +3448,7 @@ const Home = () => {
 
       fetchModelCategorySalesData(endDate, model, category)
     }
-  }, [category, modelCategoryEndDate]);
+  }, [model, category, modelCategoryEndDate]);
 
   useEffect(() => {
     const fetchValueStockData = async (backDate) => {
@@ -3932,14 +3932,9 @@ const Home = () => {
       let endDate;
       endDate = moment(modelCategoryCustomEndDate).format("YYYY-MM-DD");
 
-      if (categoryCustom != 'ALL') {
-        fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
-      }
-      else {
-        fetchModelCategorySalesCustomAllData(startDate, endDate, modelCustom, categoryCustom);
-      }
+      fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
     }
-  }, [categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
+  }, [modelCustom, categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
 
   useEffect(() => {
     const fetchModelStockData = async () => {
