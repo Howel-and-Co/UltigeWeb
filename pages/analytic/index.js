@@ -926,6 +926,18 @@ const Home = () => {
   const [modelCustomFetchActive, setModelCustomFetchActive] = React.useState(true);
   const [categoryCustomFetchActive, setCategoryCustomFetchActive] = React.useState(false);
 
+  const [tierCustom, setTierCustom] = React.useState('');
+  const [tierCategoryCustom, setTierCategoryCustom] = React.useState('');
+  const [productTiersCustomData, setProductTiersCustomData] = useState([""]);
+  const [productTierCategoriesCustomData, setProductTierCategoriesCustomData] = useState([""]);
+  const [productTierCategoriesCustomCacheData, setProductTierCategoriesCustomCacheData] = useState();
+  const [tierCategoryCustomData, setTierCategoryCustomData] = useState();
+  const [tierCategoryCustomDataLoading, setTierCategoryCustomDataLoading] = React.useState(false);
+  const [totalTierCategoryCustomData, setTotalTierCategoryCustomData] = React.useState();
+  
+  const [tierCustomFetchActive, setTierCustomFetchActive] = React.useState(true);
+  const [tierCategoryCustomFetchActive, setTierCategoryCustomFetchActive] = React.useState(false);
+
   const [valueStockData, setValueStockData] = useState();
   const [valueStockDataLoading, setValueStockDataLoading] = useState(false);
 
@@ -984,6 +996,18 @@ const Home = () => {
   const handleCategoryCustomChange = (event, newValue) => {
     if (newValue !== null) {
       setCategoryCustom(newValue);
+    }
+  };
+
+  const handleTierCustomChange = (event, newValue) => {
+    if (newValue !== null) {
+      setTierCustom(newValue);
+      setTierCategoryCustomFetchActive(true);
+    }
+  };
+  const handleTierCategoryCustomChange = (event, newValue) => {
+    if (newValue !== null) {
+      setTierCategoryCustom(newValue);
     }
   };
 
@@ -1062,6 +1086,8 @@ const Home = () => {
   const [modelCategoryEndDate, setModelCategoryEndDate] = React.useState(moment());
   const [modelCategoryCustomStartDate, setModelCategoryCustomStartDate] = React.useState(moment());
   const [modelCategoryCustomEndDate, setModelCategoryCustomEndDate] = React.useState(moment());
+  const [tierCategoryCustomStartDate, setTierCategoryCustomStartDate] = React.useState(moment());
+  const [tierCategoryCustomEndDate, setTierCategoryCustomEndDate] = React.useState(moment());
 
   const handleValueStockBackDate = (date) => {
     setValueStockBackDate(date);
@@ -1077,6 +1103,14 @@ const Home = () => {
 
   const handleModelCategoryCustomEndDateChange = (date) => {
     setModelCategoryCustomEndDate(date);
+  };
+
+  const handleTierCategoryCustomStartDateChange = (date) => {
+    setTierCategoryCustomStartDate(date);
+  };
+
+  const handleTierCategoryCustomEndDateChange = (date) => {
+    setTierCategoryCustomEndDate(date);
   };
 
   const vsLabel = () => {
@@ -3937,6 +3971,415 @@ const Home = () => {
   }, [modelCustom, categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
 
   useEffect(() => {
+    const fetchProductTiersCustomData = async () => {
+      setProductTiersCustomData([1, 2, 3]);
+      setTierCustom(1);
+
+      let map = new Map();
+
+      let object = new Object();
+      object.Data = map;
+
+      setProductTierCategoriesCustomCacheData(object);
+
+      setTierCategoryCustomFetchActive(true);
+    };
+
+    if (tierCustomFetchActive == true && checkToken()) {
+      fetchProductTiersCustomData();
+      
+      setTierCustomFetchActive(false);
+    }
+  }, [tierCustomFetchActive]);
+
+  useEffect(() => {
+    const fetchProductTierCategoriesCustomData = async (tier) => {
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproducttiercategories?tier=${tier}`);
+
+      let processedData;
+      processedData = result.data;
+
+      setProductTierCategoriesCustomData(processedData.Data[0] ? ['ALL', ...processedData.Data] : ['TIDAK ADA KATEGORI']);
+      setTierCategoryCustom(processedData.Data[0] ? 'ALL' : 'TIDAK ADA KATEGORI');
+      
+      let map = new Map();
+
+      for (let [key, value] of productTierCategoriesCustomCacheData.Data) {
+        map.set(key, value);
+      }
+
+      map.set(model, processedData.Data[0] ? ['ALL', ...processedData.Data] : ['TIDAK ADA KATEGORI']);
+
+      //console.log(map);
+
+      let object = new Object();
+      object.Data = map;
+
+      setProductTierCategoriesCustomCacheData(object);
+    };
+
+    if (tierCategoryCustomFetchActive == true && checkToken()) {
+      if (productTierCategoriesCustomCacheData.Data.has(tierCustom) == false) {
+        fetchProductTierCategoriesCustomData(tierCustom);
+      }
+      else {
+        setProductTierCategoriesCustomData(productTierCategoriesCustomCacheData.Data.get(tierCustom));
+        setTierCategoryCustom(productTierCategoriesCustomCacheData.Data.get(tierCustom)[0]);
+      }
+      
+      setTierCategoryCustomFetchActive(false);
+    }
+  }, [tierCategoryCustomFetchActive]);
+
+  useEffect(() => {
+    const processMonthTierCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      addLine = new Object();
+      addLine.column = 'Penjualan';
+      line.push(addLine);
+      chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Jumlah';
+      line.push(addLine);
+      chartLine.push(addLine);
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+      const moment = require('moment');
+      moment.locale('id'); 
+
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let monthCounter = 0;
+
+      let totalValue = 0;
+      let totalQuantity = 0;
+
+      while (currentDate <= momentEndDate) { 
+        currentDate.startOf('month');
+        monthCounter++; 
+        let object = ``;
+
+        if (dateDifference > 1095 && monthCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 730 && dateDifference <= 1095 && monthCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 365 && dateDifference <= 730 && monthCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('MMM') == 'Jan')
+            object += `{"label": "${moment(currentDate).format('MMM YYYY')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('MMM YYYY')}"`;
+
+        line.forEach(function (lineItem) {
+          let dateExist = false;
+
+          data.forEach(function (dataItem) {
+            let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
+
+            if (moment(date).isSame(currentDate) == true) {
+              if (lineItem.column == 'Penjualan') {
+                object += `, "${lineItem.column}": ${dataItem.Value}`;
+                totalValue += parseFloat(dataItem.Value);
+              }
+              else if (lineItem.column == 'Jumlah') {
+                object += `, "${lineItem.column}": ${dataItem.Quantity}`;
+                totalQuantity += parseFloat(dataItem.Quantity);
+              }
+
+              dateExist = true;
+            }
+          });
+
+          if (dateExist == false) {
+            object += `, "${lineItem.column}": 0`;
+          }
+        });
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'months');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierCategory = new Object();
+      totalTierCategory.value = processedData.TotalValue;
+      totalTierCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierCategoryCustomData(totalTierCategory);
+    
+      return result;
+    };
+
+    const processWeekTierCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      addLine = new Object();
+      addLine.column = 'Penjualan';
+      line.push(addLine);
+      chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Jumlah';
+      line.push(addLine);
+      chartLine.push(addLine);
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+      const moment = require('moment');
+      moment.locale('id'); 
+
+      let momentStartDate = moment(startDate, "YYYY-MM-DD").startOf('isoWeek');
+      let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
+
+      let currentDate = momentStartDate;
+      let weekCounter = 0;
+
+      let totalValue = 0;
+      let totalQuantity = 0;
+
+      while (currentDate <= momentEndDate) { 
+        weekCounter++;
+        let object = ``;
+
+        if (dateDifference > 140 && weekCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 100 && dateDifference <= 140 && weekCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 60 && dateDifference <= 100 && weekCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          object += `{"label": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+
+        line.forEach(function (lineItem) {
+          let dateExist = false;
+
+          data.forEach(function (dataItem) {
+            let week = parseInt(dataItem.Date.substring(4, 6));
+
+            if (week == currentDate.isoWeek()) {
+              if (lineItem.column == 'Penjualan') {
+                object += `, "${lineItem.column}": ${dataItem.Value}`;
+                totalValue += parseFloat(dataItem.Value);
+              }
+              else if (lineItem.column == 'Jumlah') {
+                object += `, "${lineItem.column}": ${dataItem.Quantity}`;
+                totalQuantity += parseFloat(dataItem.Quantity);
+              }
+
+              dateExist = true;
+            }
+          });
+
+          if (dateExist == false) {
+            object += `, "${lineItem.column}": 0`;
+          }
+        });
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'weeks');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierCategory = new Object();
+      totalTierCategory.value = processedData.TotalValue;
+      totalTierCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierCategoryCustomData(totalTierCategory);
+    
+      return result;
+    };
+
+    const processDayTierCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      addLine = new Object();
+      addLine.column = 'Penjualan';
+      line.push(addLine);
+      chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Jumlah';
+      line.push(addLine);
+      chartLine.push(addLine);
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+      const moment = require('moment');
+      moment.locale('id'); 
+
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let dateCounter = 0;
+
+      let totalValue = 0;
+      let totalQuantity = 0;
+
+      while (currentDate <= momentEndDate) { 
+        dateCounter++; 
+        let object = ``;
+
+        if (dateDifference > 45 && dateCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 30 && dateDifference <= 45 && dateCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 15 && dateDifference <= 30 && dateCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('Do') == '1')
+            object += `{"label": "${moment(currentDate).format('Do MMM')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('Do')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('Do MMM')}"`;
+
+        line.forEach(function (lineItem) {
+          let dateExist = false;
+
+          data.forEach(function (dataItem) {
+            let date = moment(dataItem.Date, "DD/MM/YYYY");
+
+            if (moment(date).isSame(currentDate) == true) {
+              if (lineItem.column == 'Penjualan') {
+                object += `, "${lineItem.column}": ${dataItem.Value}`;
+                totalValue += parseFloat(dataItem.Value);
+              }
+              else if (lineItem.column == 'Jumlah') {
+                object += `, "${lineItem.column}": ${dataItem.Quantity}`;
+                totalQuantity += parseFloat(dataItem.Quantity);
+              }
+              
+              dateExist = true;
+            }
+          });
+
+          if (dateExist == false) {
+            object += `, "${lineItem.column}": 0`;
+          }
+        });
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'days');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierCategory = new Object();
+      totalTierCategory.value = processedData.TotalValue;
+      totalTierCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierCategoryCustomData(totalTierCategory);
+    
+      return result;
+    };
+
+    const fetchTierCategorySalesCustomData = async (startDate, endDate, tierCustom, tierCategoryCustom) => {
+      setTierCategoryCustomDataLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductcategorysales2?startDate=${startDate}&endDate=${endDate}&tier=${tierCustom}&category=${tierCategoryCustom}`);
+
+      let processedData;
+      processedData = result.data;
+
+      let newData;
+
+      if (processedData.DateDifference <= 60) {
+        newData = processDayTierCategorySaleCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference > 60 && processedData.DateDifference < 180) {
+        newData = processWeekTierCategorySaleCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference >= 180) {
+        newData = processMonthTierCategorySaleCustomData(startDate, endDate, processedData);
+      }
+
+      if (tierCategoryCustom == 'TIDAK ADA KATEGORI') {
+        newData = null;
+      }
+
+      setTierCategoryCustomData(newData);
+      setTierCategoryCustomDataLoading(false);
+    };
+
+    if (checkToken() && tierCategoryCustom) {
+      const moment = require('moment-timezone');
+
+      let startDate;
+      startDate = moment(tierCategoryCustomStartDate).format("YYYY-MM-DD");
+
+      let endDate;
+      endDate = moment(tierCategoryCustomEndDate).format("YYYY-MM-DD");
+
+      fetchTierCategorySalesCustomData(startDate, endDate, tierCustom, tierCategoryCustom);
+    }
+  }, [tierCustom, tierCategoryCustom, tierCategoryCustomStartDate, tierCategoryCustomEndDate]);
+
+  useEffect(() => {
     const fetchModelStockData = async () => {
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels`);
 
@@ -5955,6 +6398,251 @@ const Home = () => {
 
               <Grid item xs={12}>
                 { modelCategoryCustomDataLoading &&
+                  <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                    <CircularProgress size={25} />
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        marginLeft: 12
+                      }}
+                    >
+                      Loading
+                    </Typography>
+                  </Box>
+                }
+              </Grid>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Paper className={classes.paper} elevation={3}>
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 9,
+                        marginRight: 10,
+                        marginLeft: 9
+                      }}
+                    >
+                      Tier<br/>Kategori
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 42,
+                        marginLeft: 9
+                      }}
+                    >
+                      Tier Kategori
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={tierCustom}
+                    onChange={handleTierCustomChange}
+                    options={productTiersCustomData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Tier" />}
+                  />
+                </FormControl>
+              </Box>
+
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 9,
+                        marginRight: 9,
+                        marginLeft: 9
+                      }}
+                    >
+                      Kategori<br/>Produk
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 15,
+                        marginLeft: 9
+                      }}
+                    >
+                      Kategori Produk
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={tierCategoryCustom}
+                    onChange={handleTierCategoryCustomChange}
+                    options={productTierCategoriesCustomData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Category" />}
+                  />
+                </FormControl>
+              </Box>
+              
+              { tierCategoryCustomData &&
+                <Grid container>
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      { isMobile
+                        ? <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              marginTop: 9,
+                              marginBottom: 16,
+                              marginRight: 25,
+                              marginLeft: 9
+                            }}
+                          >
+                            Tanggal<br/>Awal
+                          </Typography>
+                        : <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              fontWeight: 'bold',
+                              marginTop: 22,
+                              marginBottom: 30,
+                              marginRight: 97,
+                              marginLeft: 9
+                            }}
+                          >
+                            Tanggal
+                          </Typography>
+                      }
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="Start Date"
+                          value={tierCategoryCustomStartDate}
+                          style={{marginTop: 10, marginRight: 10, width: 150}}
+                          onChange={handleTierCategoryCustomStartDateChange}
+                        />
+                        { !isMobile && 
+                          <KeyboardDatePicker
+                            variant="inline"
+                            format="YYYY-MM-DD"
+                            label="End Date"
+                            value={tierCategoryCustomEndDate}
+                            style={{marginTop: 10, width: 150}}
+                            onChange={handleTierCategoryCustomEndDateChange}
+                          />
+                        }
+                      </MuiPickersUtilsProvider>
+                    </Box>
+                  </Grid>
+                  { isMobile && 
+                    <Grid item xs={12} md={8}>
+                      <Box className={classes.inline}>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            marginTop: 9,
+                            marginBottom: 16,
+                            marginRight: 25,
+                            marginLeft: 9
+                          }}
+                        >
+                          Tanggal<br/>Akhir
+                        </Typography>
+                        <MuiPickersUtilsProvider utils={MomentUtils}>
+                          <KeyboardDatePicker
+                            variant="inline"
+                            format="YYYY-MM-DD"
+                            label="End Date"
+                            value={tierCategoryCustomEndDate}
+                            style={{marginTop: 10, width: 150}}
+                            onChange={handleTierCategoryCustomEndDateChange}
+                          />
+                        </MuiPickersUtilsProvider>
+                      </Box>
+                    </Grid>
+                  }
+                  { totalTierCategoryCustomData && 
+                    <Grid item xs={12} md={4} container justifyContent="flex-end">
+                      <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            textAlign: 'right',
+                            marginTop: isMobile ? 9 : 15,
+                            marginBottom: 9,
+                            marginRight: 9,
+                            marginLeft: 9
+                          }}
+                        >
+                          Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierCategoryCustomData.value)}
+                          <br/>
+                          Total Jumlah: {Intl.NumberFormat('id').format(totalTierCategoryCustomData.quantity)}
+                        </Typography>
+                    </Grid>
+                  }
+                </Grid>
+              }
+              
+              <Grid container>
+                <Grid item xs={12} md={4}>
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      margin: 9
+                    }}
+                  >
+                    Grafik Penjualan Custom (Tier & Kategori)
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={8} container justifyContent="flex-end">
+                  { tierCategoryCustomData
+                    ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                        <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 16,
+                            marginRight: 8,
+                            marginTop: 3,
+                          }}
+                        >
+                          Penjualan
+                        </Typography>
+                      </Box>
+                    : <Box className={classes.inline} style={{height: 27}}/>
+                  }
+                </Grid>
+              </Grid>
+
+              { tierCategoryCustomData
+                ? <MultiTypeChart line={tierCategoryCustomData.line} chart={tierCategoryCustomData.chart} width={width}/>
+                : <EmptyChart width={width}/>
+              }
+
+              <Grid item xs={12}>
+                { tierCategoryCustomDataLoading &&
                   <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                     <CircularProgress size={25} />
                     <Typography 
