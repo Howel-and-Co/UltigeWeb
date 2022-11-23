@@ -1,5 +1,11 @@
 const navButtons = [
   {
+    label: "SOP",
+    path: "/sop",
+    includeRole: [],
+    excludeRole: []
+  },
+  {
     label: "Analytic",
     path: "/analytic",
     includeRole: [],
