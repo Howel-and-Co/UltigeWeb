@@ -37,12 +37,12 @@ const Layout = props => {
         if (router.pathname == dataItem.path) {
           if ((dataItem.includeRole.length != 0 || dataItem.excludeRole.length != 0) && ((dataItem.excludeRole.length == 0 && dataItem.includeRole.includes(Cookies.get("role")) == false) || (dataItem.includeRole.length == 0 && dataItem.excludeRole.includes(Cookies.get("role")) == true))) {
             setAuthorized(false);
-            
+
             if (Cookies.get("role") != "SUPER"
               && Cookies.get("role") != "MERCHANDISE"
               && Cookies.get("role") != "ADM MERCHANDISE"
               && Cookies.get("role") != "GA MKT") {
-              Router.push("/product");
+              Router.push("/sop");
             }
             else {
               Router.push("/analytic");

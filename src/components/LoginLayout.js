@@ -24,8 +24,11 @@ const LoginLayout = props => {
 
   useEffect(() => {
     if (checkToken()) {
-      if (Cookies.get("role") == "SALES CS") {
-        Router.push("/product");
+      if (Cookies.get("role") != "SUPER"
+        && Cookies.get("role") != "MERCHANDISE"
+        && Cookies.get("role") != "ADM MERCHANDISE"
+        && Cookies.get("role") != "GA MKT") {
+        Router.push("/sop");
       }
       else {
         Router.push("/analytic");
