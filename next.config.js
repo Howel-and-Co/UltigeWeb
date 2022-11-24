@@ -10,6 +10,12 @@ module.exports = phase => {
                     {
                         test: /\.md$/,
                         use: 'raw-loader'
+                    },
+                    { 
+                        test: /pdf\.worker\.min\.js$/, 
+                        loader: 'url-loader', 
+                        options: { name: 'pdfWorker.[ext]', limit: 1000, }, 
+                        type: 'javascript/auto'
                     }
                 )
           
