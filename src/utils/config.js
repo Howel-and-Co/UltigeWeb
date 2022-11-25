@@ -10,8 +10,11 @@ export const setToken = async (token, role, username, password) => {
     Cookies.set("username", username, { expires: 1 / 8 });
     Cookies.set("password", password, { expires: 1 / 8 });
 
-    if (role == "SALES CS") {
-      window.location.href = "/product";
+    if (role != "SUPER"
+      && role != "MERCHANDISE"
+      && role != "ADM MERCHANDISE"
+      && role != "GA MKT") {
+      window.location.href = "/sop";
     }
     else {
       window.location.href = "/analytic";
