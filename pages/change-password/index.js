@@ -72,9 +72,6 @@ const ChangePassword = () => {
         const result = await axios({
             method: 'post',
             url: 'https://api.ultige.com/ultigeapi/web/password/changepassword',
-            headers: {
-                "Client-ID": '8572d3838a0e2b9b4de63e6c72e3ab5d'
-            },
             data: {
                 username: newUsername, 
                 oldPassword: sha256(values.oldPassword),
@@ -93,9 +90,6 @@ const ChangePassword = () => {
         const result2 = await axios({
             method: 'post',
             url: 'https://api.ultige.com/ultigeapi/authenticate',
-            headers: {
-                "Client-ID": '8572d3838a0e2b9b4de63e6c72e3ab5d'
-            },
             data: {
                 username: newUsername, 
                 password: sha256(values.confirmNewPassword)
