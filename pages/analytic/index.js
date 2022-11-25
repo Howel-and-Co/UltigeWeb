@@ -3453,7 +3453,16 @@ const Home = () => {
 
     const fetchModelCategorySalesData = async (endDate, model, category) => {
       setModelCategoryDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelcategorysales?endDate=${endDate}&model=${model}&category=${category}`);
+
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getmodelcategorysales_v2',
+        data: {
+          endDate: endDate,
+          model: model, 
+          category: category
+        }
+      });
 
       let processedData;
       processedData = result.data;
@@ -3878,7 +3887,17 @@ const Home = () => {
 
     const fetchModelCategorySalesCustomData = async (startDate, endDate, modelCustom, categoryCustom) => {
       setModelCategoryCustomDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelcategorysales2?startDate=${startDate}&endDate=${endDate}&model=${modelCustom}&category=${categoryCustom}`);
+
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getmodelcategorysales2_v2',
+        data: {
+          startDate: startDate, 
+          endDate: endDate,
+          model: modelCustom, 
+          category: categoryCustom
+        }
+      });
 
       let processedData;
       processedData = result.data;
@@ -4341,10 +4360,21 @@ const Home = () => {
 
     const fetchTierCategorySalesCustomData = async (startDate, endDate, tierCustom, tierCategoryCustom) => {
       setTierCategoryCustomDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductcategorysales2?startDate=${startDate}&endDate=${endDate}&tier=${tierCustom}&category=${tierCategoryCustom}`);
+
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getproductcategorysales2_v2',
+        data: {
+          startDate: startDate, 
+          endDate: endDate,
+          tier: tierCustom, 
+          category: tierCategoryCustom
+        }
+      });
 
       let processedData;
       processedData = result.data;
+
 
       let newData;
 
