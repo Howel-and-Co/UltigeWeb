@@ -124,6 +124,21 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+const CustomMultipleTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
+        <p>{`${payload[0].payload.dataLabel}`}</p>
+        {payload.map((item, index) => (
+          <p style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : Rp ${Intl.NumberFormat('id').format(item.payload[item.name])} , ${Intl.NumberFormat('id').format(item.payload[item.name + " QTY"])} pcs`}</p>
+        ))}
+      </Card>
+    );
+  }
+
+  return null;
+};
+
 const CustomSalesRow = ({ row }) => {
   const [open, setOpen] = React.useState(false);
 
@@ -850,7 +865,7 @@ const MultiCategoryChart = (props) => {
       <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
       <YAxis hide={true}/>
       <Tooltip 
-        content={<CustomTooltip />}
+        content={<CustomMultipleTooltip />}
       />
       {props.line && props.line.map((lineItem)=> (
         <>
@@ -1351,9 +1366,11 @@ const Home = () => {
             line.forEach(function (lineItem) {
               if (lineItem.column in dataItem) {
                 object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
               }
               else {
                 object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
               }
             });
 
@@ -1363,7 +1380,8 @@ const Home = () => {
 
         if (dateExist == false) {
           line.forEach(function (lineItem) {
-            object += `, "${lineItem.column}": 0`;
+            oobject += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
           });
         }
 
@@ -1445,9 +1463,11 @@ const Home = () => {
             line.forEach(function (lineItem) {
               if (lineItem.column in dataItem) {
                 object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
               }
               else {
                 object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
               }
             });
 
@@ -1458,6 +1478,7 @@ const Home = () => {
         if (dateExist == false) {
           line.forEach(function (lineItem) {
             object += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
           });
         }
 
@@ -1542,9 +1563,11 @@ const Home = () => {
             line.forEach(function (lineItem) {
               if (lineItem.column in dataItem) {
                 object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
               }
               else {
                 object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
               }
             });
 
@@ -1555,6 +1578,7 @@ const Home = () => {
         if (dateExist == false) {
           line.forEach(function (lineItem) {
             object += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
           });
         }
 
@@ -1627,9 +1651,11 @@ const Home = () => {
             line.forEach(function (lineItem) {
               if (lineItem.column in dataItem) {
                 object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
               }
               else {
                 object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
               }
             });
 
@@ -1640,6 +1666,7 @@ const Home = () => {
         if (hourExist == false) {
           line.forEach(function (lineItem) {
             object += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
           });
         }
 
@@ -7026,7 +7053,8 @@ const Home = () => {
               </Grid>
             </Paper>
           </Grid>
-
+              
+          {/*
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
               <Box className={classes.inline}>
@@ -7271,6 +7299,7 @@ const Home = () => {
               </Grid>
             </Paper>
           </Grid>
+          */}
 
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
