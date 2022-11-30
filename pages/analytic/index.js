@@ -61,6 +61,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import { checkToken } from "../../src/utils/config";
+import { DataGrid } from '@mui/x-data-grid';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -829,6 +830,48 @@ const MultiChannelChart = (props) => {
   );
 }
 
+const MultiCategoryChart = (props) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  
+  return (
+    <LineChart
+      width={props.width - 40}
+      height={320}
+      data={props.chart}
+      margin={{
+        top: 15,
+        right: 40,
+        bottom: 5,
+        left: isMobile ? 30 : 35
+      }}
+    >
+      <CartesianGrid strokeDasharray="4 4" />
+      <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
+      <YAxis hide={true}/>
+      <Tooltip 
+        content={<CustomTooltip />}
+      />
+      {props.line && props.line.map((lineItem)=> (
+        <>
+          <Line
+            type="linear"
+            dataKey={lineItem.column}
+            stroke={randomColorHSL(lineItem.column)}
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 5 }}
+          />
+        </>
+      ))}
+    </LineChart>
+  );
+}
+
+const columns = [
+  { field: 'tierCategory', headerName: 'Kategori Produk', flex: 1, minWidth: 200 },
+];
+
 const Home = () => {
   const classes = useStyles();
   const theme = useTheme();
@@ -938,6 +981,19 @@ const Home = () => {
   const [tierCustomFetchActive, setTierCustomFetchActive] = React.useState(true);
   const [tierCategoryCustomFetchActive, setTierCategoryCustomFetchActive] = React.useState(false);
 
+  const [tierMultipleCustom, setTierMultipleCustom] = React.useState('');
+  const [tierMultipleCategoryCustom, setTierMultipleCategoryCustom] = React.useState([]);
+  const [tierMultipleCategoryLiveCustom, setTierMultipleCategoryLiveCustom] = React.useState([]);
+  const [productTiersMultipleCustomData, setProductTiersMultipleCustomData] = useState([]);
+  const [productTierMultipleCategoriesCustomData, setProductTierMultipleCategoriesCustomData] = useState();
+  const [productTierMultipleCategoriesCustomCacheData, setProductTierMultipleCategoriesCustomCacheData] = useState();
+  const [tierMultipleCategoryCustomData, setTierMultipleCategoryCustomData] = useState();
+  const [tierMultipleCategoryCustomDataLoading, setTierMultipleCategoryCustomDataLoading] = React.useState(false);
+  const [totalTierMultipleCategoryCustomData, setTotalTierMultipleCategoryCustomData] = React.useState();
+  
+  const [tierMultipleCustomFetchActive, setTierMultipleCustomFetchActive] = React.useState(true);
+  const [tierMultipleCategoryCustomFetchActive, setTierMultipleCategoryCustomFetchActive] = React.useState(false);
+
   const [valueStockData, setValueStockData] = useState();
   const [valueStockDataLoading, setValueStockDataLoading] = useState(false);
 
@@ -1008,6 +1064,13 @@ const Home = () => {
   const handleTierCategoryCustomChange = (event, newValue) => {
     if (newValue !== null) {
       setTierCategoryCustom(newValue);
+    }
+  };
+
+  const handleTierMultipleCustomChange = (event, newValue) => {
+    if (newValue !== null) {
+      setTierMultipleCustom(newValue);
+      setTierMultipleCategoryCustomFetchActive(true);
     }
   };
 
@@ -1088,6 +1151,8 @@ const Home = () => {
   const [modelCategoryCustomEndDate, setModelCategoryCustomEndDate] = React.useState(moment());
   const [tierCategoryCustomStartDate, setTierCategoryCustomStartDate] = React.useState(moment());
   const [tierCategoryCustomEndDate, setTierCategoryCustomEndDate] = React.useState(moment());
+  const [tierMultipleCategoryCustomStartDate, setTierMultipleCategoryCustomStartDate] = React.useState(moment());
+  const [tierMultipleCategoryCustomEndDate, setTierMultipleCategoryCustomEndDate] = React.useState(moment());
 
   const handleValueStockBackDate = (date) => {
     setValueStockBackDate(date);
@@ -1111,6 +1176,14 @@ const Home = () => {
 
   const handleTierCategoryCustomEndDateChange = (date) => {
     setTierCategoryCustomEndDate(date);
+  };
+
+  const handleTierMultipleCategoryCustomStartDateChange = (date) => {
+    setTierMultipleCategoryCustomStartDate(date);
+  };
+
+  const handleTierMultipleCategoryCustomEndDateChange = (date) => {
+    setTierMultipleCategoryCustomEndDate(date);
   };
 
   const vsLabel = () => {
@@ -1201,6 +1274,445 @@ const Home = () => {
 
   const handleSegmentationTabChange = (event, newValue) => {
     setSegmentationTab(newValue);
+  };
+
+  const [selectionModel, setSelectionModel] = React.useState([]);
+
+  const handleSelection = (newSelection) => {
+    const selectedRowsData = newSelection.map((id) => productTierMultipleCategoriesCustomData.find((row) => row.id === id));
+    let categories = [];
+    for (const row of selectedRowsData)
+    {
+      categories.push(row.tierCategory);
+    }
+
+    setSelectionModel(newSelection);
+    setTierMultipleCategoryCustom(categories);
+  }
+
+  const handleTierMultipleCategoryData = () => {
+    const processMonthTierMultipleCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+      const moment = require('moment');
+      moment.locale('id'); 
+
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let monthCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        currentDate.startOf('month');
+        monthCounter++; 
+        let object = ``;
+
+        if (dateDifference > 1095 && monthCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 730 && dateDifference <= 1095 && monthCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 365 && dateDifference <= 730 && monthCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('MMM') == 'Jan')
+            object += `{"label": "${moment(currentDate).format('MMM YYYY')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('MMM YYYY')}"`;
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
+
+          if (moment(date).isSame(currentDate) == true) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'months');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+    
+      return result;
+    };
+
+    const processWeekTierMultipleCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+      const moment = require('moment');
+      moment.locale('id'); 
+
+      let momentStartDate = moment(startDate, "YYYY-MM-DD").startOf('isoWeek');
+      let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
+
+      let currentDate = momentStartDate;
+      let weekCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        weekCounter++;
+        let object = ``;
+
+        if (dateDifference > 140 && weekCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 100 && dateDifference <= 140 && weekCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 60 && dateDifference <= 100 && weekCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          object += `{"label": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let week = parseInt(dataItem.Date.substring(4, 6));
+
+          if (week == currentDate.isoWeek()) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'weeks');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+    
+      return result;
+    };
+
+    const processDayTierMultipleCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+      const moment = require('moment');
+      moment.locale('id'); 
+
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let dateCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        dateCounter++; 
+        let object = ``;
+
+        if (dateDifference > 45 && dateCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 30 && dateDifference <= 45 && dateCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 15 && dateDifference <= 30 && dateCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('Do') == '1')
+            object += `{"label": "${moment(currentDate).format('Do MMM')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('Do')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('Do MMM')}"`;
+
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let date = moment(dataItem.Date, "DD/MM/YYYY");
+
+          if (moment(date).isSame(currentDate) == true) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'days');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+    
+      return result;
+    };
+
+    const processHourTierMultipleCategorySaleCustomData = (processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      let hourCounter = 0;
+      let lastHour = 23;
+
+      while (hourCounter <= 23) { 
+        let object = ``;
+
+        if (hourCounter % 6 == 0) {
+          if (parseInt(hourCounter / 10) > 0)
+            object += `{"label": "${hourCounter}:00"`;
+          else
+            object += `{"label": "0${hourCounter}:00"`;
+        }
+        else {
+          object += `{"label": ""`;
+        }
+
+        if (parseInt(hourCounter / 10) > 0)
+          object += `, "dataLabel": "${hourCounter}:00"`;
+        else
+          object += `, "dataLabel": "0${hourCounter}:00"`;
+
+        let hourExist = false;
+      
+        data.forEach(function (dataItem) {
+          let hour = parseInt(dataItem.Date);
+
+          if (hourCounter == hour) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            hourExist = true;
+          }
+        });
+
+        if (hourExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+            
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        hourCounter++;
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+
+      return result;
+    };
+
+    const fetchTierMultipleCategorySalesCustomData = async (startDate, endDate, tierMultipleCustom, tierMultipleCategoryCustom) => {
+      setTierMultipleCategoryCustomDataLoading(true);
+
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getproductmultiplecategorysales',
+        data: {
+          startDate: startDate, 
+          endDate: endDate,
+          tier: tierMultipleCustom, 
+          categories: tierMultipleCategoryCustom
+        }
+      });
+
+      let processedData;
+      processedData = result.data;
+
+
+      let newData;
+
+      if (processedData.DateDifference == 0) {
+        newData = processHourTierMultipleCategorySaleCustomData(processedData);
+      }
+      else if (processedData.DateDifference > 0 && processedData.DateDifference <= 60) {
+        newData = processDayTierMultipleCategorySaleCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference > 60 && processedData.DateDifference < 180) {
+        newData = processWeekTierMultipleCategorySaleCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference >= 180) {
+        newData = processMonthTierMultipleCategorySaleCustomData(startDate, endDate, processedData);
+      }
+
+      setTierMultipleCategoryCustomData(newData);
+      setTierMultipleCategoryLiveCustom(tierMultipleCategoryCustom);
+      setTierMultipleCategoryCustomDataLoading(false);
+    };
+
+    if (checkToken() && tierMultipleCategoryCustom) {
+      const moment = require('moment-timezone');
+
+      let startDate;
+      startDate = moment(tierMultipleCategoryCustomStartDate).format("YYYY-MM-DD");
+
+      let endDate;
+      endDate = moment(tierMultipleCategoryCustomEndDate).format("YYYY-MM-DD");
+
+      fetchTierMultipleCategorySalesCustomData(startDate, endDate, tierMultipleCustom, tierMultipleCategoryCustom);
+    }
   };
 
   useEffect(() => {
@@ -4027,7 +4539,7 @@ const Home = () => {
         map.set(key, value);
       }
 
-      map.set(model, processedData.Data[0] ? ['ALL', ...processedData.Data] : ['TIDAK ADA KATEGORI']);
+      map.set(tier, processedData.Data[0] ? ['ALL', ...processedData.Data] : ['TIDAK ADA KATEGORI']);
 
       //console.log(map);
 
@@ -4408,6 +4920,76 @@ const Home = () => {
       fetchTierCategorySalesCustomData(startDate, endDate, tierCustom, tierCategoryCustom);
     }
   }, [tierCustom, tierCategoryCustom, tierCategoryCustomStartDate, tierCategoryCustomEndDate]);
+
+  useEffect(() => {
+    const fetchProductTiersMultipleCustomData = async () => {
+      setProductTiersMultipleCustomData([1, 2, 3]);
+      setTierMultipleCustom(1);
+
+      let map = new Map();
+
+      let object = new Object();
+      object.Data = map;
+
+      setProductTierMultipleCategoriesCustomCacheData(object);
+
+      setTierMultipleCategoryCustomFetchActive(true);
+    };
+
+    if (tierMultipleCustomFetchActive == true && checkToken()) {
+      fetchProductTiersMultipleCustomData();
+      
+      setTierMultipleCustomFetchActive(false);
+    }
+  }, [tierMultipleCustomFetchActive]);
+
+  useEffect(() => {
+    const fetchProductTierMultipleCategoriesCustomData = async (tier) => {
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproducttiercategories?tier=${tier}`);
+
+      let processedData;
+      processedData = result.data;
+      
+      let categories = [];
+      for (let i = 0; i < processedData.Data.length; i++)
+      {
+        let category = {
+          "id": i,
+          "tierCategory": processedData.Data[i]
+        }
+        categories.push(category);
+      }
+
+      setProductTierMultipleCategoriesCustomData(categories);
+      
+      let map = new Map();
+
+      for (let [key, value] of productTierMultipleCategoriesCustomCacheData.Data) {
+        map.set(key, value);
+      }
+
+      map.set(tier, categories);
+
+      let object = new Object();
+      object.Data = map;
+
+      setProductTierMultipleCategoriesCustomCacheData(object);
+    };
+
+    if (tierMultipleCategoryCustomFetchActive == true && checkToken()) {
+      setSelectionModel([]);
+      setTierMultipleCategoryCustom([]);
+
+      if (productTierMultipleCategoriesCustomCacheData.Data.has(tierMultipleCustom) == false) {
+        fetchProductTierMultipleCategoriesCustomData(tierMultipleCustom);
+      }
+      else {
+        setProductTierMultipleCategoriesCustomData(productTierMultipleCategoriesCustomCacheData.Data.get(tierMultipleCustom));
+      } 
+      
+      setTierMultipleCategoryCustomFetchActive(false);
+    }
+  }, [tierMultipleCategoryCustomFetchActive]);
 
   useEffect(() => {
     const fetchModelStockData = async () => {
@@ -6673,6 +7255,259 @@ const Home = () => {
 
               <Grid item xs={12}>
                 { tierCategoryCustomDataLoading &&
+                  <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                    <CircularProgress size={25} />
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        marginLeft: 12
+                      }}
+                    >
+                      Loading
+                    </Typography>
+                  </Box>
+                }
+              </Grid>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Paper className={classes.paper} elevation={3}>
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 9,
+                        marginRight: 10,
+                        marginLeft: 9
+                      }}
+                    >
+                      Tier<br/>Kategori
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 42,
+                        marginLeft: 9
+                      }}
+                    >
+                      Tier Kategori
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={tierMultipleCustom}
+                    onChange={handleTierMultipleCustomChange}
+                    options={productTiersMultipleCustomData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Tier" />}
+                  />
+                </FormControl>
+              </Box>
+
+              { productTierMultipleCategoriesCustomData && 
+                <Grid item xs={12} style={{ marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, height: 371, maxWidth: isMobile ? 377 : 457 }}>
+                  <DataGrid
+                    rows={productTierMultipleCategoriesCustomData}
+                    columns={columns}
+                    pageSize={100}
+                    rowsPerPageOptions={[100]}
+                    onSelectionModelChange={handleSelection}
+                    selectionModel={selectionModel}
+                    checkboxSelection
+                    sx={{
+                      "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
+                        display: "none"
+                      }
+                    }}
+                  />
+                </Grid>
+              }
+              
+              <Grid container>
+                <Grid item xs={12} md={8}>
+                  <Box className={classes.inline}>
+                    { isMobile
+                      ? <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            marginTop: 9,
+                            marginBottom: 16,
+                            marginRight: 25,
+                            marginLeft: 9
+                          }}
+                        >
+                          Tanggal<br/>Awal
+                        </Typography>
+                      : <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            marginTop: 22,
+                            marginBottom: 30,
+                            marginRight: 97,
+                            marginLeft: 9
+                          }}
+                        >
+                          Tanggal
+                        </Typography>
+                    }
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardDatePicker
+                        variant="inline"
+                        format="YYYY-MM-DD"
+                        label="Start Date"
+                        value={tierMultipleCategoryCustomStartDate}
+                        style={{marginTop: 10, marginRight: 10, width: 150}}
+                        onChange={handleTierMultipleCategoryCustomStartDateChange}
+                      />
+                      { !isMobile && 
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={tierMultipleCategoryCustomEndDate}
+                          style={{marginTop: 10, width: 150}}
+                          onChange={handleTierMultipleCategoryCustomEndDateChange}
+                        />
+                      }
+                    </MuiPickersUtilsProvider>
+                    { !isMobile && 
+                      <Button 
+                        variant="outlined"
+                        style={{
+                          borderRadius: 4,
+                          textTransform: "none",
+                          marginLeft: 10,
+                          marginTop: 10,
+                          width: 100,
+                          height: 50
+                        }}
+                        disableRipple
+                        onClick={handleTierMultipleCategoryData}
+                      >
+                        Apply
+                      </Button>
+                    }
+                  </Box>
+                </Grid>
+                { isMobile && 
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Akhir
+                      </Typography>
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={tierMultipleCategoryCustomEndDate}
+                          style={{marginTop: 10, width: 150}}
+                          onChange={handleTierMultipleCategoryCustomEndDateChange}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Box>
+                    <Button 
+                      variant="outlined"
+                      style={{
+                        borderRadius: 4,
+                        textTransform: "none",
+                        marginLeft: 10,
+                        marginBottom: 16,
+                        width: 80,
+                        height: 40
+                      }}
+                      disableRipple
+                      onClick={handleTierMultipleCategoryData}
+                    >
+                      Apply
+                    </Button>
+                  </Grid>
+                }
+                { totalTierMultipleCategoryCustomData && 
+                  <Grid item xs={12} md={4} container justifyContent="flex-end">
+                    <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                          textAlign: 'right',
+                          marginTop: isMobile ? 9 : 15,
+                          marginBottom: 9,
+                          marginRight: 9,
+                          marginLeft: 9
+                        }}
+                      >
+                        Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierMultipleCategoryCustomData.value)}
+                        <br/>
+                        Total Jumlah: {Intl.NumberFormat('id').format(totalTierMultipleCategoryCustomData.quantity)}
+                      </Typography>
+                  </Grid>
+                }
+              </Grid>
+              
+              <Grid container>
+                <Grid item xs={12} md={4}>
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      margin: 9
+                    }}
+                  >
+                    Grafik Penjualan Custom (Tier & Kategori)
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={8} container justifyContent="flex-end">
+                  { tierMultipleCategoryLiveCustom && tierMultipleCategoryLiveCustom.map((value)=> (
+                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                      <FiberManualRecordIcon style={{ color: randomColorHSL(value), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          marginRight: 8,
+                          marginTop: 3,
+                        }}
+                      >
+                        {value}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Grid>
+              </Grid>
+
+              { tierMultipleCategoryCustomData
+                ? <MultiCategoryChart line={tierMultipleCategoryCustomData.line} chart={tierMultipleCategoryCustomData.chart} width={width}/>
+                : <EmptyChart width={width}/>
+              }
+
+              <Grid item xs={12}>
+                { tierMultipleCategoryCustomDataLoading &&
                   <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                     <CircularProgress size={25} />
                     <Typography 
