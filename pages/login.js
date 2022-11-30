@@ -1,6 +1,6 @@
 import Head from "next/head";
 import LoginLayout from "../src/components/LoginLayout";
-import axios from 'axios';
+import axios from '../src/utils/axios';
 import {
   Grid,
   Typography,

@@ -1,6 +1,6 @@
 {
   "name": "ultige-web",
-  "version": "2.11.6",
+  "version": "2.11.7",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,14 +10,15 @@
   },
   "dependencies": {
     "@date-io/moment": "1.x",
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/pickers": "^3.3.10",
     "@mui/lab": "^5.0.0-alpha.49",
-    "@mui/material": "^5.0.2",
+    "@mui/material": "^5.10.16",
+    "@mui/x-data-grid": "^5.17.13",
     "@syncfusion/ej2-react-grids": "^19.4.52",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
