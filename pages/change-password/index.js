@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Layout from "../../src/components/Layout";
-import axios from 'axios';
+import axios from '../../src/utils/axios';
 import {
   Grid,
   Typography,
@@ -51,10 +51,11 @@ const ChangePassword = () => {
   const ChangePassword = async e => {
     setValues({ ...values, loading: !values.loading, invalid: false, invalidMessage: "" });
     const newUsername = Cookies.get("username");
+    const oldPassword = Cookies.get("password");
     var sha256 = require('js-sha256');
     
     try {
-        if (sha256(values.oldPassword).localeCompare(Cookies.get("password"))) {
+        if (sha256(values.oldPassword).localeCompare(oldPassword)) {
             setValues({ ...values, invalid: true, invalidMessage: "Password lama tidak sesuai", loading: false });
             return;
         }
@@ -69,14 +70,16 @@ const ChangePassword = () => {
             return;
         }
 
+        const data = {
+            username: newUsername, 
+            oldPassword: sha256(values.oldPassword),
+            newPassword: sha256(values.confirmNewPassword)
+        }
+
         const result = await axios({
             method: 'post',
             url: 'https://api.ultige.com/ultigeapi/web/password/changepassword',
-            data: {
-                username: newUsername, 
-                oldPassword: sha256(values.oldPassword),
-                newPassword: sha256(values.confirmNewPassword)
-            }
+            data: data
         });
 
         let processedData;
