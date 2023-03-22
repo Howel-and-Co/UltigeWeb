@@ -1,5 +1,4 @@
 import Cookies from "js-cookie";
-import Router from "next/router";
 
 // set token
 export const setToken = async (token, role, username, password) => {
@@ -15,10 +14,10 @@ export const setToken = async (token, role, username, password) => {
       && role != "MERCHANDISE"
       && role != "ADM MERCHANDISE"
       && role != "GA MKT") {
-      Router.push("/sop");
+        window.location.href ="/sop";
     }
     else {
-      Router.push("/analytic");
+      window.location.href = "/analytic";
     }
   } catch (error) {
     console.log(error);
@@ -30,7 +29,7 @@ export const redirectPassword = async (username, password) => {
   try {
     Cookies.set("username", username, { expires: 1 / 8 });
     Cookies.set("password", password, { expires: 1 / 8 });
-    Router.push("/change-password");
+    window.location.href = "/change-password";
   } catch (error) {
     console.log(error);
   }

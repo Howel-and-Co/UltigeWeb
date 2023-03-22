@@ -37,6 +37,7 @@ import { Document, Page as PdfPage, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `/js/pdf.worker.min.js`;
 
 import CloseIcon from '@material-ui/icons/Close';
+import { checkToken } from "../../src/utils/config";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="right" ref={ref} {...props} />;
@@ -184,7 +185,7 @@ const SOP = () => {
       setDataLoading(false);
     };
 
-    if (fetchActive == true) {
+    if (fetchActive == true && checkToken()) {
       fetchDocumentData();
       setFetchActive(false);
     }
@@ -204,7 +205,7 @@ const SOP = () => {
       handleClickOpen();
     };
 
-    if (fileFetchActive == true) {
+    if (fileFetchActive == true && checkToken()) {
       fetchDocumentFile(documentPath);
       setFileFetchActive(false);
     }
