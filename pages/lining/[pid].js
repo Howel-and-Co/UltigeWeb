@@ -103,7 +103,7 @@ const Lining = () => {
     const fetchLiningImagesData = async (liningProcessID) => {
       setLiningImagesLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/lining/getliningimages?liningProcessID=${liningProcessID}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/lining/getliningimages?liningProcessID=${liningProcessID}`);
 
       let processedData;
       processedData = result.data;
