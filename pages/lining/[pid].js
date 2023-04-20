@@ -108,7 +108,7 @@ const Lining = () => {
       let processedData;
       processedData = result.data;
 
-      console.log(processedData.Data.PhotoURLs);
+      //console.log(processedData.Data.PhotoURLs);
 
       setLiningImages(processedData.Data.PhotoURLs);
       

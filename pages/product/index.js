@@ -218,7 +218,7 @@ const Product = () => {
       });
 
       processedData.Data = newData;
-      console.log(newData);
+      //console.log(newData);
       
       setProductData(processedData);
       setDataLoading(false);
