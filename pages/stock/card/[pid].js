@@ -111,7 +111,7 @@ const StockCard = () => {
     const fetchStockName = async (stockID) => {
       setDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstockname?stockID=${stockID}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstockname?stockID=${stockID}`);
 
       let processedData;
       processedData = result.data;
@@ -131,7 +131,7 @@ const StockCard = () => {
     const fetchStockCardData = async (stockID, startDate, endDate) => {
       setDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstockcard?stockID=${stockID}&startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstockcard?stockID=${stockID}&startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
