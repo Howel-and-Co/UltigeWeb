@@ -237,7 +237,7 @@ const Stock = () => {
         statusIndex = 2;
       }
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstocks?status=${statusIndex}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstocks?status=${statusIndex}`);
 
       let processedData;
       processedData = result.data;
@@ -302,7 +302,7 @@ const Stock = () => {
   useEffect(() => {
     const fetchStockRelatedProductsData = async (stockID) => {
       setRelatedDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstockrelatedproducts?stockID=${stockID}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstockrelatedproducts?stockID=${stockID}`);
 
       let processedData;
       processedData = result.data;

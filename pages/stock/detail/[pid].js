@@ -118,7 +118,7 @@ const StockDetail = () => {
     const fetchStockDetailData = async (stockID) => {
       setDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstock?stockID=${stockID}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstock?stockID=${stockID}`);
 
       let processedData;
       processedData = result.data;

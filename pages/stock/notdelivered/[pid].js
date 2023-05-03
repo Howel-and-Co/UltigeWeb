@@ -101,7 +101,7 @@ const StockNotDelivered = () => {
     const fetchStockName = async (stockID) => {
       setDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstockname?stockID=${stockID}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstockname?stockID=${stockID}`);
 
       let processedData;
       processedData = result.data;
@@ -114,7 +114,7 @@ const StockNotDelivered = () => {
     const fetchStockNotDeliveredData = async (stockID) => {
       setDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstocknotdelivered?stockID=${stockID}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstocknotdelivered?stockID=${stockID}`);
 
       let processedData;
       processedData = result.data;
