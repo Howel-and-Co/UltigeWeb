@@ -1,13 +1,14 @@
 import Cookies from "js-cookie";
 
 // set token
-export const setToken = async (token, role, username, password) => {
+export const setToken = async (token, userid, role, username, password) => {
   try {
     let authToken = "";
     authToken = token ? `Bearer ${token}` : "";
     Cookies.set("token", authToken, { expires: 1 / 8 });
+    Cookies.set("userid", userid, { expires: 1 / 8 });
     Cookies.set("role", role, { expires: 1 / 8 });
-    Cookies.set("username", username, { expires: 1 / 8 });
+    Cookies.set("username", username.toUpperCase(), { expires: 1 / 8 });
     Cookies.set("password", password, { expires: 1 / 8 });
 
     if (role != "SUPER"
@@ -27,7 +28,7 @@ export const setToken = async (token, role, username, password) => {
 // set token
 export const redirectPassword = async (username, password) => {
   try {
-    Cookies.set("username", username, { expires: 1 / 8 });
+    Cookies.set("username", username.toUpperCase(), { expires: 1 / 8 });
     Cookies.set("password", password, { expires: 1 / 8 });
     window.location.href = "/change-password";
   } catch (error) {
