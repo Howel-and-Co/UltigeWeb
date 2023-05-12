@@ -55,7 +55,7 @@ const Login = () => {
             redirectPassword(values.username, sha256(values.password));
         }
         else {
-            setToken(processedData.token, processedData.role, values.username, sha256(values.password));
+            setToken(processedData.token, processedData.userID, processedData.role, values.username, sha256(values.password));
         }
     } catch (error) {
         console.log(error);
