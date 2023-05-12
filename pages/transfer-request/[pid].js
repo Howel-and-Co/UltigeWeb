@@ -141,6 +141,30 @@ const TransferRequestDetail = () => {
     setApprovalReason(e.target.value);
   }
 
+  const StatusColor = (status) => {
+    if (status == 'PENDING') {
+        return '#F6AF43'
+    }
+    else if (status == 'REJECTED') {
+        return '#F14343'
+    }
+    else if (status == 'APPROVED') {
+        return '#3C8F4A'
+    }
+    else if (status == 'CANCELLED') {
+        return '#FC6F03'
+    }
+    else if (status == 'PAID') {
+        return '#536FB7'
+    }
+    else if (status == 'HALF PAID') {
+        return '#536FB7'
+    }
+    else {
+        return '#00000'
+    }
+  };
+
   useEffect(() => {
     const fetchTransferRequestDetailData = async (transferRequestID) => {
         setDataLoading(true);
@@ -174,8 +198,8 @@ const TransferRequestDetail = () => {
         setDestinationBank(processedData.Data.TransferRequestDetail.DestinationBank);
         setDestinationBankBranch(processedData.Data.TransferRequestDetail.DestinationBankBranch);
         setBusinessEntity(processedData.Data.TransferRequestDetail.BusinessEntity);
-        setTaxable(processedData.Data.TransferRequestDetail.Taxable == 1 ? true : false);
-        setPKP(processedData.Data.TransferRequestDetail.PKP == 1 ? true : false);
+        setTaxable(processedData.Data.TransferRequestDetail.Taxable);
+        setPKP(processedData.Data.TransferRequestDetail.PKP);
         setContactName(processedData.Data.TransferRequestDetail.ContactName);
         setContactPhoneNumber(processedData.Data.TransferRequestDetail.ContactPhoneNumber);
         setContactEmail(processedData.Data.TransferRequestDetail.ContactEmail.replaceAll(';', '\n'));
@@ -378,26 +402,23 @@ const TransferRequestDetail = () => {
         
         let fileOpened = false;
         if (processedData.Status.Code == 200) {
-            let i = 1;
-            processedData.Data.forEach(function (dataItem) {
-                if (i == 1) {
-                    setPaymentProofURL1(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + dataItem.TransferProofURL);
+            if (processedData.Data.TransferProofURL_1 != null) {
+                setPaymentProofURL1(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + processedData.Data.TransferProofURL_1);
 
-                    if (openFile == 1) {
-                        window.open(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + dataItem.TransferProofURL, '_blank');
-                        fileOpened = true;
-                    }
+                if (openFile == 1) {
+                    window.open(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + processedData.Data.TransferProofURL_1, '_blank');
+                    fileOpened = true;
                 }
-                else if (i == 2) {
-                    setPaymentProofURL2(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + dataItem.TransferProofURL);
+            }
+            
+            if (processedData.Data.TransferProofURL_2 != null) {
+                setPaymentProofURL2(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + processedData.Data.TransferProofURL_2);
 
-                    if (openFile == 2) {
-                        window.open(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + dataItem.TransferProofURL, '_blank');
-                        fileOpened = true;
-                    }
+                if (openFile == 2) {
+                    window.open(`https://ultige.s3.ap-southeast-1.amazonaws.com/` + processedData.Data.TransferProofURL_2, '_blank');
+                    fileOpened = true;
                 }
-                i++;
-            });
+            }
         }
         else {
             window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
@@ -627,6 +648,7 @@ const TransferRequestDetail = () => {
                                     size="small"
                                     InputProps={{
                                         readOnly: true,
+                                        style: {color: StatusColor(statusDescription)}
                                     }}
                                     style={{
                                         width: "100%",
@@ -1021,7 +1043,7 @@ const TransferRequestDetail = () => {
                                     </Box>
                                     <Box className={classes.inline} style={{marginLeft: 155, marginRight: 5, marginBottom: 7}}>
                                         <Checkbox
-                                            checked={taxable}
+                                            checked={taxable ? 1 == true : false}
                                             disabled
                                             disableRipple
                                             sx={{ 
@@ -1039,7 +1061,7 @@ const TransferRequestDetail = () => {
                                             Taxable
                                         </Typography>
                                         <Checkbox
-                                            checked={pkp}
+                                            checked={pkp ? 1 == true : false}
                                             disabled
                                             disableRipple
                                             sx={{ 
@@ -1472,6 +1494,7 @@ const TransferRequestDetail = () => {
                                                 borderRadius: 4,
                                                 textTransform: "none",
                                                 marginRight: 5,
+                                                color: "#3C8F4A",
                                                 height: 40
                                             }}
                                             disableRipple
