@@ -49,7 +49,8 @@ const PublicLayout = props => {
   
   return (
     <div>
-      <NavBar isPrivate={checkToken() ? true : false}/>
+      {/* <NavBar isPrivate={checkToken() ? true : false}/> */}
+      <PublicNavBar/>
       <main className={classes.mainWrap} style={{ minHeight: "100vh" }}>
         <Container maxWidth="lg" disableGutters>{props.children}</Container>
       </main>
