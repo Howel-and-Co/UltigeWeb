@@ -123,11 +123,13 @@ const Folding = () => {
       let processedData;
       processedData = result.data;
 
-      console.log(processedData.Data.FoldingPhotos);
+      //console.log(processedData.Data.FoldingPhotos);
+
+      const moment = require('moment-timezone');
 
       setBuyer(processedData.Data.Buyer);
       setReceiver(processedData.Data.Receiver);
-      setDeliverDate(processedData.Data.DeliverDate);
+      setDeliverDate(moment(processedData.Data.DeliverDate).format("DD/MM/YYYY"));
       setLiningImages(processedData.Data.FoldingPhotos);
       
       setLiningImagesLoading(false);
