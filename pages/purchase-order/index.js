@@ -1,0 +1,707 @@
+import Head from "next/head";
+import Layout from "../../src/components/Layout";
+import {
+  Grid,
+  Typography,
+  Paper,
+  Box,
+  CircularProgress,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Dialog,
+  DialogContent,
+} from "@material-ui/core";
+import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import MomentUtils from '@date-io/moment';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
+
+import React, { useState, useEffect, useRef } from 'react';
+import useContainerDimensions from  "../../src/utils/screen.js";
+import axios from '../../src/utils/axios';
+import Router from "next/router";
+
+import {
+    GridComponent,
+    ColumnsDirective,
+    ColumnDirective,
+    Page,
+    Sort,
+    Filter,
+    Inject,
+    VirtualScroll
+  } from '@syncfusion/ej2-react-grids';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: 10,
+    margin: 10
+  },
+  paper2: {
+    margin: 10
+  },
+  inline: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    display: "flex",
+    flexDirection: "row"
+  },
+  selectRoot: {
+    '&:focus':{
+      backgroundColor: 'transparent'
+    }
+  },
+  tab: {
+    minWidth: 230,
+    width: 230,
+    fontSize: 16
+  },
+  text: {
+    height: 30
+  }
+}));
+
+const StatusDescriptionTemplate = (props) => {
+  if (props.StatusDescription == 'ONGOING') {
+    return (
+      <span style={{color: '#F6AF43'}}>
+        {props.StatusDescription}
+      </span>
+    );
+  }
+  else if (props.StatusDescription == 'CANCELLED') {
+    return (
+      <span style={{color: '#F14343'}}>
+        {props.StatusDescription}
+      </span>
+    );
+  }
+  else if (props.StatusDescription == 'SETTLED') {
+    return (
+      <span style={{color: '#3C8F4A'}}>
+        {props.StatusDescription}
+      </span>
+    );
+  }
+};
+
+const PaymentMenuDescriptionTemplate = (props) => {
+  if (props.PaymentMenuDescription == 'BARU') {
+    return (
+      <span style={{color: '#536FB7'}}>
+        {props.PaymentMenuDescription}
+      </span>
+    );
+  }
+  else if (props.PaymentMenuDescription == 'LAMA') {
+    return (
+      <span style={{color: '#F6AF43'}}>
+        {props.PaymentMenuDescription}
+      </span>
+    );
+  }
+};
+
+const DeliveryStatusDescriptionTemplate = (props) => {
+  if (props.DeliveryStatusDescription == 'NOT DONE') {
+    return (
+      <span style={{color: '#F6AF43'}}>
+        {props.DeliveryStatusDescription}
+      </span>
+    );
+  }
+  else if (props.DeliveryStatusDescription == 'DONE') {
+    return (
+      <span style={{color: '#3C8F4A'}}>
+        {props.DeliveryStatusDescription}
+      </span>
+    );
+  }
+};
+
+const PayStatusDescriptionTemplate = (props) => {
+  if (props.PayStatusDescription == 'NOT DONE') {
+    return (
+      <span style={{color: '#F6AF43'}}>
+        {props.PayStatusDescription}
+      </span>
+    );
+  }
+  else if (props.PayStatusDescription == 'DONE') {
+    return (
+      <span style={{color: '#3C8F4A'}}>
+        {props.PayStatusDescription}
+      </span>
+    );
+  }
+};
+
+const ApprovalStatusDescriptionTemplate = (props) => {
+  if (props.ApprovalStatusDescription == 'PENDING') {
+    return (
+      <span style={{color: '#F6AF43'}}>
+        {props.ApprovalStatusDescription}
+      </span>
+    );
+  }
+  else if (props.ApprovalStatusDescription == 'REJECTED') {
+    return (
+      <span style={{color: '#F14343'}}>
+        {props.ApprovalStatusDescription}
+      </span>
+    );
+  }
+  else if (props.ApprovalStatusDescription == 'APPROVED') {
+    return (
+      <span style={{color: '#3C8F4A'}}>
+        {props.ApprovalStatusDescription}
+      </span>
+    );
+  }
+  else if (props.StatusDescription == 'CANCELLED') {
+    return (
+      <span style={{color: '#FC6F03'}}>
+        {props.StatusDescription}
+      </span>
+    );
+  }
+};
+
+const PurchaseOrder = () => {
+  const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [fetchActive, setFetchActive] = React.useState(false);
+  const [dataLoading, setDataLoading] = React.useState(false);
+
+  const [purchaseOrderData, setPurchaseOrderData] = React.useState();
+  const [purchaseOrderItemsData, setPurchaseOrderItemsData] = React.useState();
+  const [dateType, setDateType] = React.useState('CreateDate');
+  const [dateTypeList, setDateTypeList] = React.useState(['CreateDate', 'ApprovalDate', 'SettleDate']);
+
+  const [filterSettings, setFilterSettings] = React.useState({ type: 'Excel' });
+  const [gridInstance, setGridInstance] = React.useState();
+  const [gridItemInstance, setGridItemInstance] = React.useState();
+  const [searchValue, setSearchValue] = React.useState('');
+
+  const moment = require('moment-timezone');
+  moment.locale('id');
+
+  const [purchaseOrderStartDate, setPurchaseOrderStartDate] = React.useState(moment());
+  const [purchaseOrderEndDate, setPurchaseOrderEndDate] = React.useState(moment());
+
+  const handlePurchaseOrderStartDateChange = (date) => {
+    setPurchaseOrderStartDate(date);
+  };
+
+  const handlePurchaseOrderEndDateChange = (date) => {
+    setPurchaseOrderEndDate(date);
+  };
+
+  const componentRef = useRef();
+  const { width, height } = useContainerDimensions(componentRef);
+
+  const RowSelected = (props) => {
+    let object = new Object();
+    object.Data = props.rowData.PurchaseOrderItems;
+			
+    console.log(object);
+    setPurchaseOrderItemsData(object);
+  };
+
+  const RowDoubleClick = (props) => {
+    Router.push(`/purchase-order/${props.rowData.PurchaseOrderID}`);
+  };
+
+  const handleChange = (e) => {
+    setSearchValue(e.target.value);
+    gridInstance.search(e.target.value);
+  }
+
+  const handleResetFilter = () => {
+    gridInstance.clearFiltering();
+    gridInstance.clearSorting();
+    gridInstance.search('');
+    setSearchValue('');
+  }
+
+  const handleDateTypeChange = (event) => {
+    setDateType(event.target.value);
+  };
+
+  const handleRefreshData = () => {
+    setFetchActive(true);
+  }
+
+  useEffect(() => {
+    const fetchPurchaseOrderData = async (startDate, endDate, dateFilter) => {
+      setDataLoading(true);
+
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/purchaseorder/getpurchaseorderbydate?startDate=${startDate}&endDate=${endDate}&dateFilter=${dateFilter}`);
+
+      let processedData;
+      processedData = result.data;
+
+      let newData = new Array();
+
+      processedData.Data.forEach(function (dataItem) {
+        let object = new Object();
+
+        object.StatusDescription = dataItem.StatusDescription;
+				object.PayStatusDescription = dataItem.PayStatusDescription;
+				object.DeliveryStatusDescription = dataItem.DeliveryStatusDescription;
+				object.ApprovalStatusDescription = dataItem.ApprovalStatusDescription;
+				object.PurchaseOrderID = dataItem.PurchaseOrderID;
+				object.PurchaseOrderNumber = dataItem.PurchaseOrderNumber;
+				object.Name = dataItem.Name;
+				object.DealType = dataItem.DealType;
+				object.PaymentMenuDescription = dataItem.PaymentMenuDescription;
+				object.ContractType = dataItem.ContractType;
+        object.Notes = dataItem.Notes.length > 30 ? dataItem.Notes.substring(0, 30) + "..." : dataItem.Notes;
+				object.CreatedBy = dataItem.CreatedBy;
+				object.CreateDate = dataItem.CreateDate;
+				object.SettleDate = dataItem.SettleDate;
+				object.DueDate = dataItem.DueDate;
+				object.EstimationDate = dataItem.EstimationDate;
+
+        let items = new Array();
+        dataItem.PurchaseOrderItems.forEach(function (dataItem2) {
+          let itemObject = new Object();
+
+          itemObject.ProductName = dataItem2.ProductName;
+          itemObject.Quantity = dataItem2.Quantity;
+          itemObject.Received = dataItem2.Received;
+          itemObject.Remained = dataItem2.Remained;
+          itemObject.UnitPrice = Intl.NumberFormat('id').format(dataItem2.UnitPrice);
+          itemObject.DPPPrice = Intl.NumberFormat('id').format(dataItem2.DPPPrice);
+          itemObject.PPNPrice = Intl.NumberFormat('id').format(dataItem2.PPNPrice);
+          itemObject.TotalPrice = Intl.NumberFormat('id').format(dataItem2.TotalPrice);
+          itemObject.TotalReceivedPrice = Intl.NumberFormat('id').format(dataItem2.TotalReceivedPrice);
+          itemObject.TotalRemainedPrice = Intl.NumberFormat('id').format(dataItem2.TotalRemainedPrice);
+
+          items.push(itemObject);
+        });
+
+        object.PurchaseOrderItems = items;
+
+        newData.push(object);
+      });
+
+      processedData.Data = newData;
+      console.log(processedData);
+      
+      setPurchaseOrderData(processedData);
+      setPurchaseOrderItemsData();
+      setDataLoading(false);
+    };
+
+    if (fetchActive == true) {
+      const moment = require('moment-timezone');
+
+      let startDate;
+      startDate = moment(purchaseOrderStartDate).format("YYYY-MM-DD");
+
+      let endDate;
+      endDate = moment(purchaseOrderEndDate).format("YYYY-MM-DD");
+
+      let dateFilter = dateType;
+
+      fetchPurchaseOrderData(startDate, endDate, dateFilter);
+      setFetchActive(false);
+    }
+  }, [fetchActive]);
+
+  return (
+    <div className={classes.root} ref={componentRef}>
+      <Layout>
+        <Head>
+            <title>Ultige Web</title>
+            <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <Grid container style={{padding: 5}}>
+          <Grid item xs={12}>
+            <Paper className={classes.paper} elevation={3}>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 26,
+                      fontWeight: 'bold',
+                      margin: 9
+                    }}
+                  >
+                    List Purchase Order
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <Box className={classes.inline}>
+                    { isMobile
+                      ? <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 16,
+                            marginTop: 9,
+                            marginBottom: 16,
+                            marginRight: 25,
+                            marginLeft: 9
+                          }}
+                        >
+                          Tanggal<br/>Awal
+                        </Typography>
+                      : <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 18,
+                            marginTop: 12,
+                            marginBottom: 25,
+                            marginRight: 20,
+                            marginLeft: 10
+                          }}
+                        >
+                          Tanggal
+                        </Typography>
+                    }
+                    <FormControl variant="outlined" style={{marginTop: 6, marginRight: 10, display: "flex", flexDirection: "row"}}>
+                      <InputLabel>Date Type</InputLabel>
+                        <Select
+                          value={dateType}
+                          onChange={handleDateTypeChange}
+                          style={{width: 200, height: 45}}
+                          label="Date Type"
+                          classes={{ root: classes.selectRoot }}
+                        >
+                          {dateTypeList && dateTypeList.map((item, index) => (
+                            <MenuItem disableRipple value={item}>{item}</MenuItem>
+                          ))}
+                        </Select>
+                    </FormControl>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardDatePicker
+                        variant="inline"
+                        format="YYYY-MM-DD"
+                        label="Start Date"
+                        value={purchaseOrderStartDate}
+                        style={{marginRight: 10, minWidth: 150, maxWidth: 150}}
+                        onChange={handlePurchaseOrderStartDateChange}
+                      />
+                      { !isMobile && 
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={purchaseOrderEndDate}
+                          style={{minWidth: 150, maxWidth: 150}}
+                          onChange={handlePurchaseOrderEndDateChange}
+                        />
+                      }
+                    </MuiPickersUtilsProvider>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={4} container justifyContent="flex-end">
+                  <Button 
+                    variant="contained"
+                    style={{
+                        borderRadius: 4,
+                        textTransform: "none",
+                        margin: 10,
+                        backgroundColor: "#8854D0",
+                        height: 40
+                    }}
+                    disableRipple
+                    disableElevation
+                    onClick={() => handleRefreshData()}
+                  >
+                      Refresh Data
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={7}>
+                  <Box className={classes.inline}>
+                      <Typography 
+                          style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              margin: 10
+                          }}
+                      >
+                          Cari
+                      </Typography>
+                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={5} container justifyContent="flex-end">
+                    <Button 
+                        variant="outlined"
+                        style={{
+                            borderRadius: 4,
+                            textTransform: "none",
+                            margin: 10
+                        }}
+                        disableRipple
+                        onClick={() => {handleResetFilter();}}
+                    >
+                        Reset Filter
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <GridComponent
+                        dataSource={purchaseOrderData && purchaseOrderData.Data}
+                        allowSorting={true}
+                        allowPaging={false}
+                        pageSettings={{ pageSize: 50 }}
+                        ref={(grid) => setGridInstance(grid)}
+                        allowFiltering={true}
+                        filterSettings={filterSettings}
+                        height={(height - (isMobile ? 480 : 430)) / 1.5}
+                        enableVirtualization={true}
+                        resizeSettings={{mode: 'Normal'}}
+                        style={{margin: 10}}
+                        allowTextWrap={true}
+                        recordClick={RowSelected}
+                        recordDoubleClick={RowDoubleClick}
+                    >
+                        <ColumnsDirective>
+                          <ColumnDirective
+                              field="StatusDescription"
+                              headerText="Status"
+                              width="150"
+                              template={StatusDescriptionTemplate}
+                          />
+                          <ColumnDirective
+                              field="PayStatusDescription"
+                              headerText="Status Bayar"
+                              width="150"
+                              template={PayStatusDescriptionTemplate}
+                          />
+                          <ColumnDirective
+                              field="DeliveryStatusDescription"
+                              headerText="Status Kirim"
+                              width="150"
+                              template={DeliveryStatusDescriptionTemplate}
+                          />
+                          <ColumnDirective
+                              field="ApprovalStatusDescription"
+                              headerText="Status Approval"
+                              width="170"
+                              template={ApprovalStatusDescriptionTemplate}
+                          />
+                          <ColumnDirective
+                              field="PurchaseOrderID"
+                              headerText="ID PO"
+                              width="120"
+                          />
+                          <ColumnDirective
+                              field="PurchaseOrderNumber"
+                              headerText="Nomor PO"
+                              width="160"
+                          />
+                          <ColumnDirective
+                              field="Name"
+                              headerText="Vendor"
+                              width="200"
+                          />
+                          <ColumnDirective
+                              field="DealType"
+                              headerText="Jenis Deal"
+                              width="180"
+                          />
+                          <ColumnDirective
+                              field="PaymentMenuDescription"
+                              headerText="Menu Bayar"
+                              width="150"
+                              template={PaymentMenuDescriptionTemplate}
+                          />
+                          <ColumnDirective
+                              field="ContractType"
+                              headerText="Jenis Kontrak"
+                              width="180"
+                          />
+                          <ColumnDirective
+                              field="Notes"
+                              headerText="Catatan"
+                              width="200"
+                          />
+                          <ColumnDirective
+                              field="CreatedBy"
+                              headerText="Dibuat Oleh"
+                              width="150"
+                          />
+                          <ColumnDirective
+                              field="CreateDate"
+                              headerText="Tgl. Buat PO"
+                              width="200"
+                              type="date"
+                              format="dd/MM/yyyy"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="SettleDate"
+                              headerText="Tgl. Settle"
+                              width="170"
+                              type="date"
+                              format="dd/MM/yyyy"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="DueDate"
+                              headerText="Tgl. Jatuh Tempo"
+                              width="200"
+                              type="date"
+                              format="dd/MM/yyyy"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="EstimationDate"
+                              headerText="Tgl. Estimasi"
+                              width="170"
+                              type="date"
+                              format="dd/MM/yyyy"
+                              textAlign="Right"
+                          />
+                        </ColumnsDirective>
+                        <Inject services={[Filter, Page, Sort, VirtualScroll]} />
+                    </GridComponent>
+                </Grid>
+                <Grid item xs={12}>
+                    <GridComponent
+                        dataSource={purchaseOrderItemsData && purchaseOrderItemsData.Data}
+                        allowSorting={true}
+                        allowPaging={false}
+                        pageSettings={{ pageSize: 50 }}
+                        ref={(grid) => setGridItemInstance(grid)}
+                        allowFiltering={true}
+                        filterSettings={filterSettings}
+                        height={(height - (isMobile ? 480 : 430)) / 1.5}
+                        enableVirtualization={true}
+                        resizeSettings={{mode: 'Normal'}}
+                        style={{marginLeft: 10, marginRight: 10, marginBottom: 10}}
+                        allowTextWrap={true}
+                    >
+                        <ColumnsDirective>
+                          <ColumnDirective
+                              field="ProductName"
+                              headerText="Produk"
+                              width="350"
+                          />
+                          <ColumnDirective
+                              field="Quantity"
+                              headerText="Qty"
+                              width="120"
+                              format="N0"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="Received"
+                              headerText="Qty. Received"
+                              width="170"
+                              format="N0"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="Remained"
+                              headerText="Qty. Remained"
+                              width="170"
+                              format="N0"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="UnitPrice"
+                              headerText="Harga Satuan"
+                              width="170"
+                              format="#,##0.##"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="DPPPrice"
+                              headerText="DPP"
+                              width="150"
+                              format="#,##0.##"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="PPNPrice"
+                              headerText="PPN"
+                              width="150"
+                              format="#,##0.##"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="TotalPrice"
+                              headerText="Total"
+                              width="150"
+                              format="#,##0.##"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="TotalReceivedPrice"
+                              headerText="Tot. Received"
+                              width="170"
+                              format="#,##0.##"
+                              textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="TotalRemainedPrice"
+                              headerText="Tot. Remained"
+                              width="170"
+                              format="#,##0.##"
+                              textAlign="Right"
+                          />
+                        </ColumnsDirective>
+                        <Inject services={[Filter, Page, Sort, VirtualScroll]} />
+                    </GridComponent>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Layout>
+
+      <Dialog 
+        open={dataLoading}
+      >
+        <DialogContent>
+          <Box className={classes.inline} style={{marginTop: 4, marginLeft: 5, marginBottom: 15}}>
+            <CircularProgress size={35} />
+            <Typography 
+                style={{
+                    color: "#000", 
+                    fontSize: 25,
+                    marginLeft: 18
+                }}
+            >
+                Loading
+            </Typography>
+          </Box>
+        </DialogContent>
+      </Dialog>
+
+      <style jsx global>{` 
+        .e-grid {
+            font-family: GoogleSans;
+        }
+
+        .e-grid .e-headercelldiv {
+            color: #000;
+         }
+      `}</style> 
+    </div>
+  );
+}
+
+export default PurchaseOrder;
