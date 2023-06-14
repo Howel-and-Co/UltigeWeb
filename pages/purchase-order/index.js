@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Layout from "../../src/components/Layout";
+import FullScreenLayout from "../../src/components/FullScreenLayout";
 import {
   Grid,
   Typography,
@@ -39,6 +39,7 @@ import {
     Inject,
     VirtualScroll
   } from '@syncfusion/ej2-react-grids';
+import { getValue } from '@syncfusion/ej2-base';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,109 +76,56 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const StatusDescriptionTemplate = (props) => {
-  if (props.StatusDescription == 'ONGOING') {
-    return (
-      <span style={{color: '#F6AF43'}}>
-        {props.StatusDescription}
-      </span>
-    );
+const CustomizeCell = (args) => {
+  if (args.column.field === "StatusDescription" && args.data && args.cell) {
+    if (getValue('StatusDescription', args.data) == 'SETTLED') {
+      args.cell.style.backgroundColor = '#32CD32'
+    }
+    else if (getValue('StatusDescription', args.data) == 'CANCELLED') {
+      args.cell.style.backgroundColor = '#DC143C'
+    }
+    else if (getValue('StatusDescription', args.data) == 'ONGOING') {
+      args.cell.style.backgroundColor = '#FFFF00'
+    }
   }
-  else if (props.StatusDescription == 'CANCELLED') {
-    return (
-      <span style={{color: '#F14343'}}>
-        {props.StatusDescription}
-      </span>
-    );
-  }
-  else if (props.StatusDescription == 'SETTLED') {
-    return (
-      <span style={{color: '#3C8F4A'}}>
-        {props.StatusDescription}
-      </span>
-    );
-  }
-};
 
-const PaymentMenuDescriptionTemplate = (props) => {
-  if (props.PaymentMenuDescription == 'BARU') {
-    return (
-      <span style={{color: '#536FB7'}}>
-        {props.PaymentMenuDescription}
-      </span>
-    );
+  if (args.column.field === "PaymentMenuDescription" && args.data && args.cell) {
+    if (getValue('PaymentMenuDescription', args.data) == 'BARU') {
+      args.cell.style.backgroundColor = '#0000FF'
+    }
+    else if (getValue('PaymentMenuDescription', args.data) == 'LAMA') {
+      args.cell.style.backgroundColor = '#FF8C00'
+    }
   }
-  else if (props.PaymentMenuDescription == 'LAMA') {
-    return (
-      <span style={{color: '#F6AF43'}}>
-        {props.PaymentMenuDescription}
-      </span>
-    );
-  }
-};
 
-const DeliveryStatusDescriptionTemplate = (props) => {
-  if (props.DeliveryStatusDescription == 'NOT DONE') {
-    return (
-      <span style={{color: '#F6AF43'}}>
-        {props.DeliveryStatusDescription}
-      </span>
-    );
+  if (args.column.field === "DeliveryStatusDescription" && args.data && args.cell) {
+    if (getValue('DeliveryStatusDescription', args.data) == 'DONE') {
+      args.cell.style.backgroundColor = '#32DC32'
+    }
+    else if (getValue('DeliveryStatusDescription', args.data) == 'NOT DONE') {
+      args.cell.style.backgroundColor = '#FFFF00'
+    }
   }
-  else if (props.DeliveryStatusDescription == 'DONE') {
-    return (
-      <span style={{color: '#3C8F4A'}}>
-        {props.DeliveryStatusDescription}
-      </span>
-    );
-  }
-};
 
-const PayStatusDescriptionTemplate = (props) => {
-  if (props.PayStatusDescription == 'NOT DONE') {
-    return (
-      <span style={{color: '#F6AF43'}}>
-        {props.PayStatusDescription}
-      </span>
-    );
+  if (args.column.field === "PayStatusDescription" && args.data && args.cell) {
+    if (getValue('PayStatusDescription', args.data) == 'DONE') {
+      args.cell.style.backgroundColor = '#32DC32'
+    }
+    else if (getValue('PayStatusDescription', args.data) == 'NOT DONE') {
+      args.cell.style.backgroundColor = '#FFFF00'
+    }
   }
-  else if (props.PayStatusDescription == 'DONE') {
-    return (
-      <span style={{color: '#3C8F4A'}}>
-        {props.PayStatusDescription}
-      </span>
-    );
-  }
-};
 
-const ApprovalStatusDescriptionTemplate = (props) => {
-  if (props.ApprovalStatusDescription == 'PENDING') {
-    return (
-      <span style={{color: '#F6AF43'}}>
-        {props.ApprovalStatusDescription}
-      </span>
-    );
-  }
-  else if (props.ApprovalStatusDescription == 'REJECTED') {
-    return (
-      <span style={{color: '#F14343'}}>
-        {props.ApprovalStatusDescription}
-      </span>
-    );
-  }
-  else if (props.ApprovalStatusDescription == 'APPROVED') {
-    return (
-      <span style={{color: '#3C8F4A'}}>
-        {props.ApprovalStatusDescription}
-      </span>
-    );
-  }
-  else if (props.StatusDescription == 'CANCELLED') {
-    return (
-      <span style={{color: '#FC6F03'}}>
-        {props.StatusDescription}
-      </span>
-    );
+  if (args.column.field === "ApprovalStatusDescription" && args.data && args.cell) {
+    if (getValue('ApprovalStatusDescription', args.data) == 'APPROVED') {
+      args.cell.style.backgroundColor = '#32CD32'
+    }
+    else if (getValue('ApprovalStatusDescription', args.data) == 'REJECTED') {
+      args.cell.style.backgroundColor = '#DC143C'
+    }
+    else if (getValue('ApprovalStatusDescription', args.data) == 'PENDING') {
+      args.cell.style.backgroundColor = '#FFFF00'
+    }
   }
 };
 
@@ -272,7 +220,7 @@ const PurchaseOrder = () => {
 				object.DealType = dataItem.DealType;
 				object.PaymentMenuDescription = dataItem.PaymentMenuDescription;
 				object.ContractType = dataItem.ContractType;
-        object.Notes = dataItem.Notes.length > 30 ? dataItem.Notes.substring(0, 30) + "..." : dataItem.Notes;
+        object.Notes = dataItem.Notes.length > 25 ? dataItem.Notes.substring(0, 25) + "..." : dataItem.Notes;
 				object.CreatedBy = dataItem.CreatedBy;
 				object.CreateDate = dataItem.CreateDate;
 				object.SettleDate = dataItem.SettleDate;
@@ -328,7 +276,7 @@ const PurchaseOrder = () => {
 
   return (
     <div className={classes.root} ref={componentRef}>
-      <Layout>
+      <FullScreenLayout>
         <Head>
             <title>Ultige Web</title>
             <link rel="icon" href="/favicon.ico" />
@@ -338,7 +286,7 @@ const PurchaseOrder = () => {
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
               <Grid container>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={5}>
                   <Typography 
                     style={{
                       color: "#000", 
@@ -349,6 +297,20 @@ const PurchaseOrder = () => {
                   >
                     List Purchase Order
                   </Typography>
+                </Grid>
+                <Grid item xs={12} sm={7} container justifyContent="flex-end">
+                  <Box className={classes.inline}>
+                      <Typography 
+                          style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              margin: 10
+                          }}
+                      >
+                          Cari
+                      </Typography>
+                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <Box className={classes.inline}>
@@ -416,6 +378,20 @@ const PurchaseOrder = () => {
                 </Grid>
                 <Grid item xs={12} sm={4} container justifyContent="flex-end">
                   <Button 
+                      variant="outlined"
+                      style={{
+                          borderRadius: 4,
+                          textTransform: "none",
+                          margin: 10,
+                          height: 40
+                      }}
+                      disableRipple
+                      disableElevation
+                      onClick={() => handleResetFilter()}
+                  >
+                      Reset Filter
+                  </Button>
+                  <Button 
                     variant="contained"
                     style={{
                         borderRadius: 4,
@@ -430,34 +406,6 @@ const PurchaseOrder = () => {
                   >
                       Refresh Data
                   </Button>
-                </Grid>
-                <Grid item xs={12} sm={7}>
-                  <Box className={classes.inline}>
-                      <Typography 
-                          style={{
-                              color: "#000", 
-                              fontSize: 18,
-                              margin: 10
-                          }}
-                      >
-                          Cari
-                      </Typography>
-                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={5} container justifyContent="flex-end">
-                    <Button 
-                        variant="outlined"
-                        style={{
-                            borderRadius: 4,
-                            textTransform: "none",
-                            margin: 10
-                        }}
-                        disableRipple
-                        onClick={() => {handleResetFilter();}}
-                    >
-                        Reset Filter
-                    </Button>
                 </Grid>
                 <Grid item xs={12}>
                     <GridComponent
@@ -475,41 +423,39 @@ const PurchaseOrder = () => {
                         allowTextWrap={true}
                         recordClick={RowSelected}
                         recordDoubleClick={RowDoubleClick}
+                        queryCellInfo={CustomizeCell}
+                        gridLines='Both'
                     >
                         <ColumnsDirective>
                           <ColumnDirective
                               field="StatusDescription"
                               headerText="Status"
-                              width="150"
-                              template={StatusDescriptionTemplate}
+                              width="120"
                           />
                           <ColumnDirective
                               field="PayStatusDescription"
                               headerText="Status Bayar"
-                              width="150"
-                              template={PayStatusDescriptionTemplate}
+                              width="120"
                           />
                           <ColumnDirective
                               field="DeliveryStatusDescription"
                               headerText="Status Kirim"
-                              width="150"
-                              template={DeliveryStatusDescriptionTemplate}
+                              width="120"
                           />
                           <ColumnDirective
                               field="ApprovalStatusDescription"
                               headerText="Status Approval"
-                              width="170"
-                              template={ApprovalStatusDescriptionTemplate}
+                              width="135"
                           />
                           <ColumnDirective
                               field="PurchaseOrderID"
                               headerText="ID PO"
-                              width="120"
+                              width="100"
                           />
                           <ColumnDirective
                               field="PurchaseOrderNumber"
                               headerText="Nomor PO"
-                              width="160"
+                              width="150"
                           />
                           <ColumnDirective
                               field="Name"
@@ -519,33 +465,32 @@ const PurchaseOrder = () => {
                           <ColumnDirective
                               field="DealType"
                               headerText="Jenis Deal"
-                              width="180"
+                              width="160"
                           />
                           <ColumnDirective
                               field="PaymentMenuDescription"
                               headerText="Menu Bayar"
-                              width="150"
-                              template={PaymentMenuDescriptionTemplate}
+                              width="120"
                           />
                           <ColumnDirective
                               field="ContractType"
                               headerText="Jenis Kontrak"
-                              width="180"
+                              width="130"
                           />
                           <ColumnDirective
                               field="Notes"
                               headerText="Catatan"
-                              width="200"
+                              width="250"
                           />
                           <ColumnDirective
                               field="CreatedBy"
                               headerText="Dibuat Oleh"
-                              width="150"
+                              width="120"
                           />
                           <ColumnDirective
                               field="CreateDate"
                               headerText="Tgl. Buat PO"
-                              width="200"
+                              width="130"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -553,7 +498,7 @@ const PurchaseOrder = () => {
                           <ColumnDirective
                               field="SettleDate"
                               headerText="Tgl. Settle"
-                              width="170"
+                              width="120"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -561,7 +506,7 @@ const PurchaseOrder = () => {
                           <ColumnDirective
                               field="DueDate"
                               headerText="Tgl. Jatuh Tempo"
-                              width="200"
+                              width="140"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -569,7 +514,7 @@ const PurchaseOrder = () => {
                           <ColumnDirective
                               field="EstimationDate"
                               headerText="Tgl. Estimasi"
-                              width="170"
+                              width="130"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -592,73 +537,74 @@ const PurchaseOrder = () => {
                         resizeSettings={{mode: 'Normal'}}
                         style={{marginLeft: 10, marginRight: 10, marginBottom: 10}}
                         allowTextWrap={true}
+                        gridLines='Both'
                     >
                         <ColumnsDirective>
                           <ColumnDirective
                               field="ProductName"
                               headerText="Produk"
-                              width="350"
+                              width="325"
                           />
                           <ColumnDirective
                               field="Quantity"
                               headerText="Qty"
-                              width="120"
+                              width="110"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="Received"
                               headerText="Qty. Received"
-                              width="170"
+                              width="135"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="Remained"
                               headerText="Qty. Remained"
-                              width="170"
+                              width="140"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="UnitPrice"
                               headerText="Harga Satuan"
-                              width="170"
+                              width="120"
                               format="#,##0.##"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="DPPPrice"
                               headerText="DPP"
-                              width="150"
+                              width="110"
                               format="#,##0.##"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="PPNPrice"
                               headerText="PPN"
-                              width="150"
+                              width="110"
                               format="#,##0.##"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="TotalPrice"
                               headerText="Total"
-                              width="150"
+                              width="120"
                               format="#,##0.##"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="TotalReceivedPrice"
                               headerText="Tot. Received"
-                              width="170"
+                              width="135"
                               format="#,##0.##"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="TotalRemainedPrice"
                               headerText="Tot. Remained"
-                              width="170"
+                              width="140"
                               format="#,##0.##"
                               textAlign="Right"
                           />
@@ -670,7 +616,7 @@ const PurchaseOrder = () => {
             </Paper>
           </Grid>
         </Grid>
-      </Layout>
+      </FullScreenLayout>
 
       <Dialog 
         open={dataLoading}
