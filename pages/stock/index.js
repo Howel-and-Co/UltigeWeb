@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Layout from "../../src/components/Layout";
+import FullScreenLayout from "../../src/components/FullScreenLayout";
 import {
   Grid,
   Typography,
@@ -39,6 +39,7 @@ import {
     AggregatesDirective,
     ContextMenu
   } from '@syncfusion/ej2-react-grids';
+import { getValue } from '@syncfusion/ej2-base';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,65 +76,33 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const IsActiveDescriptionTemplate = (props) => {
-  if (props.IsActiveDescription == 'AKTIF') {
-    return (
-      <span style={{color: '#3C8F4A'}}>
-        {props.IsActiveDescription}
-      </span>
-    );
+const CustomizeCell = (args) => {
+  if (args.column.field === "IsActiveDescription" && args.data && args.cell) {
+    if (getValue('IsActiveDescription', args.data) == 'AKTIF') {
+      args.cell.style.backgroundColor = '#3CB371'
+    }
+    else if (getValue('IsActiveDescription', args.data) == 'NON-AKTIF') {
+      args.cell.style.backgroundColor = '#DC143C'
+    }
   }
-  else if (props.IsActiveDescription == 'NON-AKTIF') {
-    return (
-      <span style={{color: '#F14343'}}>
-        {props.IsActiveDescription}
-      </span>
-    );
-  }
-};
 
-const ProductMovementTemplate = (props) => {
-  if (props.ProductMovement == 'New Arrival') {
-    return (
-      <span style={{color: '#87CEFA'}}>
-        {props.ProductMovement}
-      </span>
-    );
-  }
-  else if (props.ProductMovement == 'Fast Moving') {
-    return (
-      <span style={{color: '#3CB371'}}>
-        {props.ProductMovement}
-      </span>
-    );
-  }
-  else if (props.ProductMovement == 'Middle Moving') {
-    return (
-      <span style={{color: '#FEE227'}}>
-        {props.ProductMovement}
-      </span>
-    );
-  }
-  else if (props.ProductMovement == 'Slow Moving') {
-    return (
-      <span style={{color: '#FFA500'}}>
-        {props.ProductMovement}
-      </span>
-    );
-  }
-  else if (props.ProductMovement == 'Super Slow Moving') {
-    return (
-      <span style={{color: '#F14343'}}>
-        {props.ProductMovement}
-      </span>
-    );
-  }
-  else {
-    return (
-      <span>
-        {props.ProductMovement}
-      </span>
-    );
+
+  if (args.column.field === "ProductMovement" && args.data && args.cell) {
+    if (getValue('ProductMovement', args.data) == 'New Arrival') {
+      args.cell.style.backgroundColor = '#87CEFA'
+    }
+    else if (getValue('ProductMovement', args.data) == 'Fast Moving') {
+      args.cell.style.backgroundColor = '#3CB371'
+    }
+    else if (getValue('ProductMovement', args.data) == 'Middle Moving') {
+      args.cell.style.backgroundColor = '#FFFF00'
+    }
+    else if (getValue('ProductMovement', args.data) == 'Slow Moving') {
+      args.cell.style.backgroundColor = '#FFA500'
+    }
+    else if (getValue('ProductMovement', args.data) == 'Super Slow Moving') {
+      args.cell.style.backgroundColor = '#DC143C'
+    }
   }
 };
 
@@ -331,7 +300,7 @@ const Stock = () => {
 
   return (
     <div className={classes.root} ref={componentRef}>
-      <Layout>
+      <FullScreenLayout>
         <Head>
             <title>Ultige Web</title>
             <link rel="icon" href="/favicon.ico" />
@@ -341,7 +310,7 @@ const Stock = () => {
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
               <Grid container>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={5}>
                   <Typography 
                     style={{
                       color: "#000", 
@@ -352,6 +321,20 @@ const Stock = () => {
                   >
                     List Stok
                   </Typography>
+                </Grid>
+                <Grid item xs={12} sm={7} container justifyContent="flex-end">
+                  <Box className={classes.inline}>
+                      <Typography 
+                          style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              margin: 10
+                          }}
+                      >
+                          Cari
+                      </Typography>
+                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Box className={classes.inline}>
@@ -382,6 +365,20 @@ const Stock = () => {
                 </Grid>
                 <Grid item xs={12} sm={6} container justifyContent="flex-end">
                   <Button 
+                      variant="outlined"
+                      style={{
+                          borderRadius: 4,
+                          textTransform: "none",
+                          margin: 10,
+                          height: 40
+                      }}
+                      disableRipple
+                      disableElevation
+                      onClick={() => handleResetFilter()}
+                  >
+                      Reset Filter
+                  </Button>
+                  <Button 
                     variant="contained"
                     style={{
                         borderRadius: 4,
@@ -396,34 +393,6 @@ const Stock = () => {
                       Refresh Data
                   </Button>
                 </Grid>
-                <Grid item xs={12} sm={7}>
-                  <Box className={classes.inline}>
-                      <Typography 
-                          style={{
-                              color: "#000", 
-                              fontSize: 18,
-                              margin: 10
-                          }}
-                      >
-                          Cari
-                      </Typography>
-                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={5} container justifyContent="flex-end">
-                    <Button 
-                        variant="outlined"
-                        style={{
-                            borderRadius: 4,
-                            textTransform: "none",
-                            margin: 10
-                        }}
-                        disableRipple
-                        onClick={() => {handleResetFilter();}}
-                    >
-                        Reset Filter
-                    </Button>
-                </Grid>
                 <Grid item xs={12}>
                     <GridComponent
                         dataSource={stockData && stockData.Data}
@@ -433,13 +402,15 @@ const Stock = () => {
                         ref={(grid) => setGridInstance(grid)}
                         allowFiltering={true}
                         filterSettings={filterSettings}
-                        height={height - (isMobile ? 480 : 430)}
+                        height={height - (isMobile ? 410 : 360)}
                         enableVirtualization={true}
                         resizeSettings={{mode: 'Normal'}}
                         style={{margin: 10}}
                         allowTextWrap={true}
                         contextMenuItems={contextMenuItems}
                         contextMenuClick={contextMenuClick}
+                        queryCellInfo={CustomizeCell}
+                        gridLines='Both'
                     >
                         <ColumnsDirective>
                           <ColumnDirective
@@ -450,56 +421,55 @@ const Stock = () => {
                           <ColumnDirective
                               field="IsActiveDescription"
                               headerText="Status Aktif"
-                              width="150"
-                              template={IsActiveDescriptionTemplate}
+                              width="120"
                           />
                           <ColumnDirective
                               field="Name"
                               headerText="Stok"
-                              width="200"
+                              width="280"
                           />
                           <ColumnDirective
                               field="StockAlternativeName"
                               headerText="Nama Alternative"
-                              width="200"
+                              width="280"
                           />
                           <ColumnDirective
                               field="Quantity"
                               headerText="Qty"
-                              width="130"
+                              width="110"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="StockUnitTitle"
                               headerText="Satuan"
-                              width="130"
+                              width="120"
                           />
                           <ColumnDirective
                               field="POQuantity"
                               headerText="Qty PO"
-                              width="130"
+                              width="110"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="SalesQuantity"
                               headerText="Sales Qty"
-                              width="140"
+                              width="110"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="DOQuantity"
                               headerText="DO Qty"
-                              width="130"
+                              width="110"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="SellThru"
                               headerText="ST%"
-                              width="130"
+                              width="110"
                               format="P2"
                               textAlign="Right"
                           />
@@ -521,22 +491,22 @@ const Stock = () => {
                           <ColumnDirective
                               field="StockModelName"
                               headerText="Model"
-                              width="170"
+                              width="200"
                           />
                           <ColumnDirective
                               field="StockMaterial"
                               headerText="Material"
-                              width="170"
+                              width="200"
                           />
                           <ColumnDirective
                               field="StockColor"
                               headerText="Warna"
-                              width="170"
+                              width="160"
                           />
                           <ColumnDirective
                               field="StockSize"
                               headerText="Ukuran"
-                              width="170"
+                              width="160"
                           />
                           <ColumnDirective
                               field="VendorName"
@@ -546,7 +516,7 @@ const Stock = () => {
                           <ColumnDirective
                               field="StockSellPrice"
                               headerText="Harga Jual"
-                              width="200"
+                              width="120"
                               format="#,##0.##"
                               textAlign="Right"
                           />
@@ -567,7 +537,7 @@ const Stock = () => {
                           <ColumnDirective
                               field="COGSUnitPrice"
                               headerText="COGS Satuan"
-                              width="200"
+                              width="120"
                               format="#,##0.##"
                               textAlign="Right"
                           />
@@ -586,26 +556,25 @@ const Stock = () => {
                           <ColumnDirective
                               field="StockDays"
                               headerText="Stock Days"
-                              width="150"
+                              width="120"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="StockAging"
                               headerText="Stock Aging"
-                              width="150"
+                              width="120"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="ProductMovement"
                               headerText="Movement"
-                              width="150"
-                              template={ProductMovementTemplate}
+                              width="170"
                           />
                           <ColumnDirective
                               field="LaunchDate"
                               headerText="Tgl. Launching"
-                              width="170"
+                              width="140"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -613,7 +582,7 @@ const Stock = () => {
                           <ColumnDirective
                               field="IncomingDeliveryOrderDate"
                               headerText="Tgl. Datang DO"
-                              width="170"
+                              width="150"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -621,14 +590,14 @@ const Stock = () => {
                           <ColumnDirective
                               field="StockDays2"
                               headerText="Stock Days (90 Hari)"
-                              width="200"
+                              width="150"
                               format="N0"
                               textAlign="Right"
                           />
                           <ColumnDirective
                               field="StockSold90Days"
                               headerText="Penjualan 90 Hari"
-                              width="200"
+                              width="140"
                               format="N0"
                               textAlign="Right"
                           />
@@ -666,7 +635,7 @@ const Stock = () => {
             </Paper>
           </Grid>
         </Grid>
-      </Layout>
+      </FullScreenLayout>
 
 
       <Dialog 

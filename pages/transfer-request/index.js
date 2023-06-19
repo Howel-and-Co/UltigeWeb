@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Layout from "../../src/components/Layout";
+import FullScreenLayout from "../../src/components/FullScreenLayout";
 import {
   Grid,
   Typography,
@@ -37,6 +37,7 @@ import {
     Inject,
     VirtualScroll
   } from '@syncfusion/ej2-react-grids';
+import { getValue } from '@syncfusion/ej2-base';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,65 +74,33 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const StatusDescriptionTemplate = (props) => {
-  if (props.StatusDescription == 'PENDING') {
-    return (
-      <span style={{color: '#F6AF43'}}>
-        {props.StatusDescription}
-      </span>
-    );
+const CustomizeCell = (args) => {
+  if (args.column.field === "StatusDescription" && args.data && args.cell) {
+    if (getValue('StatusDescription', args.data) == 'PENDING') {
+      args.cell.style.backgroundColor = '#FFFF00'
+    }
+    else if (getValue('StatusDescription', args.data) == 'REJECTED') {
+      args.cell.style.backgroundColor = '#FF0000'
+    }
+    else if (getValue('StatusDescription', args.data) == 'APPROVED') {
+      args.cell.style.backgroundColor = '#228B22'
+    }
+    else if (getValue('StatusDescription', args.data) == 'CANCELLED') {
+      args.cell.style.backgroundColor = '#FFA500'
+    }
+    else if (getValue('StatusDescription', args.data) == 'PAID') {
+      args.cell.style.backgroundColor = '#1E90FF'
+    }
+    else if (getValue('StatusDescription', args.data) == 'HALF PAID') {
+      args.cell.style.backgroundColor = '#B0C4DE'
+    }
   }
-  else if (props.StatusDescription == 'REJECTED') {
-    return (
-      <span style={{color: '#F14343'}}>
-        {props.StatusDescription}
-      </span>
-    );
-  }
-  else if (props.StatusDescription == 'APPROVED') {
-    return (
-      <span style={{color: '#3C8F4A'}}>
-        {props.StatusDescription}
-      </span>
-    );
-  }
-  else if (props.StatusDescription == 'CANCELLED') {
-    return (
-      <span style={{color: '#FC6F03'}}>
-        {props.StatusDescription}
-      </span>
-    );
-  }
-  else if (props.StatusDescription == 'PAID') {
-    return (
-      <span style={{color: '#536FB7'}}>
-        {props.StatusDescription}
-      </span>
-    );
-  }
-  else if (props.StatusDescription == 'HALF PAID') {
-    return (
-      <span style={{color: '#97A8D3'}}>
-        {props.StatusDescription}
-      </span>
-    );
-  }
-};
 
-const PaymentCategoryCountTemplate = (props) => {
-  if (props.PaymentCategoryCount > 1) {
-    return (
-      <span style={{color: '#F6AF43'}}>
-        {props.PaymentCategoryCount}
-      </span>
-    );
-  }
-  else {
-    return (
-      <span>
-        {props.PaymentCategoryCount}
-      </span>
-    );
+
+  if (args.column.field === "PaymentCategoryCount" && args.data && args.cell) {
+    if (getValue('PaymentCategoryCount', args.data) > 1) {
+      args.cell.style.backgroundColor = '#FFFF00'
+    }
   }
 };
 
@@ -240,7 +209,7 @@ const TransferRequest = () => {
 				object.PaymentCategoryTitle2 = dataItem.PaymentCategoryTitle2;
 				object.PaymentCategoryTitle3 = dataItem.PaymentCategoryTitle3;
 				object.PaymentCategoryCount = dataItem.PaymentCategoryCount;
-				object.RequestReason = dataItem.RequestReason.length > 30 ? dataItem.RequestReason.substring(0, 30) + "..." : dataItem.RequestReason;
+				object.RequestReason = dataItem.RequestReason.length > 25 ? dataItem.RequestReason.substring(0, 25) + "..." : dataItem.RequestReason;
 				object.ApprovalDate = dataItem.ApprovalDate;
 				object.Approver = dataItem.Approver;
 
@@ -272,7 +241,7 @@ const TransferRequest = () => {
 
   return (
     <div className={classes.root} ref={componentRef}>
-      <Layout>
+      <FullScreenLayout>
         <Head>
             <title>Ultige Web</title>
             <link rel="icon" href="/favicon.ico" />
@@ -282,7 +251,7 @@ const TransferRequest = () => {
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
               <Grid container>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={5}>
                   <Typography 
                     style={{
                       color: "#000", 
@@ -293,6 +262,20 @@ const TransferRequest = () => {
                   >
                     List Transfer Request
                   </Typography>
+                </Grid>
+                <Grid item xs={12} sm={7} container justifyContent="flex-end">
+                  <Box className={classes.inline}>
+                      <Typography 
+                          style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              margin: 10
+                          }}
+                      >
+                          Cari
+                      </Typography>
+                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <Box className={classes.inline}>
@@ -359,6 +342,20 @@ const TransferRequest = () => {
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={4} container justifyContent="flex-end">
+                    <Button 
+                        variant="outlined"
+                        style={{
+                            borderRadius: 4,
+                            textTransform: "none",
+                            margin: 10,
+                            height: 40
+                        }}
+                        disableRipple
+                        disableElevation
+                        onClick={() => handleResetFilter()}
+                    >
+                        Reset Filter
+                    </Button>
                   <Button 
                     variant="contained"
                     style={{
@@ -375,34 +372,6 @@ const TransferRequest = () => {
                       Refresh Data
                   </Button>
                 </Grid>
-                <Grid item xs={12} sm={7}>
-                  <Box className={classes.inline}>
-                      <Typography 
-                          style={{
-                              color: "#000", 
-                              fontSize: 18,
-                              margin: 10
-                          }}
-                      >
-                          Cari
-                      </Typography>
-                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={5} container justifyContent="flex-end">
-                    <Button 
-                        variant="outlined"
-                        style={{
-                            borderRadius: 4,
-                            textTransform: "none",
-                            margin: 10
-                        }}
-                        disableRipple
-                        onClick={() => {handleResetFilter();}}
-                    >
-                        Reset Filter
-                    </Button>
-                </Grid>
                 <Grid item xs={12}>
                     <GridComponent
                         dataSource={transferRequestData && transferRequestData.Data}
@@ -412,39 +381,35 @@ const TransferRequest = () => {
                         ref={(grid) => setGridInstance(grid)}
                         allowFiltering={true}
                         filterSettings={filterSettings}
-                        height={height - (isMobile ? 480 : 430)}
+                        height={height - (isMobile ? 380 : 330)}
                         enableVirtualization={true}
                         resizeSettings={{mode: 'Normal'}}
                         style={{margin: 10}}
                         allowTextWrap={true}
                         recordDoubleClick={RowSelected}
+                        queryCellInfo={CustomizeCell}
+                        gridLines='Both'
                     >
                         <ColumnsDirective>
                           <ColumnDirective
                               field="TransferRequestID"
                               headerText="Req. ID"
-                              width="120"
-                          />
-                          <ColumnDirective
-                              field="MutationID"
-                              headerText="ID Mutasi"
-                              width="150"
+                              width="110"
                           />
                           <ColumnDirective
                               field="StatusDescription"
                               headerText="Status"
-                              width="150"
-                              template={StatusDescriptionTemplate}
+                              width="120"
                           />
                           <ColumnDirective
                               field="TransactionID"
                               headerText="Trx. ID"
-                              width="120"
+                              width="110"
                           />
                           <ColumnDirective
                               field="OrderDate"
                               headerText="Tgl. Order"
-                              width="170"
+                              width="120"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -452,7 +417,7 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="RequestDate"
                               headerText="Tgl. Req"
-                              width="170"
+                              width="120"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -460,7 +425,7 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="InvoiceDate"
                               headerText="Tgl. Invoice"
-                              width="170"
+                              width="130"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -468,7 +433,7 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="DueDate"
                               headerText="Tgl. Jatuh Tempo"
-                              width="200"
+                              width="140"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -476,12 +441,12 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="Requestor"
                               headerText="Requestor"
-                              width="150"
+                              width="140"
                           />
                           <ColumnDirective
                               field="RequestValue"
                               headerText="Nominal"
-                              width="150"
+                              width="130"
                               format="#,##0.##"
                               textAlign="Right"
                           />
@@ -493,12 +458,12 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="DestinationBank"
                               headerText="Bank"
-                              width="120"
+                              width="140"
                           />
                           <ColumnDirective
                               field="DestinationAccountNumber"
-                              headerText="No. Penerima"
-                              width="200"
+                              headerText="No. Rekening"
+                              width="160"
                           />
                           <ColumnDirective
                               field="PaymentCategoryTitle1"
@@ -513,15 +478,14 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="PaymentCategoryTitle3"
                               headerText="Kategori 3"
-                              width="200"
+                              width="300"
                           />
                           <ColumnDirective
                               field="PaymentCategoryCount"
                               headerText="Jumlah Kas"
-                              width="160"
+                              width="130"
                               format="N0"
                               textAlign="Right"
-                              template={PaymentCategoryCountTemplate}
                           />
                           <ColumnDirective
                               field="RequestReason"
@@ -531,7 +495,7 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="ApprovalDate"
                               headerText="Tgl. Approve"
-                              width="170"
+                              width="130"
                               type="date"
                               format="dd/MM/yyyy"
                               textAlign="Right"
@@ -539,7 +503,12 @@ const TransferRequest = () => {
                           <ColumnDirective
                               field="Approver"
                               headerText="Approver"
-                              width="150"
+                              width="140"
+                          />
+                          <ColumnDirective
+                              field="MutationID"
+                              headerText="ID Mutasi"
+                              width="120"
                           />
                         </ColumnsDirective>
                         <Inject services={[Filter, Page, Sort, VirtualScroll]} />
@@ -565,7 +534,7 @@ const TransferRequest = () => {
             </Paper>
           </Grid>
         </Grid>
-      </Layout>
+      </FullScreenLayout>
 
 
       <style jsx global>{` 
