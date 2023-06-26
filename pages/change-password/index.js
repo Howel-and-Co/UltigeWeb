@@ -101,7 +101,7 @@ const ChangePassword = () => {
 
         processedData = result2.data;
         
-        setToken(processedData.token, processedData.role, newUsername, sha256(values.confirmNewPassword));
+        setToken(processedData.token, processedData.userID, processedData.role, newUsername, sha256(values.confirmNewPassword));
     } catch (error) {
         console.log(error);
         setValues({ ...values, invalid: true, invalidMessage: "Ganti password gagal, mohon coba kembali", loading: false });
