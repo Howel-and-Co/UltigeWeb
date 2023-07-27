@@ -168,7 +168,7 @@ const PurchaseOrder = () => {
     let object = new Object();
     object.Data = props.rowData.PurchaseOrderItems;
 			
-    console.log(object);
+    //console.log(object);
     setPurchaseOrderItemsData(object);
   };
 
@@ -251,7 +251,7 @@ const PurchaseOrder = () => {
       });
 
       processedData.Data = newData;
-      console.log(processedData);
+      //console.log(processedData);
       
       setPurchaseOrderData(processedData);
       setPurchaseOrderItemsData();
