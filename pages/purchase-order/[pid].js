@@ -258,7 +258,7 @@ const PurchaseOrderDetail = () => {
 
         const moment = require('moment-timezone');
 
-        console.log(processedData);
+        //console.log(processedData);
 
         setName(processedData.Data.PurchaseOrderDetail.Name);
         setDealType(processedData.Data.PurchaseOrderDetail.DealType);

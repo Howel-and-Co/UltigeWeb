@@ -76,606 +76,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const CustomSalesRow = ({ row }) => {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          { row.Variant && 
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          }
-        </TableCell>
-        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-          <Typography>
-            {row.Rank}
-          </Typography>
-        </TableCell>
-        <TableCell align="left">
-          <Grid container style={{marginTop: 10}}>
-            <img 
-              src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
-              width={75} 
-              height={75} 
-              style={{borderRadius: 5}} 
-              alt="Product Image"
-            />
-            <Typography 
-              style={{
-                  color: "#000", 
-                  fontSize: 16,
-                  fontWeight: 500,
-                  marginTop: 5,
-                  marginLeft: 10
-              }}
-            >
-              {row.ProductName}
-              <br/>
-              <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-            </Typography>
-          </Grid>
-        </TableCell>
-        <TableCell align="right" style={{width: 225}}>
-          <Typography>
-            Rp {Intl.NumberFormat('id').format(row.Value)}
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 150}}>
-          <Typography>
-            {Intl.NumberFormat('id').format(row.Proportion)}%
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 175}}>
-          <Grid container justifyContent="flex-end">
-            <Typography>
-              {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-            </Typography>
-            { row.Growth >= 0
-            ? <TrendingUpIcon
-                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            : <TrendingDownIcon
-                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            }
-          </Grid>
-        </TableCell>
-      </TableRow>
-      <TableRow style={{ backgroundColor: '#fcfcfc' }}>
-        <TableCell style={{ padding: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 0 }}>
-              <Table sx={{ minWidth: 650 }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Peringkat</TableCell>
-                    <TableCell align="left">Informasi Varian</TableCell>
-                    <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                    <TableCell align="right">Proporsi</TableCell>
-                    <TableCell align="right">Tingkat Perubahan</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.Variant && row.Variant.map((row2) => (
-                    <TableRow
-                      key={row2.Rank}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                        <Typography>
-                            {row2.Rank}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Grid container style={{marginTop: 10}}>
-                          <Typography 
-                          style={{
-                              color: "#000", 
-                              fontSize: 16,
-                              fontWeight: 500,
-                              marginTop: 5
-                          }}
-                          >
-                          {row2.ProductName}
-                          <br/>
-                          <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
-                          </Typography>
-                        </Grid>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 225}}>
-                        <Typography>
-                          Rp {Intl.NumberFormat('id').format(row2.Value)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 150}}>
-                        <Typography>
-                          {Intl.NumberFormat('id').format(row2.Proportion)}%
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 175}}>
-                        <Grid container justifyContent="flex-end">
-                          <Typography>
-                          {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
-                          </Typography>
-                          { row2.Growth >= 0
-                          ? <TrendingUpIcon
-                              style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          : <TrendingDownIcon
-                              style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          }
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-};
-
-const CustomSalesCountRow = ({ row }) => {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          { row.Variant && 
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          }
-        </TableCell>
-        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-          <Typography>
-            {row.Rank}
-          </Typography>
-        </TableCell>
-        <TableCell align="left">
-          <Grid container style={{marginTop: 10}}>
-            <img 
-              src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
-              width={75} 
-              height={75} 
-              style={{borderRadius: 5}} 
-              alt="Product Image"
-            />
-            <Typography 
-              style={{
-                  color: "#000", 
-                  fontSize: 16,
-                  fontWeight: 500,
-                  marginTop: 5,
-                  marginLeft: 10
-              }}
-            >
-              {row.ProductName}
-              <br/>
-              <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-            </Typography>
-          </Grid>
-        </TableCell>
-        <TableCell align="right" style={{width: 225}}>
-          <Typography>
-            {Intl.NumberFormat('id').format(row.Value)}
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 150}}>
-          <Typography>
-            {Intl.NumberFormat('id').format(row.Proportion)}%
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 175}}>
-          <Grid container justifyContent="flex-end">
-            <Typography>
-              {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-            </Typography>
-            { row.Growth >= 0
-            ? <TrendingUpIcon
-                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            : <TrendingDownIcon
-                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            }
-          </Grid>
-        </TableCell>
-      </TableRow>
-      <TableRow style={{ backgroundColor: '#fcfcfc' }}>
-        <TableCell style={{ padding: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 0 }}>
-              <Table sx={{ minWidth: 650 }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Peringkat</TableCell>
-                    <TableCell align="left">Informasi Varian</TableCell>
-                    <TableCell align="right">Total Produk Dipesan</TableCell>
-                    <TableCell align="right">Proporsi</TableCell>
-                    <TableCell align="right">Tingkat Perubahan</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.Variant && row.Variant.map((row2) => (
-                    <TableRow
-                      key={row2.Rank}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                        <Typography>
-                            {row2.Rank}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Grid container style={{marginTop: 10}}>
-                          <Typography 
-                          style={{
-                              color: "#000", 
-                              fontSize: 16,
-                              fontWeight: 500,
-                              marginTop: 5
-                          }}
-                          >
-                          {row2.ProductName}
-                          <br/>
-                          <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
-                          </Typography>
-                        </Grid>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 225}}>
-                        <Typography>
-                          {Intl.NumberFormat('id').format(row2.Value)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 150}}>
-                        <Typography>
-                          {Intl.NumberFormat('id').format(row2.Proportion)}%
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 175}}>
-                        <Grid container justifyContent="flex-end">
-                          <Typography>
-                          {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
-                          </Typography>
-                          { row2.Growth >= 0
-                          ? <TrendingUpIcon
-                              style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          : <TrendingDownIcon
-                              style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          }
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-};
-
-const CustomCategorySalesRow = ({ row }) => {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          { row.Variant && 
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          }
-        </TableCell>
-        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-          <Typography>
-            {row.Rank}
-          </Typography>
-        </TableCell>
-        <TableCell align="left">
-          <Grid container style={{marginTop: 10}}>
-            <img 
-              src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
-              width={75} 
-              height={75} 
-              style={{borderRadius: 5}} 
-              alt="Product Image"
-            />
-            <Typography 
-              style={{
-                  color: "#000", 
-                  fontSize: 16,
-                  fontWeight: 500,
-                  marginTop: 5,
-                  marginLeft: 10
-              }}
-            >
-              {row.ProductCategoryName}
-              <br/>
-              <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-            </Typography>
-          </Grid>
-        </TableCell>
-        <TableCell align="right" style={{width: 225}}>
-          <Typography>
-            Rp {Intl.NumberFormat('id').format(row.Value)}
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 150}}>
-          <Typography>
-            {Intl.NumberFormat('id').format(row.Proportion)}%
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 175}}>
-          <Grid container justifyContent="flex-end">
-            <Typography>
-              {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-            </Typography>
-            { row.Growth >= 0
-            ? <TrendingUpIcon
-                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            : <TrendingDownIcon
-                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            }
-          </Grid>
-        </TableCell>
-      </TableRow>
-      <TableRow style={{ backgroundColor: '#fcfcfc' }}>
-        <TableCell style={{ padding: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 0 }}>
-              <Table sx={{ minWidth: 650 }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Peringkat</TableCell>
-                    <TableCell align="left">Informasi Varian</TableCell>
-                    <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                    <TableCell align="right">Proporsi</TableCell>
-                    <TableCell align="right">Tingkat Perubahan</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.Variant && row.Variant.map((row2) => (
-                    <TableRow
-                      key={row2.Rank}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                        <Typography>
-                            {row2.Rank}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Grid container style={{marginTop: 10}}>
-                          <Typography 
-                          style={{
-                              color: "#000", 
-                              fontSize: 16,
-                              fontWeight: 500,
-                              marginTop: 5
-                          }}
-                          >
-                          {row2.ProductName}
-                          <br/>
-                          <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
-                          </Typography>
-                        </Grid>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 225}}>
-                        <Typography>
-                          Rp {Intl.NumberFormat('id').format(row2.Value)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 150}}>
-                        <Typography>
-                          {Intl.NumberFormat('id').format(row2.Proportion)}%
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 175}}>
-                        <Grid container justifyContent="flex-end">
-                          <Typography>
-                          {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
-                          </Typography>
-                          { row2.Growth >= 0
-                          ? <TrendingUpIcon
-                              style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          : <TrendingDownIcon
-                              style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          }
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-};
-
-const CustomCategorySalesCountRow = ({ row }) => {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          { row.Variant && 
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          }
-        </TableCell>
-        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-          <Typography>
-            {row.Rank}
-          </Typography>
-        </TableCell>
-        <TableCell align="left">
-          <Grid container style={{marginTop: 10}}>
-            <img 
-              src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
-              width={75} 
-              height={75} 
-              style={{borderRadius: 5}} 
-              alt="Product Image"
-            />
-            <Typography 
-              style={{
-                  color: "#000", 
-                  fontSize: 16,
-                  fontWeight: 500,
-                  marginTop: 5,
-                  marginLeft: 10
-              }}
-            >
-              {row.ProductCategoryName}
-              <br/>
-              <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-            </Typography>
-          </Grid>
-        </TableCell>
-        <TableCell align="right" style={{width: 225}}>
-          <Typography>
-            {Intl.NumberFormat('id').format(row.Value)}
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 150}}>
-          <Typography>
-            {Intl.NumberFormat('id').format(row.Proportion)}%
-          </Typography>
-        </TableCell>
-        <TableCell align="right" style={{width: 175}}>
-          <Grid container justifyContent="flex-end">
-            <Typography>
-              {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-            </Typography>
-            { row.Growth >= 0
-            ? <TrendingUpIcon
-                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            : <TrendingDownIcon
-                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                />
-            }
-          </Grid>
-        </TableCell>
-      </TableRow>
-      <TableRow style={{ backgroundColor: '#fcfcfc' }}>
-        <TableCell style={{ padding: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 0 }}>
-              <Table sx={{ minWidth: 650 }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Peringkat</TableCell>
-                    <TableCell align="left">Informasi Varian</TableCell>
-                    <TableCell align="right">Total Produk Dipesan</TableCell>
-                    <TableCell align="right">Proporsi</TableCell>
-                    <TableCell align="right">Tingkat Perubahan</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.Variant && row.Variant.map((row2) => (
-                    <TableRow
-                      key={row2.Rank}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                        <Typography>
-                            {row2.Rank}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Grid container style={{marginTop: 10}}>
-                          <Typography 
-                          style={{
-                              color: "#000", 
-                              fontSize: 16,
-                              fontWeight: 500,
-                              marginTop: 5
-                          }}
-                          >
-                          {row2.ProductName}
-                          <br/>
-                          <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
-                          </Typography>
-                        </Grid>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 225}}>
-                        <Typography>
-                          {Intl.NumberFormat('id').format(row2.Value)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 150}}>
-                        <Typography>
-                          {Intl.NumberFormat('id').format(row2.Proportion)}%
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" style={{width: 175}}>
-                        <Grid container justifyContent="flex-end">
-                          <Typography>
-                          {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
-                          </Typography>
-                          { row2.Growth >= 0
-                          ? <TrendingUpIcon
-                              style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          : <TrendingDownIcon
-                              style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                              />
-                          }
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-};
-
 const ProductRanking = () => {
   const classes = useStyles();
   const theme = useTheme();
@@ -685,6 +85,8 @@ const ProductRanking = () => {
   const [newFetchActive, setNewFetchActive] = React.useState(false);
   const [dateOption, setDateOption] = React.useState('realtime');
   const [dataRange, setDataRange] = React.useState('realtime');
+  const [currentStartDate, setCurrentStartDate] = React.useState();
+  const [currentEndDate, setCurrentEndDate] = React.useState();
 
   const [modelSalesData, setModelSalesData] = React.useState();
   const [modelSalesCountData, setModelSalesCountData] = React.useState();
@@ -935,6 +337,8 @@ const ProductRanking = () => {
       let processedData;
       processedData = result.data;
 
+      console.log(Math.floor(processedData.Value / 10) + 1);
+
       setModelSalesPageCount(Math.floor(processedData.Value / 10) + 1);
     };
 
@@ -1127,6 +531,9 @@ const ProductRanking = () => {
 
         setCustomDateRange(`${moment(newStartDate).format('DD-MM-YYYY')} - ${moment(newEndDate).format('DD-MM-YYYY')}`);
       }
+
+      setCurrentStartDate(startDate);
+      setCurrentEndDate(endDate);
 
       let indexArray = new Array();
       indexArray.push(1);
@@ -1721,6 +1128,786 @@ const ProductRanking = () => {
     
     setNewFetchActive(false);
   }, [newFetchActive]);
+
+  const CustomSalesRow = ({ row }) => {
+    const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const [empty, setEmpty] = React.useState(false);
+
+    const fetchModelSalesDetailData = async (startDate, endDate, modelName, categoryName) => {
+      setLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsalesdetail?startDate=${startDate}&endDate=${endDate}&modelName=${modelName}&categoryName=${categoryName}`);
+  
+      let processedData;
+      processedData = result.data;
+
+      if (processedData.Data.length == 0) {
+        setEmpty(true);
+        setLoading(false);
+        return;
+      }
+
+      let tempData = modelSalesData;
+      let tempCacheData = modelSalesCachePaginationData;
+
+      for (const data of tempData.Data) {
+        if (data.ModelName == modelName && data.CategoryName == categoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      for (const data of tempCacheData.Data) {
+        if (data.ModelName == modelName && data.CategoryName == categoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      setModelSalesData(tempData);
+      setModelSalesCachePaginationData(tempCacheData);
+      setOpen(true);
+      setLoading(false);
+    };
+  
+    return (
+      <>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+          <TableCell>
+            { !empty && 
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => {
+                  if (loading == false) {
+                    if (row.Variant.length == 0)
+                      fetchModelSalesDetailData(currentStartDate, currentEndDate, row.ModelName, row.CategoryName);
+                    else
+                      setOpen(!open);
+                  }
+                }}
+              >
+                {loading ? <CircularProgress size={21} /> : open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            }
+          </TableCell>
+          <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+            <Typography>
+              {row.Rank}
+            </Typography>
+          </TableCell>
+          <TableCell align="left">
+            <Grid container style={{marginTop: 10}}>
+              <img 
+                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                width={75} 
+                height={75} 
+                style={{borderRadius: 5}} 
+                alt="Product Image"
+              />
+              <Typography 
+                style={{
+                    color: "#000", 
+                    fontSize: 16,
+                    fontWeight: 500,
+                    marginTop: 5,
+                    marginLeft: 10
+                }}
+              >
+                {row.ProductName}
+                <br/>
+                <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+              </Typography>
+            </Grid>
+          </TableCell>
+          <TableCell align="right" style={{width: 225}}>
+            <Typography>
+              Rp {Intl.NumberFormat('id').format(row.Value)}
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 150}}>
+            <Typography>
+              {Intl.NumberFormat('id').format(row.Proportion)}%
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 175}}>
+            <Grid container justifyContent="flex-end">
+              <Typography>
+                {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+              </Typography>
+              { row.Growth >= 0
+              ? <TrendingUpIcon
+                  style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              : <TrendingDownIcon
+                  style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              }
+            </Grid>
+          </TableCell>
+        </TableRow>
+        <TableRow style={{ backgroundColor: '#fcfcfc' }}>
+          <TableCell style={{ padding: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 0 }}>
+                <Table sx={{ minWidth: 650 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Peringkat</TableCell>
+                      <TableCell align="left">Informasi Varian</TableCell>
+                      <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                      <TableCell align="right">Proporsi</TableCell>
+                      <TableCell align="right">Tingkat Perubahan</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {row.Variant && row.Variant.map((row2) => (
+                      <TableRow
+                        key={row2.Rank}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                          <Typography>
+                              {row2.Rank}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Grid container style={{marginTop: 10}}>
+                            <Typography 
+                            style={{
+                                color: "#000", 
+                                fontSize: 16,
+                                fontWeight: 500,
+                                marginTop: 5
+                            }}
+                            >
+                            {row2.ProductName}
+                            <br/>
+                            <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
+                            </Typography>
+                          </Grid>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 225}}>
+                          <Typography>
+                            Rp {Intl.NumberFormat('id').format(row2.Value)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 150}}>
+                          <Typography>
+                            {Intl.NumberFormat('id').format(row2.Proportion)}%
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 175}}>
+                          <Grid container justifyContent="flex-end">
+                            <Typography>
+                            {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
+                            </Typography>
+                            { row2.Growth >= 0
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            }
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
+    );
+  };
+
+  const CustomSalesCountRow = ({ row }) => {
+    const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const [empty, setEmpty] = React.useState(false);
+
+    const fetchModelSalesCountDetailData = async (startDate, endDate, modelName, categoryName) => {
+      setLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsalescountdetail?startDate=${startDate}&endDate=${endDate}&modelName=${modelName}&categoryName=${categoryName}`);
+  
+      let processedData;
+      processedData = result.data;
+
+      if (processedData.Data.length == 0) {
+        setEmpty(true);
+        setLoading(false);
+        return;
+      }
+
+      let tempData = modelSalesCountData;
+      let tempCacheData = modelSalesCountCachePaginationData;
+
+      for (const data of tempData.Data) {
+        if (data.ModelName == modelName && data.CategoryName == categoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      for (const data of tempCacheData.Data) {
+        if (data.ModelName == modelName && data.CategoryName == categoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      setModelSalesCountData(tempData);
+      setModelSalesCountCachePaginationData(tempCacheData);
+      setOpen(true);
+      setLoading(false);
+    };
+  
+    return (
+      <>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+            { !empty && 
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => {
+                  if (loading == false) {
+                    if (row.Variant.length == 0)
+                      fetchModelSalesCountDetailData(currentStartDate, currentEndDate, row.ModelName, row.CategoryName);
+                    else
+                      setOpen(!open);
+                  }
+                }}
+              >
+                {loading ? <CircularProgress size={21} /> : open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            }
+          </TableCell>
+          <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+            <Typography>
+              {row.Rank}
+            </Typography>
+          </TableCell>
+          <TableCell align="left">
+            <Grid container style={{marginTop: 10}}>
+              <img 
+                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                width={75} 
+                height={75} 
+                style={{borderRadius: 5}} 
+                alt="Product Image"
+              />
+              <Typography 
+                style={{
+                    color: "#000", 
+                    fontSize: 16,
+                    fontWeight: 500,
+                    marginTop: 5,
+                    marginLeft: 10
+                }}
+              >
+                {row.ProductName}
+                <br/>
+                <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+              </Typography>
+            </Grid>
+          </TableCell>
+          <TableCell align="right" style={{width: 225}}>
+            <Typography>
+              {Intl.NumberFormat('id').format(row.Value)}
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 150}}>
+            <Typography>
+              {Intl.NumberFormat('id').format(row.Proportion)}%
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 175}}>
+            <Grid container justifyContent="flex-end">
+              <Typography>
+                {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+              </Typography>
+              { row.Growth >= 0
+              ? <TrendingUpIcon
+                  style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              : <TrendingDownIcon
+                  style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              }
+            </Grid>
+          </TableCell>
+        </TableRow>
+        <TableRow style={{ backgroundColor: '#fcfcfc' }}>
+          <TableCell style={{ padding: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 0 }}>
+                <Table sx={{ minWidth: 650 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Peringkat</TableCell>
+                      <TableCell align="left">Informasi Varian</TableCell>
+                      <TableCell align="right">Total Produk Dipesan</TableCell>
+                      <TableCell align="right">Proporsi</TableCell>
+                      <TableCell align="right">Tingkat Perubahan</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {row.Variant && row.Variant.map((row2) => (
+                      <TableRow
+                        key={row2.Rank}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                          <Typography>
+                              {row2.Rank}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Grid container style={{marginTop: 10}}>
+                            <Typography 
+                            style={{
+                                color: "#000", 
+                                fontSize: 16,
+                                fontWeight: 500,
+                                marginTop: 5
+                            }}
+                            >
+                            {row2.ProductName}
+                            <br/>
+                            <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
+                            </Typography>
+                          </Grid>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 225}}>
+                          <Typography>
+                            {Intl.NumberFormat('id').format(row2.Value)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 150}}>
+                          <Typography>
+                            {Intl.NumberFormat('id').format(row2.Proportion)}%
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 175}}>
+                          <Grid container justifyContent="flex-end">
+                            <Typography>
+                            {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
+                            </Typography>
+                            { row2.Growth >= 0
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            }
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
+    );
+  };
+
+  const CustomCategorySalesRow = ({ row }) => {
+    const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const [empty, setEmpty] = React.useState(false);
+
+    const fetchCategorySalesDetailData = async (startDate, endDate, productCategoryName) => {
+      setLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysalesdetail?startDate=${startDate}&endDate=${endDate}&productCategoryName=${productCategoryName}`);
+  
+      let processedData;
+      processedData = result.data;
+
+      if (processedData.Data.length == 0) {
+        setEmpty(true);
+        setLoading(false);
+        return;
+      }
+
+      let tempData = categorySalesData;
+      let tempCacheData = categorySalesCachePaginationData;
+
+      for (const data of tempData.Data) {
+        if (data.ProductCategoryName == productCategoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      for (const data of tempCacheData.Data) {
+        if (data.ProductCategoryName == productCategoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      setCategorySalesData(tempData);
+      setCategorySalesCachePaginationData(tempCacheData);
+      setOpen(true);
+      setLoading(false);
+    };
+  
+    return (
+      <>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+          <TableCell>
+            { !empty && 
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => {
+                  if (loading == false) {
+                    if (row.Variant.length == 0)
+                      fetchCategorySalesDetailData(currentStartDate, currentEndDate, row.ProductCategoryName);
+                    else
+                      setOpen(!open);
+                  }
+                }}
+              >
+                {loading ? <CircularProgress size={21} /> : open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            }
+          </TableCell>
+          <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+            <Typography>
+              {row.Rank}
+            </Typography>
+          </TableCell>
+          <TableCell align="left">
+            <Grid container style={{marginTop: 10}}>
+              <img 
+                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                width={75} 
+                height={75} 
+                style={{borderRadius: 5}} 
+                alt="Product Image"
+              />
+              <Typography 
+                style={{
+                    color: "#000", 
+                    fontSize: 16,
+                    fontWeight: 500,
+                    marginTop: 5,
+                    marginLeft: 10
+                }}
+              >
+                {row.ProductCategoryName}
+                <br/>
+                <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+              </Typography>
+            </Grid>
+          </TableCell>
+          <TableCell align="right" style={{width: 225}}>
+            <Typography>
+              Rp {Intl.NumberFormat('id').format(row.Value)}
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 150}}>
+            <Typography>
+              {Intl.NumberFormat('id').format(row.Proportion)}%
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 175}}>
+            <Grid container justifyContent="flex-end">
+              <Typography>
+                {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+              </Typography>
+              { row.Growth >= 0
+              ? <TrendingUpIcon
+                  style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              : <TrendingDownIcon
+                  style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              }
+            </Grid>
+          </TableCell>
+        </TableRow>
+        <TableRow style={{ backgroundColor: '#fcfcfc' }}>
+          <TableCell style={{ padding: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 0 }}>
+                <Table sx={{ minWidth: 650 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Peringkat</TableCell>
+                      <TableCell align="left">Informasi Varian</TableCell>
+                      <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                      <TableCell align="right">Proporsi</TableCell>
+                      <TableCell align="right">Tingkat Perubahan</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {row.Variant && row.Variant.map((row2) => (
+                      <TableRow
+                        key={row2.Rank}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                          <Typography>
+                              {row2.Rank}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Grid container style={{marginTop: 10}}>
+                            <Typography 
+                            style={{
+                                color: "#000", 
+                                fontSize: 16,
+                                fontWeight: 500,
+                                marginTop: 5
+                            }}
+                            >
+                            {row2.ProductName}
+                            <br/>
+                            <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
+                            </Typography>
+                          </Grid>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 225}}>
+                          <Typography>
+                            Rp {Intl.NumberFormat('id').format(row2.Value)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 150}}>
+                          <Typography>
+                            {Intl.NumberFormat('id').format(row2.Proportion)}%
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 175}}>
+                          <Grid container justifyContent="flex-end">
+                            <Typography>
+                            {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
+                            </Typography>
+                            { row2.Growth >= 0
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            }
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
+    );
+  };
+
+  const CustomCategorySalesCountRow = ({ row }) => {
+    const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const [empty, setEmpty] = React.useState(false);
+
+    const fetchCategorySalesCountDetailData = async (startDate, endDate, productCategoryName) => {
+      setLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysalescountdetail?startDate=${startDate}&endDate=${endDate}&productCategoryName=${productCategoryName}`);
+  
+      let processedData;
+      processedData = result.data;
+
+      if (processedData.Data.length == 0) {
+        setEmpty(true);
+        setLoading(false);
+        return;
+      }
+
+      let tempData = categorySalesCountData;
+      let tempCacheData = categorySalesCountCachePaginationData;
+
+      for (const data of tempData.Data) {
+        if (data.ProductCategoryName == productCategoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      for (const data of tempCacheData.Data) {
+        if (data.ProductCategoryName == productCategoryName) {
+          data.Variant = processedData.Data;
+          break;
+        }
+      }
+
+      setCategorySalesCountData(tempData);
+      setCategorySalesCountCachePaginationData(tempCacheData);
+      setOpen(true);
+      setLoading(false);
+    };
+  
+    return (
+      <>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+          <TableCell>
+            { !empty && 
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => {
+                  if (loading == false) {
+                    if (row.Variant.length == 0)
+                      fetchCategorySalesCountDetailData(currentStartDate, currentEndDate, row.ProductCategoryName);
+                    else
+                      setOpen(!open);
+                  }
+                }}
+              >
+                {loading ? <CircularProgress size={21} /> : open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            }
+          </TableCell>
+          <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+            <Typography>
+              {row.Rank}
+            </Typography>
+          </TableCell>
+          <TableCell align="left">
+            <Grid container style={{marginTop: 10}}>
+              <img 
+                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                width={75} 
+                height={75} 
+                style={{borderRadius: 5}} 
+                alt="Product Image"
+              />
+              <Typography 
+                style={{
+                    color: "#000", 
+                    fontSize: 16,
+                    fontWeight: 500,
+                    marginTop: 5,
+                    marginLeft: 10
+                }}
+              >
+                {row.ProductCategoryName}
+                <br/>
+                <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+              </Typography>
+            </Grid>
+          </TableCell>
+          <TableCell align="right" style={{width: 225}}>
+            <Typography>
+              {Intl.NumberFormat('id').format(row.Value)}
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 150}}>
+            <Typography>
+              {Intl.NumberFormat('id').format(row.Proportion)}%
+            </Typography>
+          </TableCell>
+          <TableCell align="right" style={{width: 175}}>
+            <Grid container justifyContent="flex-end">
+              <Typography>
+                {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+              </Typography>
+              { row.Growth >= 0
+              ? <TrendingUpIcon
+                  style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              : <TrendingDownIcon
+                  style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                  />
+              }
+            </Grid>
+          </TableCell>
+        </TableRow>
+        <TableRow style={{ backgroundColor: '#fcfcfc' }}>
+          <TableCell style={{ padding: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 0 }}>
+                <Table sx={{ minWidth: 650 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Peringkat</TableCell>
+                      <TableCell align="left">Informasi Varian</TableCell>
+                      <TableCell align="right">Total Produk Dipesan</TableCell>
+                      <TableCell align="right">Proporsi</TableCell>
+                      <TableCell align="right">Tingkat Perubahan</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {row.Variant && row.Variant.map((row2) => (
+                      <TableRow
+                        key={row2.Rank}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                          <Typography>
+                              {row2.Rank}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Grid container style={{marginTop: 10}}>
+                            <Typography 
+                            style={{
+                                color: "#000", 
+                                fontSize: 16,
+                                fontWeight: 500,
+                                marginTop: 5
+                            }}
+                            >
+                            {row2.ProductName}
+                            <br/>
+                            <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row2.ProductID}</span>
+                            </Typography>
+                          </Grid>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 225}}>
+                          <Typography>
+                            {Intl.NumberFormat('id').format(row2.Value)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 150}}>
+                          <Typography>
+                            {Intl.NumberFormat('id').format(row2.Proportion)}%
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 175}}>
+                          <Grid container justifyContent="flex-end">
+                            <Typography>
+                            {Intl.NumberFormat('id').format(Math.abs(row2.Growth))}%
+                            </Typography>
+                            { row2.Growth >= 0
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                />
+                            }
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
+    );
+  };
 
   return (
     <div className={classes.root}>
