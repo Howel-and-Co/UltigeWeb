@@ -6,7 +6,7 @@ const NavButton = props => {
   return (
     <Link href={props.path}>
       <a style={{textDecoration: 'none', color: 'inherit'}}>
-        { router.pathname === props.path ?
+        { router.pathname.includes(props.path) ?
           <div
             style={{ color: "#8854D0" }}
           >

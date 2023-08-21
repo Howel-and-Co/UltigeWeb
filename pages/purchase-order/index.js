@@ -91,7 +91,7 @@ const CustomizeCell = (args) => {
 
   if (args.column.field === "PaymentMenuDescription" && args.data && args.cell) {
     if (getValue('PaymentMenuDescription', args.data) == 'BARU') {
-      args.cell.style.backgroundColor = '#0000FF'
+      args.cell.style.backgroundColor = '#0080FF'
     }
     else if (getValue('PaymentMenuDescription', args.data) == 'LAMA') {
       args.cell.style.backgroundColor = '#FF8C00'
@@ -220,7 +220,7 @@ const PurchaseOrder = () => {
 				object.DealType = dataItem.DealType;
 				object.PaymentMenuDescription = dataItem.PaymentMenuDescription;
 				object.ContractType = dataItem.ContractType;
-        object.Notes = dataItem.Notes.length > 25 ? dataItem.Notes.substring(0, 25) + "..." : dataItem.Notes;
+        object.Notes = dataItem.Notes != null && dataItem.Notes.length > 25 ? dataItem.Notes.substring(0, 25) + "..." : dataItem.Notes;
 				object.CreatedBy = dataItem.CreatedBy;
 				object.CreateDate = dataItem.CreateDate;
 				object.SettleDate = dataItem.SettleDate;
