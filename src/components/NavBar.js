@@ -92,7 +92,7 @@ const useStyles = makeStyles(theme => ({
 const NavBar = ({isPrivate = true}) => {
   const classes = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = true;
   const router = useRouter();
   
   const [openDrawer, setOpenDrawer] = React.useState(false);
@@ -130,18 +130,18 @@ const NavBar = ({isPrivate = true}) => {
             }
 
             { isPrivate ?
-              <Grid item style={{ flexDirection: "column" }} md={4}>
+              <Grid item style={{ flexDirection: "column" }}>
                 <Link href= {checkToken() ? "/login" : "/analytic"}>
                   <a>
                     <img
                       style={{ paddingTop: 14, paddingBottom: 14, width: 100, marginLeft: checkToken() ? 0 : 15 }}
-                      src="/howel-logo.svg"
+                      src="/howel-logo.svg"   
                       alt=""
                     />
                   </a>
                 </Link>
               </Grid> :
-              <Grid item style={{ flexDirection: "column" }} md={4}>
+              <Grid item style={{ flexDirection: "column" }}>
                 <img
                   style={{ paddingTop: 14, paddingBottom: 14, width: 100, marginLeft: 15 }}
                   src="/howel-logo.svg"
@@ -230,7 +230,7 @@ const NavBar = ({isPrivate = true}) => {
                         index={index.toString()}
                         style={{ animationDuration: (index + 3) * 0.15 + "s" }}
                       >
-                        { router.pathname === item.path ?
+                        { router.pathname.includes(item.path) ?
                           <ListItemText
                             primary={item.label}
                             className={classes.menuListCurrent}
