@@ -257,7 +257,7 @@ const PurchaseOrderDetail = () => {
     const fetchPurchaseOrderDetailData = async (purchaseOrderID) => {
         setDataLoading(true);
 
-        const result = await axios.get(`http://localhost:5000/ultigeapi/web/purchaseorder/getpurchaseorderdetail?purchaseOrderID=${purchaseOrderID}`);
+        const result = await axios.get(`https://api.ultige.com/ultigeapi/web/purchaseorder/getpurchaseorderdetail?purchaseOrderID=${purchaseOrderID}`);
 
         let processedData;
         processedData = result.data;
@@ -424,7 +424,7 @@ const PurchaseOrderDetail = () => {
 
         const result = await axios({
             method: 'put',
-            url: 'http://localhost:5000/ultigeapi/web/purchaseorder/updatepurchaseorder',
+            url: 'https://api.ultige.com/ultigeapi/web/purchaseorder/updatepurchaseorder',
             data: {
                 purchaseOrderID: purchaseOrderID,
                 approvalStatus: approvalStatus,
@@ -464,7 +464,7 @@ const PurchaseOrderDetail = () => {
 
         const result = await axios({
             method: 'put',
-            url: 'http://localhost:5000/ultigeapi/web/purchaseorder/updatepurchaseorder',
+            url: 'https://api.ultige.com/ultigeapi/web/purchaseorder/updatepurchaseorder',
             data: {
                 purchaseOrderID: purchaseOrderID,
                 approvalStatus: approvalStatus,
@@ -913,11 +913,11 @@ const PurchaseOrderDetail = () => {
                                 <Grid item xs={6} style={{marginTop: 26}}>
                                     <Box className={classes.inlineReverse} style={{marginLeft: 5, marginRight: 5}}>
                                         <Button 
-                                            variant="outlined"
+                                            variant="contained"
                                             style={{
                                                 borderRadius: 4,
                                                 textTransform: "none",
-                                                color: "#F14343",
+                                                backgroundColor: "#F14343",
                                                 height: 40
                                             }}
                                             disableRipple
@@ -927,12 +927,12 @@ const PurchaseOrderDetail = () => {
                                             Reject
                                         </Button>
                                         <Button 
-                                            variant="outlined"
+                                            variant="contained"
                                             style={{
                                                 borderRadius: 4,
                                                 textTransform: "none",
                                                 marginRight: 5,
-                                                color: "#3C8F4A",
+                                                backgroundColor: "#3C8F4A",
                                                 height: 40
                                             }}
                                             disableRipple
