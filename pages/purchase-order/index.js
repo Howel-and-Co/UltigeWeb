@@ -56,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row"
   },
+  inlineReverse: {
+    display: "flex",
+    flexDirection: "row-reverse"
+  },
   formControl: {
     margin: theme.spacing(1),
     display: "flex",
@@ -200,7 +204,7 @@ const PurchaseOrder = () => {
     const fetchPurchaseOrderData = async (startDate, endDate, dateFilter) => {
       setDataLoading(true);
 
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/purchaseorder/getpurchaseorderbydate?startDate=${startDate}&endDate=${endDate}&dateFilter=${dateFilter}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/purchaseorder/getpurchaseorderbydate?startDate=${startDate}&endDate=${endDate}&dateFilter=${dateFilter}`);
 
       let processedData;
       processedData = result.data;
@@ -298,8 +302,9 @@ const PurchaseOrder = () => {
                     List Purchase Order
                   </Typography>
                 </Grid>
-                <Grid item xs={12} sm={7} container justifyContent="flex-end">
-                  <Box className={classes.inline}>
+                <Grid item xs={12} sm={7}>
+                  <Box className={classes.inlineReverse} style={{marginLeft: 0}}>
+                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
                       <Typography 
                           style={{
                               color: "#000", 
@@ -309,7 +314,6 @@ const PurchaseOrder = () => {
                       >
                           Cari
                       </Typography>
-                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -325,7 +329,7 @@ const PurchaseOrder = () => {
                             marginLeft: 9
                           }}
                         >
-                          Tanggal<br/>Awal
+                          Jenis<br/>Tanggal
                         </Typography>
                       : <Typography 
                           style={{
@@ -340,7 +344,7 @@ const PurchaseOrder = () => {
                           Tanggal
                         </Typography>
                     }
-                    <FormControl variant="outlined" style={{marginTop: 6, marginRight: 10, display: "flex", flexDirection: "row"}}>
+                    <FormControl variant="outlined" style={{marginTop: isMobile ? 16 : 6, marginRight: 10, display: "flex", flexDirection: "row"}}>
                       <InputLabel>Date Type</InputLabel>
                         <Select
                           value={dateType}
@@ -354,16 +358,16 @@ const PurchaseOrder = () => {
                           ))}
                         </Select>
                     </FormControl>
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <KeyboardDatePicker
-                        variant="inline"
-                        format="YYYY-MM-DD"
-                        label="Start Date"
-                        value={purchaseOrderStartDate}
-                        style={{marginRight: 10, minWidth: 150, maxWidth: 150}}
-                        onChange={handlePurchaseOrderStartDateChange}
-                      />
-                      { !isMobile && 
+                    { !isMobile && 
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="Start Date"
+                          value={purchaseOrderStartDate}
+                          style={{marginRight: 10, minWidth: 150, maxWidth: 150}}
+                          onChange={handlePurchaseOrderStartDateChange}
+                        />
                         <KeyboardDatePicker
                           variant="inline"
                           format="YYYY-MM-DD"
@@ -372,11 +376,67 @@ const PurchaseOrder = () => {
                           style={{minWidth: 150, maxWidth: 150}}
                           onChange={handlePurchaseOrderEndDateChange}
                         />
-                      }
-                    </MuiPickersUtilsProvider>
+                      </MuiPickersUtilsProvider>
+                    }
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={4} container justifyContent="flex-end">
+                { isMobile && 
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Awal
+                      </Typography>
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="Start Date"
+                          value={purchaseOrderStartDate}
+                          style={{marginTop: 10, minWidth: 150, maxWidth: 150}}
+                          onChange={handlePurchaseOrderStartDateChange}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Box>
+                  </Grid>
+                }
+                { isMobile && 
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Akhir
+                      </Typography>
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          variant="inline"
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={purchaseOrderEndDate}
+                          style={{marginTop: 10, minWidth: 150, maxWidth: 150}}
+                          onChange={handlePurchaseOrderEndDateChange}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Box>
+                  </Grid>
+                }
+                <Grid item sm={12} md={4} container justifyContent="flex-end">
                   <Button 
                       variant="outlined"
                       style={{

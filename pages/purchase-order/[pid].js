@@ -8,10 +8,12 @@ import {
   CircularProgress,
   TextField,
   Dialog,
-  DialogContent
+  DialogContent,
+  Button
 } from "@material-ui/core";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Cookies from "js-cookie";
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
@@ -71,7 +73,9 @@ const useStyles = makeStyles((theme) => ({
 const PurchaseOrderDetail = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isLaptop = useMediaQuery(theme.breakpoints.down("md"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
   const router = useRouter();
   const { pid } = router.query;
 
@@ -81,6 +85,8 @@ const PurchaseOrderDetail = () => {
   moment.locale('id');
 
   const [fetchActive, setFetchActive] = React.useState(false);
+  const [approveActive, setApproveActive] = React.useState(false);
+  const [rejectActive, setRejectActive] = React.useState(false);
 
   const [name, setName] = React.useState();
   const [dealType, setDealType] = React.useState();
@@ -251,7 +257,7 @@ const PurchaseOrderDetail = () => {
     const fetchPurchaseOrderDetailData = async (purchaseOrderID) => {
         setDataLoading(true);
 
-        const result = await axios.get(`https://api.ultige.com/ultigeapi/web/purchaseorder/getpurchaseorderdetail?purchaseOrderID=${purchaseOrderID}`);
+        const result = await axios.get(`http://localhost:5000/ultigeapi/web/purchaseorder/getpurchaseorderdetail?purchaseOrderID=${purchaseOrderID}`);
 
         let processedData;
         processedData = result.data;
@@ -271,6 +277,7 @@ const PurchaseOrderDetail = () => {
         if (processedData.Data.PurchaseOrderDetail.EstimationDate != null)
             setEstimationDate(moment(processedData.Data.PurchaseOrderDetail.EstimationDate).format("DD/MM/YYYY"));
         setStatusDescription(processedData.Data.PurchaseOrderDetail.StatusDescription);
+        //setStatusDescription("CANCELLED");
         setShippingCost("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(processedData.Data.PurchaseOrderDetail.ShippingCost));
         if (processedData.Data.PurchaseOrderDetail.CreateDate != null)
             setCreateDate(moment(processedData.Data.PurchaseOrderDetail.CreateDate).format("DD/MM/YYYY"));
@@ -296,6 +303,7 @@ const PurchaseOrderDetail = () => {
 
         setPPNPercentage(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(processedData.Data.PurchaseOrderDetail.PPNPercentage) + "%");
         setFreezeNotes(processedData.Data.PurchaseOrderDetail.FreezeNotes);
+        //setFreezeNotes("TEST");
 
         let newData = new Array();
 
@@ -410,6 +418,86 @@ const PurchaseOrderDetail = () => {
     }
   }, [pid, fetchActive]);
 
+  useEffect(() => {
+    const processApprovePurchaseOrder = async (purchaseOrderID, approvalStatus, userID) => {
+        setDataLoading(true);
+
+        const result = await axios({
+            method: 'put',
+            url: 'http://localhost:5000/ultigeapi/web/purchaseorder/updatepurchaseorder',
+            data: {
+                purchaseOrderID: purchaseOrderID,
+                approvalStatus: approvalStatus,
+                userID: userID
+            }
+        });
+
+        let processedData;
+        processedData = result.data;
+        
+        if (processedData.Status.Code == 200) {
+            window.alert("PO berhasil diapprove");
+            setFetchActive(true);
+        }
+        else {
+            window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
+            setDataLoading(false);
+        }
+    };
+
+    if (approveActive == true) {
+        if (window.confirm("Approve PO?") == false) {
+            setApproveActive(false);
+            return;
+        } 
+
+        let userID = Cookies.get("userid");
+
+        processApprovePurchaseOrder(pid, 1, userID);
+        setApproveActive(false);
+    }
+  }, [approveActive]);
+
+  useEffect(() => {
+    const processRejectPurchaseOrder = async (purchaseOrderID, approvalStatus, userID) => {
+        setDataLoading(true);
+
+        const result = await axios({
+            method: 'put',
+            url: 'http://localhost:5000/ultigeapi/web/purchaseorder/updatepurchaseorder',
+            data: {
+                purchaseOrderID: purchaseOrderID,
+                approvalStatus: approvalStatus,
+                userID: userID
+            }
+        });
+
+        let processedData;
+        processedData = result.data;
+        
+        if (processedData.Status.Code == 200) {
+            window.alert("Approval PO berhasil ditolak");
+            setFetchActive(true);
+        }
+        else {
+            window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
+            setDataLoading(false);
+        }
+    };
+
+    if (rejectActive == true) {
+        if (window.confirm("Tolak approval PO?") == false) {
+            setRejectActive(false);
+            return;
+        } 
+
+        let userID = Cookies.get("userid");
+
+        processRejectPurchaseOrder(pid, 2, userID);
+        setRejectActive(false);
+    }
+  }, [rejectActive]);
+
   return (
     <div className={classes.root} ref={componentRef}>
       <Layout>
@@ -419,7 +507,7 @@ const PurchaseOrderDetail = () => {
         </Head>
 
         <Grid container style={{padding: 5}}>
-          <Grid container xs={4}>
+          <Grid container sm={12} md={5} lg={4}>
             <Grid item xs={12}>
                 <Paper className={classes.paper} elevation={3}>
                     <Grid container style={{height: 300}}>
@@ -789,36 +877,101 @@ const PurchaseOrderDetail = () => {
                     </Grid>
                 </Paper>
             </Grid>
-            <Grid item xs={12} style={{marginBottom: statusDescription == "CANCELLED" ? 0 : 120}}>
+            <Grid item xs={12} style={{marginBottom: statusDescription == "CANCELLED" ? 0 : isTablet ? 0 : isLaptop ? (freezeNotes == null ? 480 : 680) : 120}}>
                 <Paper className={classes.paper} elevation={3}>
                     <Grid container style={{height: 300}}>
-                        <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 3
-                                }}
-                            >
-                                Status Approval PO:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    style: {color: ApprovalStatusDescriptionColor(approvalStatusDescription)}
-                                }}
-                                style={{
-                                    width: "100%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    padding: 0
-                                }}
-                                value={approvalStatusDescription} 
-                            />
-                        </Grid> 
+                        { approvalStatusDescription == "PENDING" ?
+                            <>
+                                <Grid item xs={6}>
+                                    <Typography 
+                                        style={{
+                                            color: "#000", 
+                                            fontSize: 18,
+                                            marginLeft: 8
+                                        }}
+                                    >
+                                        Status Approval PO:
+                                    </Typography>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="dense"
+                                        size="small"
+                                        InputProps={{
+                                            readOnly: true,
+                                            style: {color: ApprovalStatusDescriptionColor(approvalStatusDescription)}
+                                        }}
+                                        style={{
+                                            width: "95%",
+                                            marginTop: 0,
+                                            marginBottom: 4,
+                                            marginLeft: 5,
+                                            padding: 0
+                                        }}
+                                        value={approvalStatusDescription} 
+                                    />
+                                </Grid>  
+                                <Grid item xs={6} style={{marginTop: 26}}>
+                                    <Box className={classes.inlineReverse} style={{marginLeft: 5, marginRight: 5}}>
+                                        <Button 
+                                            variant="outlined"
+                                            style={{
+                                                borderRadius: 4,
+                                                textTransform: "none",
+                                                color: "#F14343",
+                                                height: 40
+                                            }}
+                                            disableRipple
+                                            disableElevation
+                                            onClick={() => setRejectActive(true)}
+                                        >
+                                            Reject
+                                        </Button>
+                                        <Button 
+                                            variant="outlined"
+                                            style={{
+                                                borderRadius: 4,
+                                                textTransform: "none",
+                                                marginRight: 5,
+                                                color: "#3C8F4A",
+                                                height: 40
+                                            }}
+                                            disableRipple
+                                            disableElevation
+                                            onClick={() => setApproveActive(true)}
+                                        >
+                                            Approve
+                                        </Button>
+                                    </Box>
+                                </Grid>
+                            </> :
+                            <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 18,
+                                        marginLeft: 3
+                                    }}
+                                >
+                                    Status Approval PO:
+                                </Typography>
+                                <TextField
+                                    variant="outlined"
+                                    margin="dense"
+                                    size="small"
+                                    InputProps={{
+                                        readOnly: true,
+                                        style: {color: ApprovalStatusDescriptionColor(approvalStatusDescription)}
+                                    }}
+                                    style={{
+                                        width: "100%",
+                                        marginTop: 0,
+                                        marginBottom: 4,
+                                        padding: 0
+                                    }}
+                                    value={approvalStatusDescription} 
+                                />
+                            </Grid> 
+                        }
                         <Grid item xs={6}>
                             <Typography 
                                 style={{
@@ -929,7 +1082,7 @@ const PurchaseOrderDetail = () => {
                 </Paper>
             </Grid>
             { statusDescription == "CANCELLED" && 
-                <Grid item xs={12}>
+                <Grid item xs={12} style={{marginBottom: isTablet ? 0 : isLaptop ? (freezeNotes == null ? 110 : 310) : 0}}>
                     <Paper className={classes.paper} elevation={3}>
                         <Grid container style={{height: 355}}>
                             <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
@@ -1100,8 +1253,8 @@ const PurchaseOrderDetail = () => {
                 </Grid>
             }
           </Grid>
-          <Grid container xs={8}>
-            <Grid item xs={6}>
+          <Grid container sm={12} md={7} lg={8}>
+            <Grid item xs={12} md={12} lg={6}>
                 <Paper className={classes.paper} elevation={3}>
                     <Grid container style={{height: 250}}>
                         <Grid item xs={12}>
@@ -1173,7 +1326,7 @@ const PurchaseOrderDetail = () => {
                     </Grid>
                 </Paper>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={12} lg={6}>
                 <Paper className={classes.paper} elevation={3}>
                     <Grid container style={{height: 250}}>
                     <Grid item xs={12}>
@@ -1346,7 +1499,7 @@ const PurchaseOrderDetail = () => {
                     </Grid>
                 </Paper>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} md={12} lg={3}>
                 <Paper className={classes.paper} style={{marginBottom: 10}} elevation={3}>
                     <Grid container style={{height: 75}}>
                         <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
@@ -1413,9 +1566,9 @@ const PurchaseOrderDetail = () => {
                     </Paper>
                 }
             </Grid>
-            <Grid item xs={9} style={{marginBottom: statusDescription == "CANCELLED" ? 250 : 0}}>
+            <Grid item md={12} lg={9} style={{marginBottom: isTablet ? 10 : isLaptop ? 0 : statusDescription == "CANCELLED" ? 310 : 0}}>
                 <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 270}}>
+                    <Grid container style={{height: isMobile ? 350 : 270}}>
                         <Grid item xs={12}>
                             <Typography 
                                 style={{
@@ -1428,7 +1581,7 @@ const PurchaseOrderDetail = () => {
                                 Total
                             </Typography>
                         </Grid>    
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1439,7 +1592,7 @@ const PurchaseOrderDetail = () => {
                                 Nilai PO:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1451,7 +1604,7 @@ const PurchaseOrderDetail = () => {
                                 {purchaseOrderValue}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1462,7 +1615,7 @@ const PurchaseOrderDetail = () => {
                                 Qty
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1474,7 +1627,7 @@ const PurchaseOrderDetail = () => {
                                 {totalQuantity}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1485,7 +1638,7 @@ const PurchaseOrderDetail = () => {
                                 Nilai brg diterima:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1497,7 +1650,7 @@ const PurchaseOrderDetail = () => {
                                 {valueReceived}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1508,7 +1661,7 @@ const PurchaseOrderDetail = () => {
                                 Qty diterima:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1520,7 +1673,7 @@ const PurchaseOrderDetail = () => {
                                 {totalReceivedQuantity}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#F14343", 
@@ -1531,7 +1684,7 @@ const PurchaseOrderDetail = () => {
                                 Nilai brg blm diterima:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#F14343", 
@@ -1543,7 +1696,7 @@ const PurchaseOrderDetail = () => {
                                 {valueNotYetReceived}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#F14343", 
@@ -1554,7 +1707,7 @@ const PurchaseOrderDetail = () => {
                                 Qty blm diterima:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#F14343", 
@@ -1566,7 +1719,7 @@ const PurchaseOrderDetail = () => {
                                 {totalRemainingQuantity}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1577,7 +1730,7 @@ const PurchaseOrderDetail = () => {
                                 Total bayar:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1589,7 +1742,7 @@ const PurchaseOrderDetail = () => {
                                 {paymentValue}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1600,7 +1753,7 @@ const PurchaseOrderDetail = () => {
                                 Nilai qty:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1612,7 +1765,7 @@ const PurchaseOrderDetail = () => {
                                 {totalQuantityInValue}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1623,7 +1776,7 @@ const PurchaseOrderDetail = () => {
                                 Total terbayar:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1635,7 +1788,7 @@ const PurchaseOrderDetail = () => {
                                 {valuePaid}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1646,7 +1799,7 @@ const PurchaseOrderDetail = () => {
                                 Nilai qty diterima:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1658,7 +1811,7 @@ const PurchaseOrderDetail = () => {
                                 {totalReceivedInValue}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1669,7 +1822,7 @@ const PurchaseOrderDetail = () => {
                                 Total bayar pending:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#000", 
@@ -1681,7 +1834,7 @@ const PurchaseOrderDetail = () => {
                                 {valuePending}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#F14343", 
@@ -1692,7 +1845,7 @@ const PurchaseOrderDetail = () => {
                                 Nilai qty blm diterima:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#F14343", 
@@ -1704,7 +1857,7 @@ const PurchaseOrderDetail = () => {
                                 {totalRemainingInValue}
                             </Typography>
                         </Grid>  
-                        <Grid item xs={4}>
+                        <Grid item xs={8} sm={4}>
                             <Typography 
                                 style={{
                                     color: "#F14343", 
@@ -1715,7 +1868,7 @@ const PurchaseOrderDetail = () => {
                                 Total hutang:
                             </Typography>
                         </Grid>    
-                        <Grid item xs={2} container justifyContent="flex-end">
+                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
                             <Typography 
                                 style={{
                                     color: "#F14343", 
