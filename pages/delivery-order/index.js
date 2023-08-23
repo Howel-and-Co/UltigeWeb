@@ -179,7 +179,7 @@ const DeliveryOrder = () => {
     const fetchDeliveryOrderData = async (startDate, endDate, dateFilter) => {
       setDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/deliveryorder/getdeliveryorderbydate?startDate=${startDate}&endDate=${endDate}&dateFilter=${dateFilter}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/deliveryorder/getdeliveryorderbydate?startDate=${startDate}&endDate=${endDate}&dateFilter=${dateFilter}`);
 
       let processedData;
       processedData = result.data;

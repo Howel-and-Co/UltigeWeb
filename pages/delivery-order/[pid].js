@@ -224,7 +224,7 @@ const DeliveryOrderDetail = () => {
     const fetchDeliveryOrderDetailData = async (deliveryOrderID) => {
         setDataLoading(true);
 
-        const result = await axios.get(`http://localhost:5000/ultigeapi/web/deliveryorder/getdeliveryorderdetail?deliveryOrderID=${deliveryOrderID}`);
+        const result = await axios.get(`https://api.ultige.com/ultigeapi/web/deliveryorder/getdeliveryorderdetail?deliveryOrderID=${deliveryOrderID}`);
 
         let processedData;
         processedData = result.data;
@@ -306,7 +306,7 @@ const DeliveryOrderDetail = () => {
     const processDeliveryProof = async (deliveryOrderID) => {
         setDataLoading(true);
 
-        const result = await axios.get(`http://localhost:5000/ultigeapi/web/deliveryorder/getdeliveryproof?deliveryOrderID=${deliveryOrderID}`);
+        const result = await axios.get(`https://api.ultige.com/ultigeapi/web/deliveryorder/getdeliveryproof?deliveryOrderID=${deliveryOrderID}`);
 
         let processedData;
         processedData = result.data;
@@ -352,7 +352,7 @@ const DeliveryOrderDetail = () => {
     const processInvoiceProof = async (purchaseOrderTaxID, purchaseOrderID) => {
         setDataLoading(true);
 
-        const result = await axios.get(`http://localhost:5000/ultigeapi/web/deliveryorder/getinvoiceproof?purchaseOrderTaxID=${purchaseOrderTaxID}&purchaseOrderID=${purchaseOrderID}`);
+        const result = await axios.get(`https://api.ultige.com/ultigeapi/web/deliveryorder/getinvoiceproof?purchaseOrderTaxID=${purchaseOrderTaxID}&purchaseOrderID=${purchaseOrderID}`);
 
         let processedData;
         processedData = result.data;
@@ -400,7 +400,7 @@ const DeliveryOrderDetail = () => {
 
         const result = await axios({
             method: 'put',
-            url: 'http://localhost:5000/ultigeapi/web/deliveryorder/approvedeliveryorder',
+            url: 'https://api.ultige.com/ultigeapi/web/deliveryorder/approvedeliveryorder',
             data: {
                 deliveryOrderID: deliveryOrderID,
                 purchaseOrderID: purchaseOrderID,
@@ -441,7 +441,7 @@ const DeliveryOrderDetail = () => {
 
         const result = await axios({
             method: 'put',
-            url: 'http://localhost:5000/ultigeapi/web/deliveryorder/rejectdeliveryorder',
+            url: 'https://api.ultige.com/ultigeapi/web/deliveryorder/rejectdeliveryorder',
             data: {
                 deliveryOrderID: deliveryOrderID,
                 purchaseOrderID: purchaseOrderID,
@@ -974,11 +974,11 @@ const DeliveryOrderDetail = () => {
                             <Grid item xs={12} style={{marginTop: 5}}>
                                 <Box className={classes.inlineReverse} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
                                     <Button 
-                                        variant="outlined"
+                                        variant="contained"
                                         style={{
                                             borderRadius: 4,
                                             textTransform: "none",
-                                            color: "#F14343",
+                                            backgroundColor: "#F14343",
                                             height: 40
                                         }}
                                         disableRipple
@@ -988,12 +988,12 @@ const DeliveryOrderDetail = () => {
                                         Reject
                                     </Button>
                                     <Button 
-                                        variant="outlined"
+                                        variant="contained"
                                         style={{
                                             borderRadius: 4,
                                             textTransform: "none",
                                             marginRight: 5,
-                                            color: "#3C8F4A",
+                                            backgroundColor: "#3C8F4A",
                                             height: 40
                                         }}
                                         disableRipple
