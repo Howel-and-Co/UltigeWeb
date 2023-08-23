@@ -1472,14 +1472,13 @@ const TransferRequestDetail = () => {
                                     value={requestValue} 
                                 />
                                 { status == 0 &&
-                                    <Box className={classes.inlineReverse} style={{marginLeft: 1, marginRight: 5, marginTop: 7}}>
+                                    <Box className={classes.inlineReverse} style={{marginTop: 7}}>
                                         <Button 
-                                            variant="outlined"
+                                            variant="contained"
                                             style={{
                                                 borderRadius: 4,
                                                 textTransform: "none",
-                                                marginRight: 5,
-                                                color: "#F14343",
+                                                backgroundColor: "#F14343",
                                                 height: 40
                                             }}
                                             disableRipple
@@ -1489,12 +1488,12 @@ const TransferRequestDetail = () => {
                                             Reject
                                         </Button>
                                         <Button 
-                                            variant="outlined"
+                                            variant="contained"
                                             style={{
                                                 borderRadius: 4,
                                                 textTransform: "none",
                                                 marginRight: 5,
-                                                color: "#3C8F4A",
+                                                backgroundColor: "#3C8F4A",
                                                 height: 40
                                             }}
                                             disableRipple

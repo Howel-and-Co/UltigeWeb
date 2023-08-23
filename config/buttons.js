@@ -36,6 +36,12 @@ const navButtons = [
     excludeRole: []
   },
   {
+    label: "Delivery Order",
+    path: "/delivery-order",
+    includeRole: ["SUPER"],
+    excludeRole: []
+  },
+  {
     label: "Product",
     path: "/product",
     includeRole: [],
