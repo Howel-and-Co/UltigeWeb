@@ -1908,7 +1908,7 @@ const Home = () => {
       let hourCounter = 0;
       let lastHour;
 
-      if (dataRange == 'realtime')
+      if (dataRange == 'realtime' && dateOption != 'custom-daily')
         lastHour = parseInt(moment().tz("Asia/Jakarta").format('LT').slice(0, -3));
       else
         lastHour = 23;

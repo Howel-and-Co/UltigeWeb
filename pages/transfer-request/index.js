@@ -136,6 +136,7 @@ const TransferRequest = () => {
   const [filterSettings, setFilterSettings] = React.useState({ type: 'Excel' });
   const [gridInstance, setGridInstance] = React.useState();
   const [searchValue, setSearchValue] = React.useState('');
+  const [recordClickIndex, setRecordClickIndex] = React.useState(-1);
 
   const moment = require('moment-timezone');
   moment.locale('id');
@@ -153,9 +154,20 @@ const TransferRequest = () => {
 
   const componentRef = useRef();
   const { width, height } = useContainerDimensions(componentRef);
-
+  
   const RowSelected = (props) => {
-    Router.push(`/transfer-request/${props.rowData.TransferRequestID}`);
+    let currentCount = 0;
+    if (props.rowIndex != recordClickIndex) {
+      setRecordClickIndex(props.rowIndex);
+      currentCount = 1;
+    }
+    else {
+      currentCount = 2;
+    }
+
+    if (currentCount == 2) {
+      Router.push(`/transfer-request/${props.rowData.TransferRequestID}`);
+    }
   };
 
   const handleChange = (e) => {
@@ -386,7 +398,7 @@ const TransferRequest = () => {
                         resizeSettings={{mode: 'Normal'}}
                         style={{margin: 10}}
                         allowTextWrap={true}
-                        recordDoubleClick={RowSelected}
+                        recordClick={RowSelected}
                         queryCellInfo={CustomizeCell}
                         gridLines='Both'
                     >

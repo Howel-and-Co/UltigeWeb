@@ -150,6 +150,7 @@ const PurchaseOrder = () => {
   const [gridInstance, setGridInstance] = React.useState();
   const [gridItemInstance, setGridItemInstance] = React.useState();
   const [searchValue, setSearchValue] = React.useState('');
+  const [recordClickIndex, setRecordClickIndex] = React.useState(-1);
 
   const moment = require('moment-timezone');
   moment.locale('id');
@@ -172,12 +173,21 @@ const PurchaseOrder = () => {
     let object = new Object();
     object.Data = props.rowData.PurchaseOrderItems;
 			
-    //console.log(object);
-    setPurchaseOrderItemsData(object);
-  };
+    let currentCount = 0;
+    if (props.rowIndex != recordClickIndex) {
+      setRecordClickIndex(props.rowIndex);
+      currentCount = 1;
+    }
+    else {
+      currentCount = 2;
+    }
 
-  const RowDoubleClick = (props) => {
-    Router.push(`/purchase-order/${props.rowData.PurchaseOrderID}`);
+    if (currentCount == 2) {
+      Router.push(`/purchase-order/${props.rowData.PurchaseOrderID}`);
+    }
+    else {
+      setPurchaseOrderItemsData(object);
+    }
   };
 
   const handleChange = (e) => {
@@ -482,7 +492,6 @@ const PurchaseOrder = () => {
                         style={{margin: 10}}
                         allowTextWrap={true}
                         recordClick={RowSelected}
-                        recordDoubleClick={RowDoubleClick}
                         queryCellInfo={CustomizeCell}
                         gridLines='Both'
                     >
