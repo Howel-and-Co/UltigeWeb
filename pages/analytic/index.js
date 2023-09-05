@@ -1422,7 +1422,7 @@ const Home = () => {
 
     const fetchMarginData = async (startDate, endDate) => {
       setMarginDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
@@ -1482,7 +1482,7 @@ const Home = () => {
 
     const fetchPreviousMarginData = async (startDate, endDate) => {
       setPreviousMarginDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
