@@ -104,12 +104,10 @@ const LineColor = (column) => {
     color = '#f6bd16'
   else if (column == 'Penjualan/Pesanan')
     color = '#fd5151'
-  else if (column == 'Konversi')
-    color = '#23aaab'
   else if (column == 'Margin (Rp)')
     color = '#aa88ff'
   else if (column == 'Margin (%)')
-    color = '#72cc30'
+    color = '#23aaab'
 
   return color;
 }
@@ -120,7 +118,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
-          <p style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Konversi' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Konversi' || item.name == 'Margin (%)' ? "%" : ""}`}</p>
+          <p style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Margin (%)' ? "%" : ""}`}</p>
         ))}
       </Card>
     );
@@ -166,7 +164,6 @@ const MultiTypeChart = (props) => {
       <YAxis yAxisId="Pesanan" hide={true}/>
       <YAxis yAxisId="Jumlah" hide={true}/>
       <YAxis yAxisId="Penjualan/Pesanan" hide={true}/>
-      <YAxis yAxisId="Konversi" hide={true}/>
       <YAxis yAxisId="Margin (Rp)" hide={true}/>
       <YAxis yAxisId="Margin (%)" hide={true}/>
       <Tooltip 
@@ -302,22 +299,18 @@ const Home = () => {
   const [salesData, setSalesData] = useState();
   const [salesCountData, setSalesCountData] = useState();
   const [averageSalesData, setAverageSalesData] = useState();
-  const [conversionRateData, setConversionRateData] = useState();
   const [marginData, setMarginData] = useState();
   const [previousSalesData, setPreviousSalesData] = useState();
   const [previousSalesCountData, setPreviousSalesCountData] = useState();
   const [previousAverageSalesData, setPreviousAverageSalesData] = useState();
-  const [previousConversionRateData, setPreviousConversionRateData] = useState();
   const [previousMarginData, setPreviousMarginData] = useState();
   const [salesDataLoading, setSalesDataLoading] = useState(false);
   const [salesCountDataLoading, setSalesCountDataLoading] = useState(false);
   const [averageSalesDataLoading, setAverageSalesDataLoading] = useState(false);
-  const [conversionRateDataLoading, setConversionRateDataLoading] = useState(false);
   const [marginDataLoading, setMarginDataLoading] = useState(false);
   const [previousSalesDataLoading, setPreviousSalesDataLoading] = useState(false);
   const [previousSalesCountDataLoading, setPreviousSalesCountDataLoading] = useState(false);
   const [previousAverageSalesDataLoading, setPreviousAverageSalesDataLoading] = useState(false);
-  const [previousConversionRateDataLoading, setPreviousConversionRateDataLoading] = useState(false);
   const [previousMarginDataLoading, setPreviousMarginDataLoading] = useState(false);
 
   const [masterSalesData, setMasterSalesData] = useState();
@@ -337,7 +330,6 @@ const Home = () => {
   const [toggleSales, setToggleSales] = React.useState(true);
   const [toggleSalesCount, setToggleSalesCount] = React.useState(true);
   const [toggleAverageSales, setToggleAverageSales] = React.useState(true);
-  const [toggleConversionRate, setToggleConversionRate] = React.useState(true);
   const [toggleMarginValue, setToggleMarginValue] = React.useState(true);
   const [toggleMarginRate, setToggleMarginRate] = React.useState(true);
   const [toggleMultipleSales, setToggleMultipleSales] = React.useState();
@@ -347,7 +339,6 @@ const Home = () => {
   const [totalSalesData, setTotalSalesData] = React.useState();
   const [totalSalesCountData, setTotalSalesCountData] = React.useState();
   const [totalAverageSalesData, setTotalAverageSalesData] = React.useState();
-  const [totalConversionRateData, setTotalConversionRateData] = React.useState();
   const [totalMarginValueData, setTotalMarginValueData] = React.useState();
   const [totalMarginRateData, setTotalMarginRateData] = React.useState();
 
@@ -523,42 +514,35 @@ const Home = () => {
   };
 
   const handleToggleSalesChange = () => {
-    if (toggleSales && !(!toggleSalesCount && !toggleAverageSales && !toggleConversionRate && !toggleMarginValue && !toggleMarginRate))
+    if (toggleSales && !(!toggleSalesCount && !toggleAverageSales && !toggleMarginValue && !toggleMarginRate))
       setToggleSales(false);
     else
       setToggleSales(true);
   };
 
   const handleToggleSalesCountChange = () => {
-    if (toggleSalesCount && !(!toggleSales && !toggleAverageSales && !toggleConversionRate && !toggleMarginValue && !toggleMarginRate))
+    if (toggleSalesCount && !(!toggleSales && !toggleAverageSales && !toggleMarginValue && !toggleMarginRate))
       setToggleSalesCount(false);
     else
       setToggleSalesCount(true);
   };
 
   const handleToggleAverageSalesChange = () => {
-    if (toggleAverageSales && !(!toggleSalesCount && !toggleSales && !toggleConversionRate && !toggleMarginValue && !toggleMarginRate))
+    if (toggleAverageSales && !(!toggleSalesCount && !toggleSales && !toggleMarginValue && !toggleMarginRate))
       setToggleAverageSales(false);
     else
       setToggleAverageSales(true);
   };
 
-  const handleToggleConversionRateChange = () => {
-    if (toggleConversionRate && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleMarginValue && !toggleMarginRate))
-      setToggleConversionRate(false);
-    else
-      setToggleConversionRate(true);
-  };
-
   const handleToggleMarginValueChange = () => {
-    if (toggleMarginValue && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleConversionRate && !toggleMarginRate))
+    if (toggleMarginValue && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleMarginRate))
       setToggleMarginValue(false);
     else
       setToggleMarginValue(true);
   };
 
   const handleToggleMarginRateChange = () => {
-    if (toggleMarginRate && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleConversionRate && !toggleMarginValue))
+    if (toggleMarginRate && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleMarginValue))
       setToggleMarginRate(false);
     else
       setToggleMarginRate(true);
@@ -1408,18 +1392,6 @@ const Home = () => {
       setNewDataLoad(true);
     };
 
-    const fetchConversionRateData = async (startDate, endDate) => {
-      setConversionRateDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getconversionrate?startDate=${startDate}&endDate=${endDate}`);
-
-      let processedData;
-      processedData = result.data;
-
-      setConversionRateData(processedData);
-      setConversionRateDataLoading(false);
-      setNewDataLoad(true);
-    };
-
     const fetchMarginData = async (startDate, endDate) => {
       setMarginDataLoading(true);
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
@@ -1465,18 +1437,6 @@ const Home = () => {
 
       setPreviousAverageSalesData(processedData);
       setPreviousAverageSalesDataLoading(false);
-      setNewDataLoad(true);
-    };
-
-    const fetchPreviousConversionRateData = async (startDate, endDate) => {
-      setPreviousConversionRateDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getconversionrate?startDate=${startDate}&endDate=${endDate}`);
-
-      let processedData;
-      processedData = result.data;
-
-      setPreviousConversionRateData(processedData);
-      setPreviousConversionRateDataLoading(false);
       setNewDataLoad(true);
     };
 
@@ -1654,13 +1614,11 @@ const Home = () => {
       fetchSalesData(startDate, endDate);
       fetchSalesCountData(startDate, endDate);
       fetchAverageSalesData(startDate, endDate);
-      fetchConversionRateData(startDate, endDate);
       fetchMarginData(startDate, endDate);
 
       fetchPreviousSalesData(previousStartDate, previousEndDate);
       fetchPreviousSalesCountData(previousStartDate, previousEndDate);
       fetchPreviousAverageSalesData(previousStartDate, previousEndDate);
-      fetchPreviousConversionRateData(previousStartDate, previousEndDate);
       fetchPreviousMarginData(previousStartDate, previousEndDate);
 
       setFetchActive(false);
@@ -2133,12 +2091,6 @@ const Home = () => {
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Konversi';
-      line.push(addLine);
-      if (toggleConversionRate)
-        chartLine.push(addLine);
-
-      addLine = new Object();
       addLine.column = 'Margin (Rp)';
       line.push(addLine);
       if (toggleMarginValue)
@@ -2164,8 +2116,6 @@ const Home = () => {
       let totalSalesValue = 0;
       let totalSalesCountValue = 0;
       let totalAverageSalesValue = 0;
-      let totalConversionRateValue = 0;
-      let totalConversionRateCounter = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
       let totalMarginRateCounter = 0;
@@ -2181,8 +2131,6 @@ const Home = () => {
         let tempSalesValue = 0;
         let tempSalesCountValue = 0;
         let tempAverageSalesValue = 0;
-        let tempConversionRateValue = 0;
-        let tempConversionRateCounter = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
         let tempMarginRateCounter = 0;
@@ -2203,10 +2151,6 @@ const Home = () => {
           else if (averageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = averageSalesData.Data;
             legend = averageSalesData.Legend;
-          }
-          else if (conversionRateData && lineItem.column == 'Konversi') {
-            data = conversionRateData.Data;
-            legend = conversionRateData.Legend;
           }
           else if (marginData && lineItem.column == 'Margin (Rp)') {
             data = marginData.Data;
@@ -2236,12 +2180,6 @@ const Home = () => {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
                     tempSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Konversi') {
-                    totalConversionRateValue += parseFloat(dataItem[legendItem]);
-                    totalConversionRateCounter++;
-                    tempConversionRateValue += parseFloat(dataItem[legendItem]);
-                    tempConversionRateCounter++;
-                  }
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
@@ -2262,7 +2200,6 @@ const Home = () => {
           }
 
           tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
-          tempConversionRateValue = tempConversionRateCounter == 0 ? 0 : (tempConversionRateValue / tempConversionRateCounter);
           tempMarginRateValue = tempMarginRateCounter == 0 ? 0 : (tempMarginRateValue / tempMarginRateCounter);
 
           if (currentChannel == 'ALL') {
@@ -2274,9 +2211,6 @@ const Home = () => {
             }
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
-            } 
-            else if (lineItem.column == 'Konversi') {
-              object += `, "${lineItem.column}": ${tempConversionRateValue}`;
             } 
             else if (lineItem.column == 'Margin (Rp)') {
               object += `, "${lineItem.column}": ${tempMarginValue}`;
@@ -2295,8 +2229,7 @@ const Home = () => {
         currentDate.add(1, 'months');
       }
 
-      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue)
-      totalConversionRateValue = totalConversionRateCounter == 0 ? 0 : (totalConversionRateValue / totalConversionRateCounter);
+      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue);
       totalMarginRateValue = totalMarginRateCounter == 0 ? 0 : (totalMarginRateValue / totalMarginRateCounter);
       
 
@@ -2309,8 +2242,6 @@ const Home = () => {
       let totalPreviousSalesValue = 0;
       let totalPreviousSalesCountValue = 0;
       let totalPreviousAverageSalesValue = 0;
-      let totalPreviousConversionRateValue = 0;
-      let totalPreviousConversionRateCounter = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
       let totalPreviousMarginRateCounter = 0;
@@ -2334,10 +2265,6 @@ const Home = () => {
             data = previousAverageSalesData.Data;
             legend = previousAverageSalesData.Legend;
           }
-          else if (previousConversionRateData && lineItem.column == 'Konversi') {
-            data = previousConversionRateData.Data;
-            legend = previousConversionRateData.Legend;
-          }
           else if (previousMarginData && lineItem.column == 'Margin (Rp)') {
             data = previousMarginData.Data;
             legend = previousMarginData.Legend;
@@ -2359,10 +2286,6 @@ const Home = () => {
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Konversi') {
-                    totalPreviousConversionRateValue += parseFloat(dataItem[legendItem]);
-                    totalPreviousConversionRateCounter++;
-                  }
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
@@ -2379,8 +2302,7 @@ const Home = () => {
         currentDate.add(1, 'months');
       }
       
-      totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue)
-      totalPreviousConversionRateValue = totalPreviousConversionRateCounter == 0 ? 0 : (totalPreviousConversionRateValue / totalPreviousConversionRateCounter);
+      totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue);
       totalPreviousMarginRateValue = totalPreviousMarginRateCounter == 0 ? 0 : (totalPreviousMarginRateValue / totalPreviousMarginRateCounter);
 
       const result = new Object();
@@ -2425,19 +2347,6 @@ const Home = () => {
         totalAverageSales.growthTrend = 'down';
       }
       setTotalAverageSalesData(totalAverageSales);
-
-      const totalConversionRate = new Object();
-      totalConversionRate.value = totalConversionRateValue;
-      totalConversionRate.range = vsLabel();
-      if (totalConversionRateValue >= totalPreviousConversionRateValue) {
-        totalConversionRate.growth =totalConversionRateValue - totalPreviousConversionRateValue;
-        totalConversionRate.growthTrend = 'up';
-      }
-      else {
-        totalConversionRate.growth = totalPreviousConversionRateValue - totalConversionRateValue; totalPreviousConversionRateValue;
-        totalConversionRate.growthTrend = 'down';
-      }
-      setTotalConversionRateData(totalConversionRate);
 
       const totalMargin = new Object();
       totalMargin.value = totalMarginValue;
@@ -2536,12 +2445,6 @@ const Home = () => {
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Konversi';
-      line.push(addLine);
-      if (toggleConversionRate)
-        chartLine.push(addLine);
-
-      addLine = new Object();
       addLine.column = 'Margin (Rp)';
       line.push(addLine);
       if (toggleMarginValue)
@@ -2568,8 +2471,6 @@ const Home = () => {
       let totalSalesValue = 0;
       let totalSalesCountValue = 0;
       let totalAverageSalesValue = 0;
-      let totalConversionRateValue = 0;
-      let totalConversionRateCounter = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
       let totalMarginRateCounter = 0;
@@ -2593,8 +2494,6 @@ const Home = () => {
         let tempSalesValue = 0;
         let tempSalesCountValue = 0;
         let tempAverageSalesValue = 0;
-        let tempConversionRateValue = 0;
-        let tempConversionRateCounter = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
         let tempMarginRateCounter = 0;
@@ -2615,10 +2514,6 @@ const Home = () => {
           else if (averageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = averageSalesData.Data;
             legend = averageSalesData.Legend;
-          }
-          else if (conversionRateData && lineItem.column == 'Konversi') {
-            data = conversionRateData.Data;
-            legend = conversionRateData.Legend;
           }
           else if (marginData && lineItem.column == 'Margin (Rp)') {
             data = marginData.Data;
@@ -2648,12 +2543,6 @@ const Home = () => {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
                     tempSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Konversi') {
-                    totalConversionRateValue += parseFloat(dataItem[legendItem]);
-                    totalConversionRateCounter++;
-                    tempConversionRateValue += parseFloat(dataItem[legendItem]);
-                    tempConversionRateCounter++;
-                  }
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
@@ -2674,7 +2563,6 @@ const Home = () => {
           }
 
           tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
-          tempConversionRateValue = tempConversionRateCounter == 0 ? 0 : (tempConversionRateValue / tempConversionRateCounter);
           tempMarginRateValue = tempMarginRateCounter == 0 ? 0 : (tempMarginRateValue / tempMarginRateCounter);
 
           if (currentChannel == 'ALL') {
@@ -2686,9 +2574,6 @@ const Home = () => {
             }
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
-            } 
-            else if (lineItem.column == 'Konversi') {
-              object += `, "${lineItem.column}": ${tempConversionRateValue}`;
             } 
             else if (lineItem.column == 'Margin (Rp)') {
               object += `, "${lineItem.column}": ${tempMarginValue}`;
@@ -2707,8 +2592,7 @@ const Home = () => {
         currentDate.add(1, 'days');
       }
 
-      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue)
-      totalConversionRateValue = totalConversionRateCounter == 0 ? 0 : (totalConversionRateValue / totalConversionRateCounter);
+      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue);
       totalMarginRateValue = totalMarginRateCounter == 0 ? 0 : (totalMarginRateValue / totalMarginRateCounter);
 
       
@@ -2721,8 +2605,6 @@ const Home = () => {
       let totalPreviousSalesValue = 0;
       let totalPreviousSalesCountValue = 0;
       let totalPreviousAverageSalesValue = 0;
-      let totalPreviousConversionRateValue = 0;
-      let totalPreviousConversionRateCounter = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
       let totalPreviousMarginRateCounter = 0;
@@ -2743,10 +2625,6 @@ const Home = () => {
           else if (previousAverageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = previousAverageSalesData.Data;
             legend = previousAverageSalesData.Legend;
-          }
-          else if (previousConversionRateData && lineItem.column == 'Konversi') {
-            data = previousConversionRateData.Data;
-            legend = previousConversionRateData.Legend;
           }
           else if (previousMarginData && lineItem.column == 'Margin (Rp)') {
             data = previousMarginData.Data;
@@ -2769,10 +2647,6 @@ const Home = () => {
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Konversi') {
-                    totalPreviousConversionRateValue += parseInt(dataItem[legendItem]);
-                    totalPreviousConversionRateCounter++;
-                  }
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
@@ -2789,8 +2663,7 @@ const Home = () => {
         currentDate.add(1, 'days');
       }
 
-      totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue)
-      totalPreviousConversionRateValue = totalPreviousConversionRateCounter == 0 ? 0 : (totalPreviousConversionRateValue / totalPreviousConversionRateCounter);
+      totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue);
       totalPreviousMarginRateValue = totalPreviousMarginRateCounter == 0 ? 0 : (totalPreviousMarginRateValue / totalPreviousMarginRateCounter);
 
       const result = new Object();
@@ -2835,19 +2708,6 @@ const Home = () => {
         totalAverageSales.growthTrend = 'down';
       }
       setTotalAverageSalesData(totalAverageSales);
-
-      const totalConversionRate = new Object();
-      totalConversionRate.value = totalConversionRateValue;
-      totalConversionRate.range = vsLabel();
-      if (totalConversionRateValue >= totalPreviousConversionRateValue) {
-        totalConversionRate.growth = totalConversionRateValue - totalPreviousConversionRateValue;
-        totalConversionRate.growthTrend = 'up';
-      }
-      else {
-        totalConversionRate.growth = totalPreviousConversionRateValue - totalConversionRateValue; totalPreviousConversionRateValue;
-        totalConversionRate.growthTrend = 'down';
-      }
-      setTotalConversionRateData(totalConversionRate);
 
       const totalMargin = new Object();
       totalMargin.value = totalMarginValue;
@@ -2946,12 +2806,6 @@ const Home = () => {
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Konversi';
-      line.push(addLine);
-      if (toggleConversionRate)
-        chartLine.push(addLine);
-
-      addLine = new Object();
       addLine.column = 'Margin (Rp)';
       line.push(addLine);
       if (toggleMarginValue)
@@ -2971,8 +2825,6 @@ const Home = () => {
       let totalSalesValue = 0;
       let totalSalesCountValue = 0;
       let totalAverageSalesValue = 0;
-      let totalConversionRateValue = 0;
-      let totalConversionRateCounter = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
       let totalMarginRateCounter = 0;
@@ -3026,10 +2878,6 @@ const Home = () => {
             data = averageSalesData.Data;
             legend = averageSalesData.Legend;
           }
-          else if (conversionRateData && lineItem.column == 'Konversi') {
-            data = conversionRateData.Data;
-            legend = conversionRateData.Legend;
-          }
           else if (marginData && lineItem.column == 'Margin (Rp)') {
             data = marginData.Data;
             legend = marginData.Legend;
@@ -3040,47 +2888,37 @@ const Home = () => {
           }
 
           data.forEach(function (dataItem) {
-            if (lineItem.column == 'Konversi') {
+            let hour = parseInt(dataItem.Date);
+
+            if (hourCounter == hour) {
               legend.forEach(function (legendItem) {
+                if (legendItem == currentChannel && dataItem[legendItem] != undefined) {
+                  object += `, "${lineItem.column}": ${dataItem[legendItem]}`;
+                  hourExist = true;
+                }
+                
                 if (dataItem[legendItem] != undefined && (legendItem == currentChannel || currentChannel == 'ALL')) {
-                  totalConversionRateValue += parseFloat(dataItem[legendItem]);
-                  totalConversionRateCounter++;
+                  if (lineItem.column == 'Penjualan') {
+                    totalSalesValue += parseFloat(dataItem[legendItem]);
+                    tempSalesValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Pesanan') {
+                    totalSalesCountValue += parseInt(dataItem[legendItem]);
+                    tempSalesCountValue += parseInt(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin (Rp)') {
+                    totalMarginValue += parseFloat(dataItem[legendItem]);
+                    tempMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin (%)') {
+                    totalMarginRateValue += parseFloat(dataItem[legendItem]);
+                    totalMarginRateCounter++;
+                    tempMarginRateValue += parseFloat(dataItem[legendItem]);
+                    tempMarginRateCounter++;
+                  }
                 }
               });
-            }
-            else {
-              let hour = parseInt(dataItem.Date);
-
-              if (hourCounter == hour) {
-                legend.forEach(function (legendItem) {
-                  if (legendItem == currentChannel && dataItem[legendItem] != undefined) {
-                    object += `, "${lineItem.column}": ${dataItem[legendItem]}`;
-                    hourExist = true;
-                  }
-                  
-                  if (dataItem[legendItem] != undefined && (legendItem == currentChannel || currentChannel == 'ALL')) {
-                    if (lineItem.column == 'Penjualan') {
-                      totalSalesValue += parseFloat(dataItem[legendItem]);
-                      tempSalesValue += parseFloat(dataItem[legendItem]);
-                    }
-                    else if (lineItem.column == 'Pesanan') {
-                      totalSalesCountValue += parseInt(dataItem[legendItem]);
-                      tempSalesCountValue += parseInt(dataItem[legendItem]);
-                    }
-                    else if (lineItem.column == 'Margin (Rp)') {
-                      totalMarginValue += parseFloat(dataItem[legendItem]);
-                      tempMarginValue += parseFloat(dataItem[legendItem]);
-                    }
-                    else if (lineItem.column == 'Margin (%)') {
-                      totalMarginRateValue += parseFloat(dataItem[legendItem]);
-                      totalMarginRateCounter++;
-                      tempMarginRateValue += parseFloat(dataItem[legendItem]);
-                      tempMarginRateCounter++;
-                    }
-                  }
-                });
-              } 
-            }
+            } 
           });
 
           if (hourExist == false) {
@@ -3117,8 +2955,7 @@ const Home = () => {
         hourCounter++;
       }
 
-      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue)
-      totalConversionRateValue = totalConversionRateCounter == 0 ? 0 : (totalConversionRateValue / totalConversionRateCounter);
+      totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue);
       totalMarginRateValue = totalMarginRateCounter == 0 ? 0 : (totalMarginRateValue / totalMarginRateCounter);
 
 
@@ -3128,8 +2965,6 @@ const Home = () => {
       let totalPreviousSalesValue = 0;
       let totalPreviousSalesCountValue = 0;
       let totalPreviousAverageSalesValue = 0;
-      let totalPreviousConversionRateValue = 0;
-      let totalPreviousConversionRateCounter = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
       let totalPreviousMarginRateCounter = 0;
@@ -3151,10 +2986,6 @@ const Home = () => {
             data = previousAverageSalesData.Data;
             legend = previousAverageSalesData.Legend;
           }
-          else if (previousConversionRateData && lineItem.column == 'Konversi') {
-            data = previousConversionRateData.Data;
-            legend = previousConversionRateData.Legend;
-          }
           else if (previousMarginData && lineItem.column == 'Margin (Rp)') {
             data = previousMarginData.Data;
             legend = previousMarginData.Legend;
@@ -3165,36 +2996,26 @@ const Home = () => {
           }
 
           data.forEach(function (dataItem) {
-            if (lineItem.column == 'Konversi') {
+            let hour = parseInt(dataItem.Date);
+
+            if (hourCounter == hour) {
               legend.forEach(function (legendItem) {
                 if (dataItem[legendItem] != undefined && (legendItem == currentChannel || currentChannel == 'ALL')) {
-                  totalPreviousConversionRateValue += parseFloat(dataItem[legendItem]);
-                  totalPreviousConversionRateCounter++;
+                  if (lineItem.column == 'Penjualan') {
+                    totalPreviousSalesValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Pesanan') {
+                    totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin (Rp)') {
+                    totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin (%)') {
+                    totalPreviousMarginRateValue += parseFloat(dataItem[legendItem]);
+                    totalPreviousMarginRateCounter++;
+                  }
                 }
               });
-            }
-            else {
-              let hour = parseInt(dataItem.Date);
-
-              if (hourCounter == hour) {
-                legend.forEach(function (legendItem) {
-                  if (dataItem[legendItem] != undefined && (legendItem == currentChannel || currentChannel == 'ALL')) {
-                    if (lineItem.column == 'Penjualan') {
-                      totalPreviousSalesValue += parseFloat(dataItem[legendItem]);
-                    }
-                    else if (lineItem.column == 'Pesanan') {
-                      totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
-                    }
-                    else if (lineItem.column == 'Margin (Rp)') {
-                      totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
-                    }
-                    else if (lineItem.column == 'Margin (%)') {
-                      totalPreviousMarginRateValue += parseFloat(dataItem[legendItem]);
-                      totalPreviousMarginRateCounter++;
-                    }
-                  }
-                });
-              }
             }
           });
         });
@@ -3202,8 +3023,7 @@ const Home = () => {
         hourCounter++;
       }
 
-      totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue)
-      totalPreviousConversionRateValue = totalPreviousConversionRateCounter == 0 ? 0 : (totalPreviousConversionRateValue / totalPreviousConversionRateCounter);
+      totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue);
       totalPreviousMarginRateValue = totalPreviousMarginRateCounter == 0 ? 0 : (totalPreviousMarginRateValue / totalPreviousMarginRateCounter);
 
       const result = new Object();
@@ -3250,19 +3070,6 @@ const Home = () => {
         totalAverageSales.growthTrend = 'down';
       }
       setTotalAverageSalesData(totalAverageSales);
-      
-      const totalConversionRate = new Object();
-      totalConversionRate.value = totalConversionRateValue;
-      totalConversionRate.range = vsLabel();
-      if (totalConversionRateValue >= totalPreviousConversionRateValue) {
-        totalConversionRate.growth = totalConversionRateValue - totalPreviousConversionRateValue;
-        totalConversionRate.growthTrend = 'up';
-      }
-      else {
-        totalConversionRate.growth = totalPreviousConversionRateValue - totalConversionRateValue; totalPreviousConversionRateValue;
-        totalConversionRate.growthTrend = 'down';
-      }
-      setTotalConversionRateData(totalConversionRate);
 
       const totalMargin = new Object();
       totalMargin.value = totalMarginValue;
@@ -3434,7 +3241,7 @@ const Home = () => {
 
       setDataReload(false);
     }
-  }, [salesData, salesCountData, averageSalesData, conversionRateData, marginData, previousSalesData, previousSalesCountData, previousAverageSalesData, previousConversionRateData, previousMarginData, channel, toggleSales, toggleSalesCount, toggleAverageSales, toggleConversionRate, toggleMarginValue, toggleMarginRate, toggleMultipleSales, dataReload]);
+  }, [salesData, salesCountData, averageSalesData, marginData, previousSalesData, previousSalesCountData, previousAverageSalesData, previousMarginData, channel, toggleSales, toggleSalesCount, toggleAverageSales, toggleMarginValue, toggleMarginRate, toggleMultipleSales, dataReload]);
 
   useEffect(() => {
     if (segmentationFetchActive == true && checkToken()) {
@@ -6252,69 +6059,6 @@ const Home = () => {
                   </Card>
                 }
 
-                { totalConversionRateData &&
-                  <Card variant={toggleConversionRate ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleConversionRate ? '#23aaab' : 'transparent', height: 5, width: '100%'}}/>
-                    <CardActionArea style={{padding: 15}} onClick={handleToggleConversionRateChange} disableRipple>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Konversi
-                      </Typography>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalConversionRateData.value.toFixed(2))}</span>%
-                      </Typography>
-                      <Grid container style={{marginTop: 10}}>
-                        <Grid item xs={7}>
-                          <Typography 
-                            style={{
-                              color: "#888", 
-                              fontSize: 11,
-                              textAlign: 'left',
-                              fontWeight: 500
-                            }}
-                          >
-                            {totalConversionRateData.range}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 13,
-                              textAlign: 'left',
-                              fontWeight: 500,
-                              display: 'inline'
-                            }}
-                          >
-                            {Intl.NumberFormat('id').format(totalConversionRateData.growth.toFixed(2))}%
-                          </Typography>
-                          { totalConversionRateData.growthTrend == 'up'
-                            ? <TrendingUpIcon
-                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                              />
-                            : <TrendingDownIcon
-                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                              />
-                          }
-                        </Grid>
-                      </Grid>
-                    </CardActionArea>
-                  </Card>
-                }
-
                 { totalMarginValueData &&
                   <Card variant={toggleMarginValue ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
                     <div style={{backgroundColor: toggleMarginValue ? '#aa88ff' : 'transparent', height: 5, width: '100%'}}/>
@@ -6380,7 +6124,7 @@ const Home = () => {
 
                 { totalMarginRateData &&
                   <Card variant={toggleMarginRate ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleMarginRate ? '#72cc30' : 'transparent', height: 5, width: '100%'}}/>
+                    <div style={{backgroundColor: toggleMarginRate ? '#23aaab' : 'transparent', height: 5, width: '100%'}}/>
                     <CardActionArea style={{padding: 15}} onClick={handleToggleMarginRateChange} disableRipple>
                       <Typography 
                         style={{
@@ -6502,22 +6246,7 @@ const Home = () => {
                       </Typography>
                     </Box>
                   }
-                  { toggleConversionRate && 
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#23aaab', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
-                        }}
-                      >
-                        Konversi
-                      </Typography>
-                    </Box>
-                  }
-                  { toggleAverageSales && 
+                  { toggleMarginValue && 
                     <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
                       <FiberManualRecordIcon style={{ color: '#aa88ff', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                       <Typography 
@@ -6532,9 +6261,9 @@ const Home = () => {
                       </Typography>
                     </Box>
                   }
-                  { toggleConversionRate && 
+                  { toggleMarginRate && 
                     <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#72cc30', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                      <FiberManualRecordIcon style={{ color: '#23aaab', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                       <Typography 
                         style={{
                           color: "#000", 
@@ -6555,7 +6284,7 @@ const Home = () => {
               }
 
               <Grid item xs={12}>
-                { (salesDataLoading || salesCountDataLoading || averageSalesDataLoading || conversionRateDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousAverageSalesDataLoading || previousConversionRateDataLoading || previousMarginDataLoading) &&
+                { (salesDataLoading || salesCountDataLoading || averageSalesDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousAverageSalesDataLoading || previousMarginDataLoading) &&
                   <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                     <CircularProgress size={25} />
                     <Typography 
@@ -7376,7 +7105,7 @@ const Home = () => {
 
                   { valueStockData &&
                     <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
+                      <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
                       <CardContent>
                         <Typography 
                           style={{
@@ -7405,7 +7134,7 @@ const Home = () => {
 
                 { valueStockData &&
                     <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
+                      <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
                       <CardContent>
                         <Typography 
                           style={{
@@ -8600,7 +8329,7 @@ const Home = () => {
 
                   { performanceData && 
                     <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
+                      <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
                       <CardContent>
                         <Typography 
                           style={{
@@ -8647,7 +8376,7 @@ const Home = () => {
 
                   { performanceData && 
                     <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
+                      <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
                       <CardContent>
                         <Typography 
                           style={{
