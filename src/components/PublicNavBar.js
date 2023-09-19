@@ -53,8 +53,8 @@ const PublicNavBar = () => {
           >
             <Grid item style={{ flexDirection: "column" }} xs={4}>
               <img
-                style={{ paddingTop: 14, paddingBottom: 14, width: 100 }}
-                src="/howel-logo.svg"
+                style={{ paddingTop: 14, paddingBottom: 14, width: 55 }}
+                src="/howel-logo-v2-bow.svg"
                 alt=""
               />
             </Grid>
