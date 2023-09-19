@@ -134,8 +134,8 @@ const NavBar = ({isPrivate = true}) => {
                 <Link href= {checkToken() ? "/login" : "/analytic"}>
                   <a>
                     <img
-                      style={{ paddingTop: 14, paddingBottom: 14, width: 100, marginLeft: checkToken() ? 0 : 15 }}
-                      src="/howel-logo.svg"   
+                      style={{ paddingTop: 14, paddingBottom: 14, width: 55, marginLeft: checkToken() ? 0 : 15 }}
+                      src="/howel-logo-v2-bow.svg"   
                       alt=""
                     />
                   </a>
@@ -143,8 +143,8 @@ const NavBar = ({isPrivate = true}) => {
               </Grid> :
               <Grid item style={{ flexDirection: "column" }}>
                 <img
-                  style={{ paddingTop: 14, paddingBottom: 14, width: 100, marginLeft: 15 }}
-                  src="/howel-logo.svg"
+                  style={{ paddingTop: 14, paddingBottom: 14, width: 55, marginLeft: 15 }}
+                  src="/howel-logo-v2-bow.svg"
                   alt=""
                 />
               </Grid>
