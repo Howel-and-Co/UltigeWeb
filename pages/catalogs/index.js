@@ -39,7 +39,7 @@ const Catalog = () => {
   const classes = useStyles();
 
   useEffect(() => {
-    window.location.assign("https://catalogs.howelandco.com", '_blank');
+    window.location.assign("https://catalogs.howelandco.co", '_blank');
   }, []);
 
   return (
