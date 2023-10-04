@@ -1,5 +1,7 @@
+import moment from 'moment-timezone';
+import 'moment/locale/id';
+
 export default function Hello() {
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   return (

@@ -22,6 +22,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import {
     GridComponent,
@@ -79,7 +81,6 @@ const StockCard = () => {
   const [fetchActive, setFetchActive] = React.useState(false);
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [stockCardData, setStockCardData] = React.useState();
@@ -156,8 +157,7 @@ const StockCard = () => {
     };
 
     if (fetchActive == true) {
-        const moment = require('moment-timezone');
-
+      
         let startDate;
         startDate = moment(stockStartDate).format("YYYY-MM-DD");
 

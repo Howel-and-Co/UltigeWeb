@@ -18,6 +18,8 @@ import {
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useRouter } from 'next/router';
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../../src/utils/axios';
@@ -99,6 +101,8 @@ const Folding = () => {
 
   const [open, setOpen] = React.useState(false);
 
+  moment.locale('id');
+
   const handleClickOpen = (url, productName, embroideryName) => {
     setLiningURL(url);
     if (productName != null && embroideryName != null)
@@ -125,8 +129,7 @@ const Folding = () => {
 
       //console.log(processedData.Data.FoldingPhotos);
 
-      const moment = require('moment-timezone');
-
+    
       setBuyer(processedData.Data.Buyer);
       setReceiver(processedData.Data.Receiver);
       setDeliverDate(moment(processedData.Data.DeliverDate).format("DD/MM/YYYY"));

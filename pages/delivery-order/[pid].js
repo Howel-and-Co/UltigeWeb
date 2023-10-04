@@ -19,6 +19,8 @@ import {
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Cookies from "js-cookie";
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
@@ -124,7 +126,6 @@ const DeliveryOrderDetail = () => {
 
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [fetchActive, setFetchActive] = React.useState(false);
@@ -229,8 +230,7 @@ const DeliveryOrderDetail = () => {
         let processedData;
         processedData = result.data;
 
-        const moment = require('moment-timezone');
-
+      
         //console.log(processedData);
 
         setCreatedBy(processedData.Data.DeliveryOrderDetail.CreatedBy);

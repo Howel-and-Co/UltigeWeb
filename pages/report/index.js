@@ -15,6 +15,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect } from 'react';
 import axios from '../../src/utils/axios';
@@ -58,7 +60,6 @@ const Report = () => {
 
   const [transactionData, setTransactionData] = React.useState();
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [transactionStartDate, setTransactionStartDate] = React.useState(moment());
@@ -86,8 +87,7 @@ const Report = () => {
     };
 
     if (transactionDataFetchActive == true) {
-        const moment = require('moment-timezone');
-
+      
         let startDate;
         startDate = moment(transactionStartDate).format("YYYY-MM-DD");
 

@@ -19,6 +19,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
 import axios from '../../src/utils/axios';
 import { useRouter } from 'next/router';
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import {
     GridComponent,
@@ -81,7 +83,6 @@ const PurchaseOrderDetail = () => {
 
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [fetchActive, setFetchActive] = React.useState(false);
@@ -262,8 +263,7 @@ const PurchaseOrderDetail = () => {
         let processedData;
         processedData = result.data;
 
-        const moment = require('moment-timezone');
-
+      
         //console.log(processedData);
 
         setName(processedData.Data.PurchaseOrderDetail.Name);

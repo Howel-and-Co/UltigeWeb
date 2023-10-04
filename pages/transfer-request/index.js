@@ -20,6 +20,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -138,7 +140,6 @@ const TransferRequest = () => {
   const [searchValue, setSearchValue] = React.useState('');
   const [recordClickIndex, setRecordClickIndex] = React.useState(-1);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [transferRequestStartDate, setTransferRequestStartDate] = React.useState(moment());
@@ -236,8 +237,7 @@ const TransferRequest = () => {
     };
 
     if (fetchActive == true) {
-      const moment = require('moment-timezone');
-
+    
       let startDate;
       startDate = moment(transferRequestStartDate).format("YYYY-MM-DD");
 

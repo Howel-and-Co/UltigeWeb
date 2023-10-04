@@ -19,6 +19,8 @@ import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Cookies from "js-cookie";
 import MomentUtils from '@date-io/moment';
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from "../../src/utils/screen.js";
@@ -87,7 +89,6 @@ const ManualRelease = () => {
   const [transactionStatus, setTransactionStatus] = React.useState();
   const [releaseReason, setReleaseReason] = React.useState('');
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const componentRef = useRef();
@@ -115,8 +116,7 @@ const ManualRelease = () => {
 
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/order/gettransactiondetail?transactionID=${transactionID}`);
       //const result = await axios.get(`http://localhost:5000/ultigeapi/web/order/gettransactiondetail?transactionID=${transactionID}`);
-      const moment = require('moment-timezone');
-
+    
       let processedData;
       processedData = result.data;
 
