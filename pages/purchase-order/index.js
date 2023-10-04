@@ -22,6 +22,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -152,7 +154,6 @@ const PurchaseOrder = () => {
   const [searchValue, setSearchValue] = React.useState('');
   const [recordClickIndex, setRecordClickIndex] = React.useState(-1);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [purchaseOrderStartDate, setPurchaseOrderStartDate] = React.useState(moment());
@@ -273,8 +274,7 @@ const PurchaseOrder = () => {
     };
 
     if (fetchActive == true) {
-      const moment = require('moment-timezone');
-
+    
       let startDate;
       startDate = moment(purchaseOrderStartDate).format("YYYY-MM-DD");
 

@@ -15,6 +15,8 @@ import Checkbox from '@mui/material/Checkbox';
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Cookies from "js-cookie";
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
@@ -80,7 +82,6 @@ const TransferRequestDetail = () => {
 
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [fetchActive, setFetchActive] = React.useState(false);
@@ -174,8 +175,7 @@ const TransferRequestDetail = () => {
         let processedData;
         processedData = result.data;
 
-        const moment = require('moment-timezone');
-
+      
         setRequestDate(moment(processedData.Data.TransferRequestDetail.RequestDate).format("DD/MM/YYYY"));
         setInvoiceDate(moment(processedData.Data.TransferRequestDetail.InvoiceDate).format("DD/MM/YYYY"));
         setRequestValue(Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(processedData.Data.TransferRequestDetail.RequestValue));

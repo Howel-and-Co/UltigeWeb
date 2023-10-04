@@ -35,6 +35,8 @@ import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import useContainerDimensions from  "../../src/utils/screen.js";
 import randomColorHSL from  "../../src/utils/randomColorHSL";
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../../src/utils/axios';
@@ -438,7 +440,6 @@ const Home = () => {
   const [monthlyStartDate, setMonthlyStartDate] = useState();
   const [monthlyEndDate, setMonthlyEndDate] = useState();
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const handleChange = (event) => {
@@ -820,9 +821,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -920,9 +919,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD").startOf('isoWeek');
       let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
 
@@ -1017,9 +1014,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -1224,7 +1219,6 @@ const Home = () => {
     };
 
     if (checkToken() && tierMultipleCategoryCustom) {
-      const moment = require('moment-timezone');
 
       let startDate;
       startDate = moment(tierMultipleCategoryCustomStartDate).format("YYYY-MM-DD");
@@ -1463,7 +1457,6 @@ const Home = () => {
       setCustomYearRange('');
       setCustomDateRange('');
 
-      const moment = require('moment-timezone');
       
       let momentStartDate;
       let momentEndDate;
@@ -1648,9 +1641,7 @@ const Home = () => {
       if (salesData)
         data = salesData.Data;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -1779,9 +1770,7 @@ const Home = () => {
       if (salesData)
         data = salesData.Data;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -2105,9 +2094,7 @@ const Home = () => {
       const chart = new Array();
       let addChart = new Object();
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -2459,9 +2446,7 @@ const Home = () => {
       const chart = new Array();
       let addChart = new Object();
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -3128,7 +3113,6 @@ const Home = () => {
     };
 
     if ((newDataLoad == true || firstLoad == true || dataReload == true) && checkToken()) {
-      const moment = require('moment-timezone');
         
       let momentStartDate;
       let momentEndDate;
@@ -3245,7 +3229,6 @@ const Home = () => {
 
   useEffect(() => {
     if (segmentationFetchActive == true && checkToken()) {
-      const moment = require('moment-timezone');
       
       let momentStartDate;
       let momentEndDate;
@@ -3299,7 +3282,6 @@ const Home = () => {
 
   useEffect(() => {
     if (productFetchActive == true && checkToken()) {
-      const moment = require('moment-timezone');
       
       let momentStartDate;
       let momentEndDate;
@@ -3446,9 +3428,7 @@ const Home = () => {
       const dateDifference = processedData.DateDifference;
       const startDate = processedData.LaunchDate;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD HH:mm:ss");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -3551,9 +3531,7 @@ const Home = () => {
       const dateDifference = processedData.DateDifference;
       const startDate = processedData.LaunchDate;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD HH:mm:ss").startOf('isoWeek');
       let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
 
@@ -3652,9 +3630,7 @@ const Home = () => {
       const dateDifference = processedData.DateDifference;
       const startDate = processedData.LaunchDate;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD HH:mm:ss");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -3765,7 +3741,6 @@ const Home = () => {
     };
 
     if (checkToken() && category) {
-      const moment = require('moment-timezone');
 
       let endDate;
       endDate = moment(modelCategoryEndDate).format("YYYY-MM-DD");
@@ -3887,9 +3862,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -3991,9 +3964,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD").startOf('isoWeek');
       let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
 
@@ -4091,9 +4062,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -4263,7 +4232,6 @@ const Home = () => {
     };
 
     if (checkToken() && categoryCustom) {
-      const moment = require('moment-timezone');
 
       let startDate;
       startDate = moment(modelCategoryCustomStartDate).format("YYYY-MM-DD");
@@ -4360,9 +4328,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -4464,9 +4430,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD").startOf('isoWeek');
       let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
 
@@ -4564,9 +4528,7 @@ const Home = () => {
 
       const dateDifference = processedData.DateDifference;
 
-      const moment = require('moment');
-      moment.locale('id'); 
-
+ 
       let momentStartDate = moment(startDate, "YYYY-MM-DD");
       let momentEndDate = moment(endDate, "YYYY-MM-DD");
 
@@ -4683,7 +4645,6 @@ const Home = () => {
     };
 
     if (checkToken() && tierCategoryCustom) {
-      const moment = require('moment-timezone');
 
       let startDate;
       startDate = moment(tierCategoryCustomStartDate).format("YYYY-MM-DD");

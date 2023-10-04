@@ -17,6 +17,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import classes from "../sass/login.module.scss";
 import { redirectPassword, setToken } from "../src/utils/config";
 import React from 'react';
+import { sha256 } from 'js-sha256';
 
 const Login = () => {
   const [values, setValues] = React.useState({
@@ -37,8 +38,7 @@ const Login = () => {
 
   const Login = async e => {
     setValues({ ...values, loading: !values.loading, invalid: false });
-    var sha256 = require('js-sha256');
-    
+        
     try {
         const result = await axios({
             method: 'post',

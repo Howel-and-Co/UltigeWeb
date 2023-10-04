@@ -1,6 +1,6 @@
 {
   "name": "ultige-web",
-  "version": "2.10.1",
+  "version": "2.10.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -27,8 +27,8 @@
     "clsx": "^1.1.1",
     "js-cookie": "^3.0.1",
     "js-sha256": "^0.9.0",
-    "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "next": "12.1.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",

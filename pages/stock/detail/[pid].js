@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../../src/utils/screen.js";
@@ -73,7 +75,6 @@ const StockDetail = () => {
 
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [stockAgingDaysData, setStockAgingDaysData] = React.useState();
@@ -151,8 +152,7 @@ const StockDetail = () => {
 
       setStockSellPrice(Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(processedData.Data.StockSellPrice));
 
-      const moment = require('moment-timezone');
-
+    
       setLaunchDate(moment(processedData.Data.LaunchDate).format("DD/MM/YYYY"));
       setDefaultCustomizationColor(processedData.Data.DefaultCustomizationColor);
       if (processedData.Data.IncomingDeliveryOrderDate != null)

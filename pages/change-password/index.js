@@ -19,6 +19,7 @@ import { checkToken, setToken } from "../../src/utils/config";
 import Cookies from "js-cookie";
 import LoginLayout from "../../src/components/LoginLayout";
 import React from 'react';
+import { sha256 } from 'js-sha256';
 
 const ChangePassword = () => {
   const [values, setValues] = React.useState({
@@ -53,7 +54,6 @@ const ChangePassword = () => {
     setValues({ ...values, loading: !values.loading, invalid: false, invalidMessage: "" });
     const newUsername = Cookies.get("username");
     const oldPassword = Cookies.get("password");
-    var sha256 = require('js-sha256');
     
     try {
         if (sha256(values.oldPassword).localeCompare(oldPassword)) {

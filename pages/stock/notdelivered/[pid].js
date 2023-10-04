@@ -9,6 +9,8 @@ import {
 } from "@material-ui/core";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../../src/utils/screen.js";
@@ -83,7 +85,6 @@ const StockNotDelivered = () => {
 
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const [stockNotDeliveredData, setStockNotDeliveredData] = React.useState();

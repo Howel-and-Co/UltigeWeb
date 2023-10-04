@@ -22,6 +22,8 @@ import {
 } from '@material-ui/pickers';
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import moment from 'moment-timezone';
+import 'moment/locale/id';
 
 import React, { useState, useEffect } from 'react';
 import axios from '../../src/utils/axios';
@@ -240,7 +242,6 @@ const ProductRanking = () => {
     setNewFetchActive(true);
   };
 
-  const moment = require('moment-timezone');
   moment.locale('id');
 
   const handleChange = (event) => {
@@ -454,8 +455,7 @@ const ProductRanking = () => {
       setCustomYearRange('');
       setCustomDateRange('');
 
-      const moment = require('moment-timezone');
-      
+          
       let momentStartDate;
       let momentEndDate;
 
@@ -741,8 +741,7 @@ const ProductRanking = () => {
     if (newFetchActive == true && checkToken()) {
       if (productTab == '1') {
         if (modelSalesCachePaginationIndex.Data.includes(modelSalesPage) == false) {  
-          const moment = require('moment-timezone');
-      
+              
           let momentStartDate;
           let momentEndDate;
           
@@ -805,8 +804,7 @@ const ProductRanking = () => {
       }
       else if (productTab == '2') {
         if (modelSalesCountCachePaginationIndex.Data.includes(modelSalesCountPage) == false) {  
-          const moment = require('moment-timezone');
-      
+              
           let momentStartDate;
           let momentEndDate;
           
@@ -869,8 +867,7 @@ const ProductRanking = () => {
       }
       else if (productTab == '3') {
         if (categorySalesCachePaginationIndex.Data.includes(categorySalesPage) == false) {  
-          const moment = require('moment-timezone');
-      
+              
           let momentStartDate;
           let momentEndDate;
           
@@ -933,8 +930,7 @@ const ProductRanking = () => {
       }
       else if (productTab == '4') {
         if (categorySalesCountCachePaginationIndex.Data.includes(categorySalesCountPage) == false) {  
-          const moment = require('moment-timezone');
-      
+              
           let momentStartDate;
           let momentEndDate;
           
@@ -997,8 +993,7 @@ const ProductRanking = () => {
       }
       else if (productTab == '5') {
         if (productSalesCachePaginationIndex.Data.includes(productSalesPage) == false) {  
-          const moment = require('moment-timezone');
-      
+              
           let momentStartDate;
           let momentEndDate;
           
@@ -1061,8 +1056,7 @@ const ProductRanking = () => {
       }
       else if (productTab == '6') {
         if (productSalesCountCachePaginationIndex.Data.includes(productSalesCountPage) == false) {  
-          const moment = require('moment-timezone');
-      
+              
           let momentStartDate;
           let momentEndDate;
           
