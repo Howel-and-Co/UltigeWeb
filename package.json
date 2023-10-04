@@ -8,6 +8,9 @@
     "start": "next start -- --port $PORT",
     "export": "next export"
   },
+  "engines": {
+    "node": ">=16 <17"
+  },
   "dependencies": {
     "@date-io/moment": "1.x",
     "@emotion/react": "^11.10.5",
@@ -20,20 +23,18 @@
     "@mui/material": "^5.10.16",
     "@mui/x-data-grid": "^5.17.13",
     "@syncfusion/ej2-react-grids": "^19.4.52",
-    "@zeit/next-css": "^1.0.1",
-    "@zeit/next-sass": "^1.0.1",
     "axios": "^0.21.4",
     "clsx": "^1.1.1",
     "js-cookie": "^3.0.1",
     "js-sha256": "^0.9.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
-    "next": "9.4.4",
-    "node-sass": "^9.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "next": "12.1.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "react-intersection-observer": "^9.5.2",
     "react-pdf": "5.7.2",
-    "recharts": "^2.1.2"
+    "recharts": "^2.1.2",
+    "sass": "^1.68.0"
   }
 }

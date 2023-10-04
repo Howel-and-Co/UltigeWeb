@@ -14,8 +14,9 @@ import {
 } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import classes from "../sass/main.scss";
+import classes from "../sass/login.module.scss";
 import { redirectPassword, setToken } from "../src/utils/config";
+import React from 'react';
 
 const Login = () => {
   const [values, setValues] = React.useState({
