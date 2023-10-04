@@ -14,10 +14,11 @@ import {
 } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import classes from "../../sass/main.scss";
+import classes from "../../sass/login.module.scss";
 import { checkToken, setToken } from "../../src/utils/config";
 import Cookies from "js-cookie";
 import LoginLayout from "../../src/components/LoginLayout";
+import React from 'react';
 
 const ChangePassword = () => {
   const [values, setValues] = React.useState({
