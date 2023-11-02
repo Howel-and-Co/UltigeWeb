@@ -3747,7 +3747,7 @@ const Home = () => {
     const fetchValueStockData = async () => {
       setValueStockDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getstockvaluedata`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getstockvaluedata`);
 
       let processedData;
       processedData = result.data;
