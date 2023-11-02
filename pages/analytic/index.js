@@ -580,7 +580,6 @@ const Home = () => {
     setSelectedEndDate(date);
   };
 
-  const [valueStockBackDate, setValueStockBackDate] = React.useState(moment());
   const [valueStockFetchActive, setValueStockFetchActive] = React.useState(false);
 
   const [modelCategoryEndDate, setModelCategoryEndDate] = React.useState(moment());
@@ -590,11 +589,6 @@ const Home = () => {
   const [tierCategoryCustomEndDate, setTierCategoryCustomEndDate] = React.useState(moment());
   const [tierMultipleCategoryCustomStartDate, setTierMultipleCategoryCustomStartDate] = React.useState(moment());
   const [tierMultipleCategoryCustomEndDate, setTierMultipleCategoryCustomEndDate] = React.useState(moment());
-
-  const handleValueStockBackDate = (date) => {
-    setValueStockBackDate(date);
-    setValueStockFetchActive(true);
-  };
 
   const handleModelCategoryEndDateChange = (date) => {
     setModelCategoryEndDate(date);
@@ -3750,10 +3744,10 @@ const Home = () => {
   }, [model, category, modelCategoryEndDate]);
 
   useEffect(() => {
-    const fetchValueStockData = async (backDate) => {
+    const fetchValueStockData = async () => {
       setValueStockDataLoading(true);
 
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getstockvaluedata?backDate=${backDate}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getstockvaluedata`);
 
       let processedData;
       processedData = result.data;
@@ -3764,7 +3758,7 @@ const Home = () => {
     };
 
     if (valueStockFetchActive && checkToken()) {
-      fetchValueStockData(moment(valueStockBackDate).format('YYYY-MM-DD'));
+      fetchValueStockData();
     }
   }, [valueStockFetchActive]);
 
@@ -6916,49 +6910,6 @@ const Home = () => {
           <Grid item xs={12}>
             <InView onChange={(inView, entry) => handleValueStockFetchChange(inView)}>
               <Paper className={classes.paper} elevation={3}>
-                <Grid item xs={12}>
-                  <Box className={classes.inline}>
-                    { isMobile
-                      ? <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            marginTop: 9,
-                            marginBottom: 16,
-                            marginRight: 25,
-                            marginLeft: 9
-                          }}
-                        >
-                          Tanggal<br/>Belakang
-                        </Typography>
-                      : <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            marginTop: 22,
-                            marginBottom: 30,
-                            marginRight: 47,
-                            marginLeft: 9
-                          }}
-                        >
-                          Tanggal Belakang
-                        </Typography>
-                    }
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <KeyboardDatePicker
-                        variant="inline"
-                        format="YYYY-MM-DD"
-                        label="Backdate"
-                        value={valueStockBackDate}
-                        style={{marginTop: 10, width: 150}}
-                        onChange={handleValueStockBackDate}
-                      />
-                    </MuiPickersUtilsProvider>
-                  </Box>
-                </Grid>
-
                 <Grid item xs={12}>
                   <Typography 
                     style={{
