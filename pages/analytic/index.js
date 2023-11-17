@@ -867,7 +867,7 @@ const Home = () => {
 
         if (dateExist == false) {
           line.forEach(function (lineItem) {
-            oobject += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column}": 0`;
             object += `, "${lineItem.column + " QTY"}": 0`;
           });
         }
