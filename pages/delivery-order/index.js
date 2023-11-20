@@ -159,7 +159,8 @@ const DeliveryOrder = () => {
     }
 
     if (currentCount == 2) {
-      Router.push(`/delivery-order/${props.rowData.DeliveryOrderID}`);
+      window.open(`/delivery-order/${props.rowData.DeliveryOrderID}`, '_blank')
+      //Router.push(`/delivery-order/${props.rowData.DeliveryOrderID}`);
     }
     else {
       setDeliveryOrderItemsData(object);

@@ -184,7 +184,8 @@ const PurchaseOrder = () => {
     }
 
     if (currentCount == 2) {
-      Router.push(`/purchase-order/${props.rowData.PurchaseOrderID}`);
+      window.open(`/purchase-order/${props.rowData.PurchaseOrderID}`, '_blank')
+      //Router.push(`/purchase-order/${props.rowData.PurchaseOrderID}`);
     }
     else {
       setPurchaseOrderItemsData(object);
