@@ -167,7 +167,8 @@ const TransferRequest = () => {
     }
 
     if (currentCount == 2) {
-      Router.push(`/transfer-request/${props.rowData.TransferRequestID}`);
+      window.open(`/transfer-request/${props.rowData.TransferRequestID}`, '_blank')
+      //Router.push(`/transfer-request/${props.rowData.TransferRequestID}`);
     }
   };
 

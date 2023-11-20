@@ -177,7 +177,7 @@ const Stock = () => {
   const contextMenuClick = (args) => {
     if (gridInstance) {
       if (args.item.id === 'stockDetail') {
-        window.open(`/stock/detail/${args.rowInfo.rowData.StockID}`, '_blank', 'noreferrer');
+        window.open(`/stock/detail/${args.rowInfo.rowData.StockID}`, '_blank');
       }
       else if (args.item.id === 'stockRelatedProducts') {
         setStockID(args.rowInfo.rowData.StockID);
@@ -186,10 +186,10 @@ const Stock = () => {
         setOpen(true);
       }
       else if (args.item.id === 'stockCard') {
-        window.open(`/stock/card/${args.rowInfo.rowData.StockID}`, '_blank', 'noreferrer');
+        window.open(`/stock/card/${args.rowInfo.rowData.StockID}`, '_blank');
       }
       else if (args.item.id === 'stockNotDelivered') {
-        window.open(`/stock/notdelivered/${args.rowInfo.rowData.StockID}`, '_blank', 'noreferrer');
+        window.open(`/stock/notdelivered/${args.rowInfo.rowData.StockID}`, '_blank');
       }
     }
   };
