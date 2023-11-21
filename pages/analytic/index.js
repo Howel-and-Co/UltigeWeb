@@ -61,6 +61,9 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { checkToken } from "../../src/utils/config";
 import { DataGrid } from '@mui/x-data-grid';
@@ -382,6 +385,7 @@ const Home = () => {
   const [modelCategoryData, setModelCategoryData] = useState();
   const [modelCategoryDataLoading, setModelCategoryDataLoading] = React.useState(false);
   const [totalModelCategoryData, setTotalModelCategoryData] = React.useState();
+  const [modelCategoryDataActive, setModelCategoryDataActive] = useState(true);
   
   const [modelFetchActive, setModelFetchActive] = React.useState(false);
   const [categoryFetchActive, setCategoryFetchActive] = React.useState(false);
@@ -394,6 +398,7 @@ const Home = () => {
   const [modelCategoryCustomData, setModelCategoryCustomData] = useState();
   const [modelCategoryCustomDataLoading, setModelCategoryCustomDataLoading] = React.useState(false);
   const [totalModelCategoryCustomData, setTotalModelCategoryCustomData] = React.useState();
+  const [modelCategoryCustomDataActive, setModelCategoryCustomDataActive] = useState(true);
   
   const [modelCustomFetchActive, setModelCustomFetchActive] = React.useState(false);
   const [categoryCustomFetchActive, setCategoryCustomFetchActive] = React.useState(false);
@@ -441,6 +446,16 @@ const Home = () => {
   const [monthlyEndDate, setMonthlyEndDate] = useState();
 
   moment.locale('id');
+
+  const handleModelCategoryDataActive = (event) => {
+    setModelCategoryDataActive(event.target.value);
+    setModelFetchActive(true);
+  };
+
+  const handleModelCategoryCustomDataActive = (event) => {
+    setModelCategoryCustomDataActive(event.target.value);
+    setModelCustomFetchActive(true);
+  };
 
   const handleChange = (event) => {
     setDateOption(event.target.value);
@@ -3328,9 +3343,9 @@ const Home = () => {
   }, [productFetchActive]);
 
   useEffect(() => {
-    const fetchProductModelsData = async () => {
+    const fetchProductModelsData = async (active) => {
       setModelCategoryDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getproductmodels?active=${active}`);
 
       let processedData;
       processedData = result.data;
@@ -3350,7 +3365,7 @@ const Home = () => {
     };
 
     if (modelFetchActive == true && checkToken()) {
-      fetchProductModelsData();
+      fetchProductModelsData(modelCategoryDataActive);
       
       setModelFetchActive(false);
     }
@@ -3730,18 +3745,21 @@ const Home = () => {
         newData = processMonthModelCategorySaleData(endDate, processedData);
       }
 
+      if (category == 'TIDAK ADA KATEGORI') {
+        newData = null;
+      }
+
       setModelCategoryData(newData);
       setModelCategoryDataLoading(false);
     };
 
     if (checkToken() && category) {
-
       let endDate;
       endDate = moment(modelCategoryEndDate).format("YYYY-MM-DD");
-
+      
       fetchModelCategorySalesData(endDate, model, category)
     }
-  }, [model, category, modelCategoryEndDate]);
+  }, [category, modelCategoryEndDate]);
 
   useEffect(() => {
     const fetchValueStockData = async () => {
@@ -3763,9 +3781,9 @@ const Home = () => {
   }, [valueStockFetchActive]);
 
   useEffect(() => {
-    const fetchProductModelsCustomData = async () => {
+    const fetchProductModelsCustomData = async (active) => {
       setModelCategoryCustomDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getproductmodels?active=${active}`);
 
       let processedData;
       processedData = result.data;
@@ -3785,7 +3803,7 @@ const Home = () => {
     };
 
     if (modelCustomFetchActive == true && checkToken()) {
-      fetchProductModelsCustomData();
+      fetchProductModelsCustomData(modelCategoryCustomDataActive);
       
       setModelCustomFetchActive(false);
     }
@@ -4235,7 +4253,7 @@ const Home = () => {
 
       fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
     }
-  }, [modelCustom, categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
+  }, [categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
 
   useEffect(() => {
     const fetchProductTiersCustomData = async () => {
@@ -4723,7 +4741,7 @@ const Home = () => {
   useEffect(() => {
     const fetchModelStockData = async () => {
       setPerformanceDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getproductmodels?active=true`);
 
       let processedData;
       processedData = result.data;
@@ -7176,7 +7194,20 @@ const Home = () => {
                     />
                   </FormControl>
                 </Box>
-                
+
+                <FormControl style={{
+                  marginLeft: 9
+                }}>
+                  <RadioGroup
+                    row
+                    value={modelCategoryDataActive}
+                    onChange={handleModelCategoryDataActive}
+                  >
+                    <FormControlLabel value={true} control={<Radio />} label="Aktif" />
+                    <FormControlLabel value={false} control={<Radio />} label="Tidak Aktif" />
+                  </RadioGroup>
+                </FormControl>
+                            
                 { modelCategoryData &&
                   <Grid container>
                     <Grid item xs={12} md={8}>
@@ -7384,6 +7415,19 @@ const Home = () => {
                     />
                   </FormControl>
                 </Box>
+
+                <FormControl style={{
+                  marginLeft: 9
+                }}>
+                  <RadioGroup
+                    row
+                    value={modelCategoryCustomDataActive}
+                    onChange={handleModelCategoryCustomDataActive}
+                  >
+                    <FormControlLabel value={true} control={<Radio />} label="Aktif" />
+                    <FormControlLabel value={false} control={<Radio />} label="Tidak Aktif" />
+                  </RadioGroup>
+                </FormControl>
                 
                 { modelCategoryCustomData &&
                   <Grid container>
