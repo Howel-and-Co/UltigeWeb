@@ -3345,7 +3345,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProductModelsData = async (active) => {
       setModelCategoryDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getproductmodels?active=${active}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels?active=${active}`);
 
       let processedData;
       processedData = result.data;
@@ -3783,7 +3783,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProductModelsCustomData = async (active) => {
       setModelCategoryCustomDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getproductmodels?active=${active}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels?active=${active}`);
 
       let processedData;
       processedData = result.data;
@@ -4741,7 +4741,7 @@ const Home = () => {
   useEffect(() => {
     const fetchModelStockData = async () => {
       setPerformanceDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getproductmodels?active=true`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductmodels?active=true`);
 
       let processedData;
       processedData = result.data;
