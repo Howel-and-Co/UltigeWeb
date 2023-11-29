@@ -1361,7 +1361,7 @@ const Home = () => {
   useEffect(() => {
     const fetchSalesData = async (startDate, endDate) => {
       setSalesDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getsales?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getsales?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
@@ -1391,7 +1391,7 @@ const Home = () => {
 
     const fetchSalesCountData = async (startDate, endDate) => {
       setSalesCountDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getsalescount?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getsalescount?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
@@ -1404,7 +1404,7 @@ const Home = () => {
 
     const fetchAverageSalesData = async (startDate, endDate) => {
       setAverageSalesDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getaveragesales?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getaveragesales?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
@@ -1417,7 +1417,7 @@ const Home = () => {
 
     const fetchMarginData = async (startDate, endDate) => {
       setMarginDataLoading(true);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
