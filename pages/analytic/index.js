@@ -6,7 +6,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip
+  Tooltip as RechartsTooltip
 } from "recharts";
 import {
   Grid,
@@ -24,7 +24,8 @@ import {
   CardContent,
   Tab,
   Link,
-  CircularProgress
+  CircularProgress,
+  Tooltip
 } from "@material-ui/core";
 import MomentUtils from '@date-io/moment';
 import {
@@ -95,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 230,
     width: 230,
     fontSize: 16
-  }
+  },
 }));
 
 const LineColor = (column) => {
@@ -171,7 +172,7 @@ const MultiTypeChart = (props) => {
       <YAxis yAxisId="Penjualan/Pesanan" hide={true}/>
       <YAxis yAxisId="Margin (Rp)" hide={true}/>
       <YAxis yAxisId="Margin (%)" hide={true}/>
-      <Tooltip 
+      <RechartsTooltip 
         content={<CustomTooltip />}
       />
       {props.line.map((item, index) => (
@@ -233,7 +234,7 @@ const MultiChannelChart = (props) => {
       <CartesianGrid strokeDasharray="4 4" />
       <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
       <YAxis hide={true}/>
-      <Tooltip 
+      <RechartsTooltip 
         content={<CustomTooltip />}
       />
       {props.line && Object.entries(props.line).map(([key,value])=> (
@@ -273,7 +274,7 @@ const MultiCategoryChart = (props) => {
       <CartesianGrid strokeDasharray="4 4" />
       <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
       <YAxis hide={true}/>
-      <Tooltip 
+      <RechartsTooltip 
         content={<CustomMultipleTooltip />}
       />
       {props.line && props.line.map((lineItem)=> (
@@ -291,6 +292,16 @@ const MultiCategoryChart = (props) => {
     </LineChart>
   );
 }
+
+const HtmlTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: '#ffffff',
+    color: 'rgba(0, 0, 0, 1)',
+    maxWidth: 300,
+    fontSize: 13,
+    border: '1px solid #d3d3d3',
+  },
+}))(Tooltip);
 
 const columns = [
   { field: 'tierCategory', headerName: 'Kategori Produk', flex: 1, minWidth: 200 },
@@ -346,6 +357,12 @@ const Home = () => {
   const [totalAverageSalesData, setTotalAverageSalesData] = React.useState();
   const [totalMarginValueData, setTotalMarginValueData] = React.useState();
   const [totalMarginRateData, setTotalMarginRateData] = React.useState();
+
+  const [salesDataDescription, setSalesDataDescription] = useState('');
+  const [salesCountDataDescription, setSalesCountDataDescription] = useState('');
+  const [averageSalesDataDescription, setAverageSalesDataDescription] = useState('');
+  const [marginDataDescription, setMarginDataDescription] = useState('');
+  const [marginRateDataDescription, setMarginRateDataDescription] = useState('');
 
   const [productSalesData, setProductSalesData] = React.useState();
   const [productSalesCountData, setProductSalesCountData] = React.useState();
@@ -1344,7 +1361,7 @@ const Home = () => {
   useEffect(() => {
     const fetchSalesData = async (startDate, endDate) => {
       setSalesDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getsales?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getsales?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
@@ -1366,6 +1383,7 @@ const Home = () => {
       });
 
       setSalesData(processedData);
+      setSalesDataDescription(processedData.Description);
       setSalesDataLoading(false);
       setToggleMultipleSales(resultObject);
       setNewDataLoad(true);
@@ -1373,36 +1391,40 @@ const Home = () => {
 
     const fetchSalesCountData = async (startDate, endDate) => {
       setSalesCountDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getsalescount?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getsalescount?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
 
       setSalesCountData(processedData);
+      setSalesCountDataDescription(processedData.Description);
       setSalesCountDataLoading(false);
       setNewDataLoad(true);
     };
 
     const fetchAverageSalesData = async (startDate, endDate) => {
       setAverageSalesDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getaveragesales?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getaveragesales?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
 
       setAverageSalesData(processedData);
+      setAverageSalesDataDescription(processedData.Description);
       setAverageSalesDataLoading(false);
       setNewDataLoad(true);
     };
 
     const fetchMarginData = async (startDate, endDate) => {
       setMarginDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getanalyticgrossmargin?startDate=${startDate}&endDate=${endDate}`);
 
       let processedData;
       processedData = result.data;
 
       setMarginData(processedData);
+      setMarginDataDescription(processedData.DescriptionMargin);
+      setMarginRateDataDescription(processedData.DescriptionMarginRate);
       setMarginDataLoading(false);
       setNewDataLoad(true);
     };
@@ -5844,318 +5866,328 @@ const Home = () => {
 
               <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
                 { totalSalesData &&
-                  <Card variant={toggleSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleSales ? '#367fe3' : 'transparent', height: 5, width: '100%'}}/>
-                    <CardActionArea style={{padding: 15}} onClick={handleToggleSalesChange} disableRipple>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Penjualan
-                      </Typography>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesData.value)}</span>
-                      </Typography>
-                      <Grid container style={{marginTop: 10}}>
-                        <Grid item xs={7}>
-                          <Typography 
-                            style={{
-                              color: "#888", 
-                              fontSize: 11,
-                              textAlign: 'left',
-                              fontWeight: 500
-                            }}
-                          >
-                            {totalSalesData.range}
-                          </Typography>
+                  <HtmlTooltip title={<span><p>{salesDataDescription.split("\n")[0]}</p><p>{salesDataDescription.split("\n")[1]}</p></span>}>
+                    <Card variant={toggleSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                      <div style={{backgroundColor: toggleSales ? '#367fe3' : 'transparent', height: 5, width: '100%'}}/>
+                      <CardActionArea style={{padding: 15}} onClick={handleToggleSalesChange} disableRipple>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Penjualan
+                        </Typography>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesData.value)}</span>
+                        </Typography>
+                        <Grid container style={{marginTop: 10}}>
+                          <Grid item xs={7}>
+                            <Typography 
+                              style={{
+                                color: "#888", 
+                                fontSize: 11,
+                                textAlign: 'left',
+                                fontWeight: 500
+                              }}
+                            >
+                              {totalSalesData.range}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                            <Typography 
+                              style={{
+                                color: "#000", 
+                                fontSize: 13,
+                                textAlign: 'left',
+                                fontWeight: 500,
+                                display: 'inline'
+                              }}
+                            >
+                              {Intl.NumberFormat('id').format(totalSalesData.growth.toFixed(2))}%
+                            </Typography>
+                            { totalSalesData.growthTrend == 'up'
+                              ? <TrendingUpIcon
+                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                                />
+                              : <TrendingDownIcon
+                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                                />
+                            }
+                          </Grid>
                         </Grid>
-                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 13,
-                              textAlign: 'left',
-                              fontWeight: 500,
-                              display: 'inline'
-                            }}
-                          >
-                            {Intl.NumberFormat('id').format(totalSalesData.growth.toFixed(2))}%
-                          </Typography>
-                          { totalSalesData.growthTrend == 'up'
-                            ? <TrendingUpIcon
-                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                              />
-                            : <TrendingDownIcon
-                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                              />
-                          }
-                        </Grid>
-                      </Grid>
-                    </CardActionArea>
-                  </Card>
+                      </CardActionArea>
+                    </Card>
+                  </HtmlTooltip>
                 }
 
                 { totalSalesCountData &&
-                  <Card variant={toggleSalesCount ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleSalesCount ? '#f6bd16' : 'transparent', height: 5, width: '100%'}}/>
-                    <CardActionArea style={{padding: 15}} onClick={handleToggleSalesCountChange} disableRipple>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Pesanan
-                      </Typography>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesCountData.value)}</span>
-                      </Typography>
-                      <Grid container style={{marginTop: 10}}>
-                        <Grid item xs={7}>
-                          <Typography 
-                            style={{
-                              color: "#888", 
-                              fontSize: 11,
-                              textAlign: 'left',
-                              fontWeight: 500
-                            }}
-                          >
-                            {totalSalesCountData.range}
-                          </Typography>
+                  <HtmlTooltip title={<span><p>{salesCountDataDescription.split("\n")[0]}</p><p>{salesCountDataDescription.split("\n")[1]}</p></span>}>
+                    <Card variant={toggleSalesCount ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                      <div style={{backgroundColor: toggleSalesCount ? '#f6bd16' : 'transparent', height: 5, width: '100%'}}/>
+                      <CardActionArea style={{padding: 15}} onClick={handleToggleSalesCountChange} disableRipple>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Pesanan
+                        </Typography>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesCountData.value)}</span>
+                        </Typography>
+                        <Grid container style={{marginTop: 10}}>
+                          <Grid item xs={7}>
+                            <Typography 
+                              style={{
+                                color: "#888", 
+                                fontSize: 11,
+                                textAlign: 'left',
+                                fontWeight: 500
+                              }}
+                            >
+                              {totalSalesCountData.range}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                            <Typography 
+                              style={{
+                                color: "#000", 
+                                fontSize: 13,
+                                textAlign: 'left',
+                                fontWeight: 500,
+                                display: 'inline'
+                              }}
+                            >
+                              {Intl.NumberFormat('id').format(totalSalesCountData.growth.toFixed(2))}%
+                            </Typography>
+                            { totalSalesCountData.growthTrend == 'up'
+                              ? <TrendingUpIcon
+                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                                />
+                              : <TrendingDownIcon
+                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                                />
+                            }
+                          </Grid>
                         </Grid>
-                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 13,
-                              textAlign: 'left',
-                              fontWeight: 500,
-                              display: 'inline'
-                            }}
-                          >
-                            {Intl.NumberFormat('id').format(totalSalesCountData.growth.toFixed(2))}%
-                          </Typography>
-                          { totalSalesCountData.growthTrend == 'up'
-                            ? <TrendingUpIcon
-                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                              />
-                            : <TrendingDownIcon
-                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                              />
-                          }
-                        </Grid>
-                      </Grid>
-                    </CardActionArea>
-                  </Card>
+                      </CardActionArea>
+                    </Card>
+                  </HtmlTooltip>
                 }
 
                 { totalAverageSalesData &&
-                  <Card variant={toggleAverageSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleAverageSales ? '#fd5151' : 'transparent', height: 5, width: '100%'}}/>
-                    <CardActionArea style={{padding: 15}} onClick={handleToggleAverageSalesChange} disableRipple>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Penjualan/Pesanan
-                      </Typography>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalAverageSalesData.value)}</span>
-                      </Typography>
-                      <Grid container style={{marginTop: 10}}>
-                        <Grid item xs={7}>
-                          <Typography 
-                            style={{
-                              color: "#888", 
-                              fontSize: 11,
-                              textAlign: 'left',
-                              fontWeight: 500
-                            }}
-                          >
-                            {totalAverageSalesData.range}
-                          </Typography>
+                  <HtmlTooltip title={<span><p>{averageSalesDataDescription.split("\n")[0]}</p><p>{averageSalesDataDescription.split("\n")[1]}</p></span>}>
+                    <Card variant={toggleAverageSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                      <div style={{backgroundColor: toggleAverageSales ? '#fd5151' : 'transparent', height: 5, width: '100%'}}/>
+                      <CardActionArea style={{padding: 15}} onClick={handleToggleAverageSalesChange} disableRipple>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Penjualan/Pesanan
+                        </Typography>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalAverageSalesData.value)}</span>
+                        </Typography>
+                        <Grid container style={{marginTop: 10}}>
+                          <Grid item xs={7}>
+                            <Typography 
+                              style={{
+                                color: "#888", 
+                                fontSize: 11,
+                                textAlign: 'left',
+                                fontWeight: 500
+                              }}
+                            >
+                              {totalAverageSalesData.range}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                            <Typography 
+                              style={{
+                                color: "#000", 
+                                fontSize: 13,
+                                textAlign: 'left',
+                                fontWeight: 500,
+                                display: 'inline'
+                              }}
+                            >
+                              {Intl.NumberFormat('id').format(totalAverageSalesData.growth.toFixed(2))}%
+                            </Typography>
+                            { totalAverageSalesData.growthTrend == 'up'
+                              ? <TrendingUpIcon
+                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                                />
+                              : <TrendingDownIcon
+                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                                />
+                            }
+                          </Grid>
                         </Grid>
-                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 13,
-                              textAlign: 'left',
-                              fontWeight: 500,
-                              display: 'inline'
-                            }}
-                          >
-                            {Intl.NumberFormat('id').format(totalAverageSalesData.growth.toFixed(2))}%
-                          </Typography>
-                          { totalAverageSalesData.growthTrend == 'up'
-                            ? <TrendingUpIcon
-                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                              />
-                            : <TrendingDownIcon
-                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                              />
-                          }
-                        </Grid>
-                      </Grid>
-                    </CardActionArea>
-                  </Card>
+                      </CardActionArea>
+                    </Card>
+                  </HtmlTooltip>
                 }
 
                 { totalMarginValueData &&
-                  <Card variant={toggleMarginValue ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleMarginValue ? '#aa88ff' : 'transparent', height: 5, width: '100%'}}/>
-                    <CardActionArea style={{padding: 15}} onClick={handleToggleMarginValueChange} disableRipple>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Margin (Rp)
-                      </Typography>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginValueData.value)}</span>
-                      </Typography>
-                      <Grid container style={{marginTop: 10}}>
-                        <Grid item xs={7}>
-                          <Typography 
-                            style={{
-                              color: "#888", 
-                              fontSize: 11,
-                              textAlign: 'left',
-                              fontWeight: 500
-                            }}
-                          >
-                            {totalMarginValueData.range}
-                          </Typography>
+                  <HtmlTooltip title={<span><p>{marginDataDescription.split("\n")[0]}</p><p>{marginDataDescription.split("\n")[1]}</p></span>}>
+                    <Card variant={toggleMarginValue ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                      <div style={{backgroundColor: toggleMarginValue ? '#aa88ff' : 'transparent', height: 5, width: '100%'}}/>
+                      <CardActionArea style={{padding: 15}} onClick={handleToggleMarginValueChange} disableRipple>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Margin (Rp)
+                        </Typography>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginValueData.value)}</span>
+                        </Typography>
+                        <Grid container style={{marginTop: 10}}>
+                          <Grid item xs={7}>
+                            <Typography 
+                              style={{
+                                color: "#888", 
+                                fontSize: 11,
+                                textAlign: 'left',
+                                fontWeight: 500
+                              }}
+                            >
+                              {totalMarginValueData.range}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                            <Typography 
+                              style={{
+                                color: "#000", 
+                                fontSize: 13,
+                                textAlign: 'left',
+                                fontWeight: 500,
+                                display: 'inline'
+                              }}
+                            >
+                              {Intl.NumberFormat('id').format(totalMarginValueData.growth.toFixed(2))}%
+                            </Typography>
+                            { totalMarginValueData.growthTrend == 'up'
+                              ? <TrendingUpIcon
+                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                                />
+                              : <TrendingDownIcon
+                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                                />
+                            }
+                          </Grid>
                         </Grid>
-                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 13,
-                              textAlign: 'left',
-                              fontWeight: 500,
-                              display: 'inline'
-                            }}
-                          >
-                            {Intl.NumberFormat('id').format(totalMarginValueData.growth.toFixed(2))}%
-                          </Typography>
-                          { totalMarginValueData.growthTrend == 'up'
-                            ? <TrendingUpIcon
-                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                              />
-                            : <TrendingDownIcon
-                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                              />
-                          }
-                        </Grid>
-                      </Grid>
-                    </CardActionArea>
-                  </Card>
+                      </CardActionArea>
+                    </Card>
+                  </HtmlTooltip>
                 }
 
                 { totalMarginRateData &&
-                  <Card variant={toggleMarginRate ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleMarginRate ? '#23aaab' : 'transparent', height: 5, width: '100%'}}/>
-                    <CardActionArea style={{padding: 15}} onClick={handleToggleMarginRateChange} disableRipple>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Margin (%)
-                      </Typography>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginRateData.value.toFixed(2))}</span>%
-                      </Typography>
-                      <Grid container style={{marginTop: 10}}>
-                        <Grid item xs={7}>
-                          <Typography 
-                            style={{
-                              color: "#888", 
-                              fontSize: 11,
-                              textAlign: 'left',
-                              fontWeight: 500
-                            }}
-                          >
-                            {totalMarginRateData.range}
-                          </Typography>
+                  <HtmlTooltip title={<span><p>{marginRateDataDescription.split("\n")[0]}</p><p>{marginRateDataDescription.split("\n")[1]}</p></span>}>
+                    <Card variant={toggleMarginRate ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                      <div style={{backgroundColor: toggleMarginRate ? '#23aaab' : 'transparent', height: 5, width: '100%'}}/>
+                      <CardActionArea style={{padding: 15}} onClick={handleToggleMarginRateChange} disableRipple>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          Margin (%)
+                        </Typography>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            textAlign: 'left',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginRateData.value.toFixed(2))}</span>%
+                        </Typography>
+                        <Grid container style={{marginTop: 10}}>
+                          <Grid item xs={7}>
+                            <Typography 
+                              style={{
+                                color: "#888", 
+                                fontSize: 11,
+                                textAlign: 'left',
+                                fontWeight: 500
+                              }}
+                            >
+                              {totalMarginRateData.range}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                            <Typography 
+                              style={{
+                                color: "#000", 
+                                fontSize: 13,
+                                textAlign: 'left',
+                                fontWeight: 500,
+                                display: 'inline'
+                              }}
+                            >
+                              {Intl.NumberFormat('id').format(totalMarginRateData.growth.toFixed(2))}%
+                            </Typography>
+                            { totalMarginRateData.growthTrend == 'up'
+                              ? <TrendingUpIcon
+                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                                />
+                              : <TrendingDownIcon
+                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                                />
+                            }
+                          </Grid>
                         </Grid>
-                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 13,
-                              textAlign: 'left',
-                              fontWeight: 500,
-                              display: 'inline'
-                            }}
-                          >
-                            {Intl.NumberFormat('id').format(totalMarginRateData.growth.toFixed(2))}%
-                          </Typography>
-                          { totalMarginRateData.growthTrend == 'up'
-                            ? <TrendingUpIcon
-                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                              />
-                            : <TrendingDownIcon
-                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                              />
-                          }
-                        </Grid>
-                      </Grid>
-                    </CardActionArea>
-                  </Card>
+                      </CardActionArea>
+                    </Card>
+                  </HtmlTooltip>
                 }
               </Box>
 
