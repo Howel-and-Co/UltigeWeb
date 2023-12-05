@@ -1383,7 +1383,6 @@ const Home = () => {
       });
 
       setSalesData(processedData);
-      setSalesDataDescription(processedData.Description);
       setSalesDataLoading(false);
       setToggleMultipleSales(resultObject);
       setNewDataLoad(true);
@@ -1397,7 +1396,6 @@ const Home = () => {
       processedData = result.data;
 
       setSalesCountData(processedData);
-      setSalesCountDataDescription(processedData.Description);
       setSalesCountDataLoading(false);
       setNewDataLoad(true);
     };
@@ -1410,7 +1408,6 @@ const Home = () => {
       processedData = result.data;
 
       setAverageSalesData(processedData);
-      setAverageSalesDataDescription(processedData.Description);
       setAverageSalesDataLoading(false);
       setNewDataLoad(true);
     };
@@ -1423,10 +1420,22 @@ const Home = () => {
       processedData = result.data;
 
       setMarginData(processedData);
-      setMarginDataDescription(processedData.DescriptionMargin);
-      setMarginRateDataDescription(processedData.DescriptionMarginRate);
       setMarginDataLoading(false);
       setNewDataLoad(true);
+    };
+
+    const fetchDescriptionData = async () => {
+      setMarginDataLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getanalytictooltipdescription`);
+
+      let processedData;
+      processedData = result.data;
+
+      setSalesDataDescription(processedData.Data.Sales);
+      setSalesCountDataDescription(processedData.Data.SalesCount);
+      setAverageSalesDataDescription(processedData.Data.AverageSalesValue);
+      setMarginDataDescription(processedData.Data.MarginValue);
+      setMarginRateDataDescription(processedData.Data.MarginValueRate);
     };
 
     const fetchPreviousSalesData = async (startDate, endDate) => {
@@ -1639,6 +1648,7 @@ const Home = () => {
       fetchSalesCountData(startDate, endDate);
       fetchAverageSalesData(startDate, endDate);
       fetchMarginData(startDate, endDate);
+      fetchDescriptionData();
 
       fetchPreviousSalesData(previousStartDate, previousEndDate);
       fetchPreviousSalesCountData(previousStartDate, previousEndDate);
@@ -2136,7 +2146,6 @@ const Home = () => {
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
-      let totalMarginRateCounter = 0;
 
       while (currentDate <= momentEndDate) { 
         currentDate.startOf('month');
@@ -2177,6 +2186,7 @@ const Home = () => {
           else if (marginData && lineItem.column == 'Margin (%)') {
             data = marginData.RateData;
             legend = marginData.Legend;
+            totalMarginRateValue = marginData.TotalRate;
           }
 
           data.forEach(function (dataItem) {
@@ -2203,8 +2213,6 @@ const Home = () => {
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Margin (%)') {
-                    totalMarginRateValue += parseFloat(dataItem[legendItem]);
-                    totalMarginRateCounter++;
                     tempMarginRateValue += parseFloat(dataItem[legendItem]);
                     tempMarginRateCounter++;
                   }
@@ -2248,7 +2256,6 @@ const Home = () => {
       }
 
       totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue);
-      totalMarginRateValue = totalMarginRateCounter == 0 ? 0 : (totalMarginRateValue / totalMarginRateCounter);
       
 
 
@@ -2262,7 +2269,6 @@ const Home = () => {
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
-      let totalPreviousMarginRateCounter = 0;
 
       while (currentDate <= momentEndDate) { 
         currentDate.startOf('month');
@@ -2290,6 +2296,7 @@ const Home = () => {
           else if (previousMarginData && lineItem.column == 'Margin (%)') {
             data = previousMarginData.RateData;
             legend = previousMarginData.Legend;
+            totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
 
           data.forEach(function (dataItem) {
@@ -2307,10 +2314,6 @@ const Home = () => {
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (%)') {
-                    totalPreviousMarginRateValue += parseFloat(dataItem[legendItem]);
-                    totalPreviousMarginRateCounter++;
-                  }
                 }
               });
             }
@@ -2321,7 +2324,6 @@ const Home = () => {
       }
       
       totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue);
-      totalPreviousMarginRateValue = totalPreviousMarginRateCounter == 0 ? 0 : (totalPreviousMarginRateValue / totalPreviousMarginRateCounter);
 
       const result = new Object();
       result.line = chartLine;
@@ -2489,7 +2491,6 @@ const Home = () => {
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
-      let totalMarginRateCounter = 0;
 
       while (currentDate <= momentEndDate) { 
         dateCounter++; 
@@ -2538,6 +2539,7 @@ const Home = () => {
           else if (marginData && lineItem.column == 'Margin (%)') {
             data = marginData.RateData;
             legend = marginData.Legend;
+            totalMarginRateValue = marginData.TotalRate;
           }
 
           data.forEach(function (dataItem) {
@@ -2564,8 +2566,6 @@ const Home = () => {
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Margin (%)') {
-                    totalMarginRateValue += parseFloat(dataItem[legendItem]);
-                    totalMarginRateCounter++;
                     tempMarginRateValue += parseFloat(dataItem[legendItem]);
                     tempMarginRateCounter++;
                   }
@@ -2609,7 +2609,6 @@ const Home = () => {
       }
 
       totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue);
-      totalMarginRateValue = totalMarginRateCounter == 0 ? 0 : (totalMarginRateValue / totalMarginRateCounter);
 
       
       
@@ -2623,7 +2622,6 @@ const Home = () => {
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
-      let totalPreviousMarginRateCounter = 0;
 
       while (currentDate <= momentEndDate) { 
         line.forEach(function (lineItem) {
@@ -2649,6 +2647,7 @@ const Home = () => {
           else if (previousMarginData && lineItem.column == 'Margin (%)') {
             data = previousMarginData.RateData;
             legend = previousMarginData.Legend;
+            totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
 
           data.forEach(function (dataItem) {
@@ -2666,10 +2665,6 @@ const Home = () => {
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (%)') {
-                    totalPreviousMarginRateValue += parseFloat(dataItem[legendItem]);
-                    totalPreviousMarginRateCounter++;
-                  }
                 }
               });
             }
@@ -2680,7 +2675,6 @@ const Home = () => {
       }
 
       totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue);
-      totalPreviousMarginRateValue = totalPreviousMarginRateCounter == 0 ? 0 : (totalPreviousMarginRateValue / totalPreviousMarginRateCounter);
 
       const result = new Object();
       result.line = chartLine;
@@ -2843,7 +2837,6 @@ const Home = () => {
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
-      let totalMarginRateCounter = 0;
 
       let lastHour;
 
@@ -2901,6 +2894,7 @@ const Home = () => {
           else if (marginData && lineItem.column == 'Margin (%)') {
             data = marginData.RateData;
             legend = marginData.Legend;
+            totalMarginRateValue = marginData.TotalRate;
           }
 
           data.forEach(function (dataItem) {
@@ -2927,8 +2921,6 @@ const Home = () => {
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Margin (%)') {
-                    totalMarginRateValue += parseFloat(dataItem[legendItem]);
-                    totalMarginRateCounter++;
                     tempMarginRateValue += parseFloat(dataItem[legendItem]);
                     tempMarginRateCounter++;
                   }
@@ -2972,7 +2964,6 @@ const Home = () => {
       }
 
       totalAverageSalesValue = totalSalesCountValue == 0 ? 0 : (totalSalesValue / totalSalesCountValue);
-      totalMarginRateValue = totalMarginRateCounter == 0 ? 0 : (totalMarginRateValue / totalMarginRateCounter);
 
 
 
@@ -2983,7 +2974,6 @@ const Home = () => {
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
-      let totalPreviousMarginRateCounter = 0;
 
       while (hourCounter <= lastHour) { 
         line.forEach(function (lineItem) {
@@ -3009,6 +2999,7 @@ const Home = () => {
           else if (previousMarginData && lineItem.column == 'Margin (%)') {
             data = previousMarginData.RateData;
             legend = previousMarginData.Legend;
+            totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
 
           data.forEach(function (dataItem) {
@@ -3026,10 +3017,6 @@ const Home = () => {
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (%)') {
-                    totalPreviousMarginRateValue += parseFloat(dataItem[legendItem]);
-                    totalPreviousMarginRateCounter++;
-                  }
                 }
               });
             }
@@ -3040,7 +3027,6 @@ const Home = () => {
       }
 
       totalPreviousAverageSalesValue = totalPreviousSalesCountValue == 0 ? 0 : (totalPreviousSalesValue / totalPreviousSalesCountValue);
-      totalPreviousMarginRateValue = totalPreviousMarginRateCounter == 0 ? 0 : (totalPreviousMarginRateValue / totalPreviousMarginRateCounter);
 
       const result = new Object();
       result.line = chartLine;
