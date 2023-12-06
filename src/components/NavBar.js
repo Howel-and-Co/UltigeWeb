@@ -8,6 +8,7 @@ import {
   IconButton,
   ListItemText,
 } from "@material-ui/core";
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -132,18 +133,22 @@ const NavBar = ({isPrivate = true}) => {
             { isPrivate ?
               <Grid item style={{ flexDirection: "column" }}>
                 <Link href= {checkToken() ? "/login" : "/analytic"}>
-                  <a>
-                    <img
-                      style={{ paddingTop: 14, paddingBottom: 14, width: 55, marginLeft: checkToken() ? 0 : 15 }}
-                      src="/howel-logo-v2-bow.svg"   
-                      alt=""
-                    />
-                  </a>
+                  <Image
+                    style={{ paddingTop: 14, paddingBottom: 14, width: 55, height: 'auto', marginLeft: checkToken() ? 0 : 15 }}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    src="/howel-logo-v2-bow.svg"   
+                    alt=""
+                  />
                 </Link>
               </Grid> :
               <Grid item style={{ flexDirection: "column" }}>
-                <img
-                  style={{ paddingTop: 14, paddingBottom: 14, width: 55, marginLeft: 15 }}
+                <Image
+                  style={{ paddingTop: 14, paddingBottom: 14, width: 55, height: 'auto', marginLeft: 15 }}
+                  width={0}
+                  height={0}
+                  sizes="100vw"
                   src="/howel-logo-v2-bow.svg"
                   alt=""
                 />
@@ -222,7 +227,10 @@ const NavBar = ({isPrivate = true}) => {
               {navButtons.map((item, index) => (
                 <Fragment key={index}>
                   { ((item.excludeRole.length == 0 && item.includeRole.includes(Cookies.get("role")) == true) || (item.includeRole.length == 0 && item.excludeRole.includes(Cookies.get("role")) == false)) && 
-                    <Link href={`${item.path}`}>
+                    <Link href={`${item.path}`} style={{
+                      textDecoration: "none",
+                      color: "#000"
+                    }}>
                       <ListItem
                         button
                         component="a"

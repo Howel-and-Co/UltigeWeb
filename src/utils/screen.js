@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 
 const useContainerDimensions = myRef => {
   const getDimensions = () => ({
@@ -7,6 +7,10 @@ const useContainerDimensions = myRef => {
   })
 
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+
+  useLayoutEffect(() => {
+    setDimensions(getDimensions())
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {

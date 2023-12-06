@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from 'next/image';
 import Layout from "../../../src/components/Layout";
 import {
   Grid,
@@ -897,10 +898,13 @@ const StockDetail = () => {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} style={{marginLeft: 10, marginRight: 10, marginBottom: 5}}>
-                              <img 
+                              <Image 
                                 src={stockImageBase64 != null ? stockImageBase64 : "/icons/no-image.jpg"}  
-                                height={250}
+                                width={0}
+                                height={0}
+                                sizes="100vw"
                                 alt="Stock Image"
+                                style={{ width: 'auto', height: 250 }} 
                               />
                             </Grid>
                         </Grid>

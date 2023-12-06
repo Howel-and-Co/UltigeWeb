@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from 'next/image';
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -1192,7 +1193,7 @@ const ProductRanking = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -1387,7 +1388,7 @@ const ProductRanking = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -1582,7 +1583,7 @@ const ProductRanking = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -1777,7 +1778,7 @@ const ProductRanking = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -2268,7 +2269,7 @@ const ProductRanking = () => {
                                 </TableCell>
                                 <TableCell align="left">
                                   <Grid container style={{marginTop: 10}}>
-                                    <img 
+                                    <Image 
                                       src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                                       width={75} 
                                       height={75} 
@@ -2346,7 +2347,7 @@ const ProductRanking = () => {
                                 </TableCell>
                                 <TableCell align="left">
                                   <Grid container style={{marginTop: 10}}>
-                                    <img 
+                                    <Image 
                                       src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"} 
                                       width={75} 
                                       height={75} 

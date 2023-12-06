@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from 'next/image';
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ProductImageTemplate = (props) => {
   return (
-    <img 
+    <Image 
       src={props.ProductImage != "" ? props.ProductImage : "/icons/no-image.jpg"}  
       width={75} 
       height={75} 

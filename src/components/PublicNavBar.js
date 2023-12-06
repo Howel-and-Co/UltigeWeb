@@ -3,6 +3,7 @@ import {
   Grid,
   Container,
 } from "@material-ui/core";
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Link from "next/link";
 import NavButton from "./NavButton";
@@ -52,8 +53,11 @@ const PublicNavBar = () => {
             alignItems="center"
           >
             <Grid item style={{ flexDirection: "column" }} xs={4}>
-              <img
-                style={{ paddingTop: 14, paddingBottom: 14, width: 55 }}
+              <Image
+                style={{ paddingTop: 14, paddingBottom: 14, width: 55, height: 'auto' }}
+                width={0}
+                height={0}
+                sizes="100vw"
                 src="/howel-logo-v2-bow.svg"
                 alt=""
               />

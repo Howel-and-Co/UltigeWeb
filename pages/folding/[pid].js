@@ -235,8 +235,8 @@ const Folding = () => {
                 />
             </Box>
           </Grid>
-          { liningImages && liningImages.map(value => (
-            <Grid item xs={12} sm={6} md={4} style={{marginBottom: 15}}>
+          { liningImages && liningImages.map((value, index) => (
+            <Grid key={index} item xs={12} sm={6} md={4} style={{marginBottom: 15}}>
               <Card style={{ 
                 width: "97%"
               }}>

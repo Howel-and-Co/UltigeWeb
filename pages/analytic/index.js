@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from 'next/image';
 import Layout from "../../src/components/Layout";
 import {
   LineChart,
@@ -124,7 +125,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
-          <p style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Margin (%)' ? "%" : ""}`}</p>
+          <p key={index} style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Margin (%)' ? "%" : ""}`}</p>
         ))}
       </Card>
     );
@@ -139,7 +140,7 @@ const CustomMultipleTooltip = ({ active, payload, label }) => {
       <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
-          <p style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : Rp ${Intl.NumberFormat('id').format(item.payload[item.name])} , ${Intl.NumberFormat('id').format(item.payload[item.name + " QTY"])} pcs`}</p>
+          <p key={index} style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : Rp ${Intl.NumberFormat('id').format(item.payload[item.name])} , ${Intl.NumberFormat('id').format(item.payload[item.name + " QTY"])} pcs`}</p>
         ))}
       </Card>
     );
@@ -177,6 +178,7 @@ const MultiTypeChart = (props) => {
       />
       {props.line.map((item, index) => (
         <Line
+          key={index}
           yAxisId={item.column}
           type="linear"
           dataKey={item.column}
@@ -4912,7 +4914,7 @@ const Home = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -5098,7 +5100,7 @@ const Home = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -5284,7 +5286,7 @@ const Home = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -5470,7 +5472,7 @@ const Home = () => {
           </TableCell>
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
-              <img 
+              <Image 
                 src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                 width={75} 
                 height={75} 
@@ -5842,7 +5844,7 @@ const Home = () => {
                     classes={{ root: classes.selectRoot }}
                   >
                     {channelList && channelList.map((item, index) => (
-                      <MenuItem disableRipple value={item}>{item}</MenuItem>
+                      <MenuItem key={index} disableRipple value={item}>{item}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -6297,7 +6299,7 @@ const Home = () => {
             <Paper className={classes.paper} elevation={3}>
               <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
                 { toggleMultipleSales && Object.entries(toggleMultipleSales).map(([key,value])=> (
-                  <Card variant={value.toggle ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                  <Card key={key} variant={value.toggle ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
                     <div style={{backgroundColor: value.toggle ? randomColorHSL(key) : 'transparent', height: 5, width: '100%'}}/>
                     <CardActionArea style={{padding: 15}} onClick={() => handleToggleMultipleSalesChange(key)} disableRipple>
                       <Typography 
@@ -6789,7 +6791,7 @@ const Home = () => {
                                   </TableCell>
                                   <TableCell align="left">
                                     <Grid container style={{marginTop: 10}}>
-                                      <img 
+                                      <Image 
                                         src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
                                         width={75} 
                                         height={75} 
@@ -6867,7 +6869,7 @@ const Home = () => {
                                   </TableCell>
                                   <TableCell align="left">
                                     <Grid container style={{marginTop: 10}}>
-                                      <img 
+                                      <Image 
                                         src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"} 
                                         width={75} 
                                         height={75} 
@@ -8070,7 +8072,7 @@ const Home = () => {
                 </Grid>
                 <Grid item xs={12} md={8} container justifyContent="flex-end">
                   { tierMultipleCategoryLiveCustom && tierMultipleCategoryLiveCustom.map((value)=> (
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <Box key={value} className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
                       <FiberManualRecordIcon style={{ color: randomColorHSL(value), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                       <Typography 
                         style={{

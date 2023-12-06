@@ -328,7 +328,7 @@ const TransferRequest = () => {
                           classes={{ root: classes.selectRoot }}
                         >
                           {dateTypeList && dateTypeList.map((item, index) => (
-                            <MenuItem disableRipple value={item}>{item}</MenuItem>
+                            <MenuItem disableRipple value={item} key={index}>{item}</MenuItem>
                           ))}
                         </Select>
                     </FormControl>

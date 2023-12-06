@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Typography, Link } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -52,9 +53,10 @@ const Footer = () => {
         <Container maxWidth="lg">
           <Grid container direction="row" justify="space-between">
             <Grid>
-              <img
+              <Image
                 style={{ marginLeft: 40, marginTop: 20 }}
                 src="/next-white.svg"
+                alt=""
               />
             </Grid>
 
@@ -89,7 +91,7 @@ const Footer = () => {
                 }}
                 href="#"
               >
-                <img
+                <Image
                   style={{ height: 16, width: 16 }}
                   src="/icons/facebook.svg"
                   alt=""
@@ -116,7 +118,7 @@ const Footer = () => {
                 }}
                 href="#"
               >
-                <img
+                <Image
                   style={{ height: 16, width: 16 }}
                   src="/icons/instagram.svg"
                   alt=""
@@ -143,7 +145,7 @@ const Footer = () => {
                 }}
                 href="#"
               >
-                <img
+                <Image
                   style={{ height: 16, width: 16 }}
                   src="/icons/twitter.svg"
                   alt=""
@@ -170,7 +172,7 @@ const Footer = () => {
                 }}
                 href="#"
               >
-                <img
+                <Image
                   style={{ height: 16, width: 16 }}
                   src="/icons/youtube.svg"
                   alt=""
@@ -196,7 +198,7 @@ const Footer = () => {
                 }}
                 href="#"
               >
-                <img
+                <Image
                   style={{ height: 16, width: 16 }}
                   src="/icons/linkedin.svg"
                   alt=""

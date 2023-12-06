@@ -5,8 +5,9 @@ import theme from "../src/utils/theme";
 import React from 'react';
 
 import "../sass/scroll.scss"
+import dynamic from "next/dynamic";
 
-function MyApp({ Component, pageProps }) {
+const App = ({ Component, pageProps }) => {
     React.useEffect(() => {
         const jssStyles = document.querySelector("#jss-server-side");
         if (jssStyles) {
@@ -24,4 +25,6 @@ function MyApp({ Component, pageProps }) {
     );
 }
 
-export default MyApp
+export default dynamic(() => Promise.resolve(App), {
+    ssr: false,
+});

@@ -128,8 +128,8 @@ const Lining = () => {
       </Head>
 
       <Grid container style={{padding: 15}}>
-        { liningImages && liningImages.map(value => (
-          <Grid item xs={4} style={{marginBottom: 15}}>
+        { liningImages && liningImages.map((value, index) => (
+          <Grid key={index} item xs={4} style={{marginBottom: 15}}>
             <Card style={{ 
               width: "97%"
             }}>
