@@ -121,7 +121,11 @@ let theme = createTheme({
           {'@font-face': googleSansItalic},
           {'@font-face': googleSansBold},
           {'@font-face': googleSansBoldItalic}
-        ]
+        ],
+        body: {
+          fontWeight: "bold",
+          fontSize: 14
+        }
       }
     },
   }

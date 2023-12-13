@@ -78,7 +78,7 @@ const useStyles = makeStyles()((theme) => {
       "& span": {
         fontSize: 24
       },
-      color: "#8854D0"
+      color: "#387AEF"
     },
     menuList: {
       textTransform: "capitalize",

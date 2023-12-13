@@ -5674,9 +5674,8 @@ const Home = () => {
                         inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={selectedStartDate}
-                        style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
                     { dateOption == "custom-monthly" &&
@@ -5686,9 +5685,8 @@ const Home = () => {
                         inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={selectedStartDate}
-                        style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
                     { dateOption == "custom-yearly" &&
@@ -5698,9 +5696,8 @@ const Home = () => {
                         inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={selectedStartDate}
-                        style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
                     { dateOption == "custom-date" &&
@@ -5711,7 +5708,7 @@ const Home = () => {
                         value={selectedEndDate}
                         style={{marginRight: 15, width: 150}}
                         onChange={handleEndDateChange}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
                   </LocalizationProvider>
@@ -5742,9 +5739,8 @@ const Home = () => {
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
                       value={selectedStartDate}
-                      style={{marginRight: 15, width: 150}}
                       onChange={handleStartDateChange}
-                      renderInput={(props) => <TextField {...props} />}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                     />
                   }
                   { dateOption == "custom-monthly" &&
@@ -5753,9 +5749,8 @@ const Home = () => {
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
                       value={selectedStartDate}
-                      style={{marginRight: 15, width: 150}}
                       onChange={handleStartDateChange}
-                      renderInput={(props) => <TextField {...props} />}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                     />
                   }
                   { dateOption == "custom-yearly" &&
@@ -5764,9 +5759,8 @@ const Home = () => {
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
                       value={selectedStartDate}
-                      style={{marginRight: 15, width: 150}}
                       onChange={handleStartDateChange}
-                      renderInput={(props) => <TextField {...props} />}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                     />
                   }
                   { dateOption == "custom-date" &&
@@ -5774,9 +5768,8 @@ const Home = () => {
                       inputFormat="yyyy-MM-dd"
                       label="End Date"
                       value={selectedEndDate}
-                      style={{marginRight: 15, width: 150}}
                       onChange={handleEndDateChange}
-                      renderInput={(props) => <TextField {...props} />}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                     />
                   }
                 </LocalizationProvider>
@@ -7259,9 +7252,8 @@ const Home = () => {
                           inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={modelCategoryEndDate}
-                          style={{marginTop: 10, width: 150}}
                           onChange={handleModelCategoryEndDateChange}
-                          renderInput={(props) => <TextField {...props} />}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                         />
                       </LocalizationProvider>
                     </Box>
@@ -7480,18 +7472,16 @@ const Home = () => {
                           inputFormat="yyyy-MM-dd"
                           label="Start Date"
                           value={modelCategoryCustomStartDate}
-                          style={{marginTop: 10, marginRight: 10, width: 150}}
                           onChange={handleModelCategoryCustomStartDateChange}
-                          renderInput={(props) => <TextField {...props} />}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
                         />
                         { !isMobile && 
                           <DatePicker
                             inputFormat="yyyy-MM-dd"
                             label="End Date"
                             value={modelCategoryCustomEndDate}
-                            style={{marginTop: 10, width: 150}}
                             onChange={handleModelCategoryCustomEndDateChange}
-                            renderInput={(props) => <TextField {...props} />}
+                            renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                           />
                         }
                       </LocalizationProvider>
@@ -7518,9 +7508,8 @@ const Home = () => {
                             inputFormat="yyyy-MM-dd"
                             label="End Date"
                             value={modelCategoryCustomEndDate}
-                            style={{marginTop: 10, width: 150}}
                             onChange={handleModelCategoryCustomEndDateChange}
-                            renderInput={(props) => <TextField {...props} />}
+                            renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                           />
                         </LocalizationProvider>
                       </Box>
@@ -7727,18 +7716,16 @@ const Home = () => {
                         inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={tierCategoryCustomStartDate}
-                        style={{marginTop: 10, marginRight: 10, width: 150}}
                         onChange={handleTierCategoryCustomStartDateChange}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
                       />
                       { !isMobile && 
                         <DatePicker
                           inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={tierCategoryCustomEndDate}
-                          style={{marginTop: 10, width: 150}}
                           onChange={handleTierCategoryCustomEndDateChange}
-                          renderInput={(props) => <TextField {...props} />}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                         />
                       }
                     </LocalizationProvider>
@@ -7765,9 +7752,8 @@ const Home = () => {
                           inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={tierCategoryCustomEndDate}
-                          style={{marginTop: 10, width: 150}}
                           onChange={handleTierCategoryCustomEndDateChange}
-                          renderInput={(props) => <TextField {...props} />}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                         />
                       </LocalizationProvider>
                     </Box>
@@ -7909,6 +7895,9 @@ const Home = () => {
                   sx={{
                     "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
                       display: "none"
+                    },
+                    div: {
+                      fontWeight: 400
                     }
                   }}
                 />
@@ -7951,18 +7940,16 @@ const Home = () => {
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
                       value={tierMultipleCategoryCustomStartDate}
-                      style={{marginTop: 10, marginRight: 10, width: 150}}
                       onChange={handleTierMultipleCategoryCustomStartDateChange}
-                      renderInput={(props) => <TextField {...props} />}
+                      renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
                     />
                     { !isMobile && 
                       <DatePicker
                         inputFormat="yyyy-MM-dd"
                         label="End Date"
                         value={tierMultipleCategoryCustomEndDate}
-                        style={{marginTop: 10, width: 150}}
                         onChange={handleTierMultipleCategoryCustomEndDateChange}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                       />
                     }
                   </LocalizationProvider>
@@ -8006,9 +7993,8 @@ const Home = () => {
                         inputFormat="yyyy-MM-dd"
                         label="End Date"
                         value={tierMultipleCategoryCustomEndDate}
-                        style={{marginTop: 10, width: 150}}
                         onChange={handleTierMultipleCategoryCustomEndDateChange}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                       />
                     </LocalizationProvider>
                   </Box>
