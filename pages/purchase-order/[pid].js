@@ -10,9 +10,9 @@ import {
   Dialog,
   DialogContent,
   Button
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
 
 import React, { useState, useEffect, useRef } from 'react';

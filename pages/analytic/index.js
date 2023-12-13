@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Image from 'next/image';
 import Layout from "../../src/components/Layout";
 import {
@@ -27,14 +26,16 @@ import {
   Link,
   CircularProgress,
   Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 import MomentUtils from '@date-io/moment';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import MobileDatePicker from '@mui/lab/MobileDatePicker';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { makeStyles, withStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import useContainerDimensions from  "../../src/utils/screen.js";
 import randomColorHSL from  "../../src/utils/randomColorHSL";
 import moment from 'moment-timezone';
@@ -43,12 +44,12 @@ import 'moment/locale/id';
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../../src/utils/axios';
 
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
-import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -71,34 +72,33 @@ import { checkToken } from "../../src/utils/config";
 import { DataGrid } from '@mui/x-data-grid';
 import { InView } from 'react-intersection-observer';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-}));
+  };
+});
 
 const LineColor = (column) => {
   let color;
@@ -295,7 +295,7 @@ const MultiCategoryChart = (props) => {
   );
 }
 
-const HtmlTooltip = withStyles((theme) => ({
+const HtmlTooltip = withStyles(Tooltip, (theme) => ({
   tooltip: {
     backgroundColor: '#ffffff',
     color: 'rgba(0, 0, 0, 1)',
@@ -303,14 +303,14 @@ const HtmlTooltip = withStyles((theme) => ({
     fontSize: 13,
     border: '1px solid #d3d3d3',
   },
-}))(Tooltip);
+}));
 
 const columns = [
   { field: 'tierCategory', headerName: 'Kategori Produk', flex: 1, minWidth: 200 },
 ];
 
 const Home = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -4915,7 +4915,7 @@ const Home = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -5101,7 +5101,7 @@ const Home = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -5287,7 +5287,7 @@ const Home = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -5473,7 +5473,7 @@ const Home = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -5602,190 +5602,119 @@ const Home = () => {
   const { width, height } = useContainerDimensions(componentRef);
 
   return (
-    <div className={classes.root}>
-      <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        <Grid container style={{padding: 5}}>
-          <Grid item xs={12} ref={componentRef}>
-            <Paper className={classes.paper} elevation={3}>
-              <Box className={classes.inline}>
-                <FormControl variant="outlined" className={classes.formControl}>
-                  { isMobile
-                    ? <InputLabel>Periode Data</InputLabel>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 9,
-                          marginBottom: 9,
-                          marginRight: 15
-                        }}
-                      >
-                        Periode Data
-                      </Typography>
-                  }
-                  { isMobile
-                    ? <Select
-                        value={dateOption}
-                        onChange={handleChange}
-                        style={{height: 60, width: 375}}
-                        label="Periode Data"
-                        classes={{ root: classes.selectRoot }}
-                      >
-                        <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
-                        <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
-                        <Divider style={{margin: 12}}/>
-                        <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange != '' && <br/>}{customDayRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange != '' && <br/>}{customWeekRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange != '' && <br/>}{customMonthRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange != '' && <br/>}{customYearRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange != '' && <br/>}{customDateRange}</MenuItem>
-                      </Select>
-                    : <Select
-                        value={dateOption}
-                        onChange={handleChange}
-                        style={{height: 45, width: 450}}
-                        classes={{ root: classes.selectRoot }}
-                      >
-                        <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
-                        <MenuItem disableRipple value='yesterday'>Kemarin: {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
-                        <Divider style={{margin: 12}}/>
-                        <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange}</MenuItem>
-                      </Select>
-                  }
-                </FormControl>
-                { (dateOption == "custom-daily" 
-                  || dateOption == "custom-weekly"
-                  || dateOption == "custom-monthly"
-                  || dateOption == "custom-yearly"
-                  || dateOption == "custom-date") && !isMobile &&
-                  <Grid style={{margin: 10}}>  
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="Start Date"
-                          value={selectedStartDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleStartDateChange}
-                        />
-                      }
-                      { dateOption == "custom-monthly" &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          views={["month"]}
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="Start Date"
-                          value={selectedStartDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleStartDateChange}
-                        />
-                      }
-                      { dateOption == "custom-yearly" &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          views={["year"]}
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="Start Date"
-                          value={selectedStartDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleStartDateChange}
-                        />
-                      }
-                      { dateOption == "custom-date" &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="End Date"
-                          value={selectedEndDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleEndDateChange}
-                        />
-                      }
-                    </MuiPickersUtilsProvider>
-                    <Button 
-                      variant="outlined"
+    <Layout>
+      <Grid container style={{padding: 5}}>
+        <Grid item xs={12} ref={componentRef}>
+          <Paper className={classes.paper} elevation={3}>
+            <Box className={classes.inline}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                { isMobile
+                  ? <InputLabel>Periode Data</InputLabel>
+                  : <Typography 
                       style={{
-                        borderRadius: 4,
-                        textTransform: "none",
-                        marginTop: 8
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 9,
+                        marginRight: 15
                       }}
-                      disableRipple
-                      onClick={applyCustomDate}
                     >
-                      Apply
-                    </Button>
-                  </Grid>
+                      Periode Data
+                    </Typography>
                 }
-              </Box>
+                { isMobile
+                  ? <Select
+                      value={dateOption}
+                      onChange={handleChange}
+                      style={{height: 60, width: 375}}
+                      label="Periode Data"
+                      classes={{ root: classes.selectRoot }}
+                    >
+                      <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
+                      <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
+                      <Divider style={{margin: 12}}/>
+                      <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange != '' && <br/>}{customDayRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange != '' && <br/>}{customWeekRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange != '' && <br/>}{customMonthRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange != '' && <br/>}{customYearRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange != '' && <br/>}{customDateRange}</MenuItem>
+                    </Select>
+                  : <Select
+                      value={dateOption}
+                      onChange={handleChange}
+                      style={{height: 45, width: 450}}
+                      classes={{ root: classes.selectRoot }}
+                    >
+                      <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
+                      <MenuItem disableRipple value='yesterday'>Kemarin: {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
+                      <Divider style={{margin: 12}}/>
+                      <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange}</MenuItem>
+                    </Select>
+                }
+              </FormControl>
               { (dateOption == "custom-daily" 
                 || dateOption == "custom-weekly"
                 || dateOption == "custom-monthly"
                 || dateOption == "custom-yearly"
-                || dateOption == "custom-date") && isMobile &&
+                || dateOption == "custom-date") && !isMobile &&
                 <Grid style={{margin: 10}}>  
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                     { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
-                      <KeyboardDatePicker
-                        variant="inline"
-                        format="YYYY-MM-DD"
+                      <DesktopDatePicker
+                        orientation="landscape"
+                        inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={selectedStartDate}
                         style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
+                        renderInput={(props) => <TextField {...props} />}
                       />
                     }
                     { dateOption == "custom-monthly" &&
-                      <KeyboardDatePicker
+                      <DesktopDatePicker
+                        orientation="landscape"
                         views={["month"]}
-                        variant="inline"
-                        format="YYYY-MM-DD"
+                        inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={selectedStartDate}
                         style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
+                        renderInput={(props) => <TextField {...props} />}
                       />
                     }
                     { dateOption == "custom-yearly" &&
-                      <KeyboardDatePicker
+                      <DesktopDatePicker
+                        orientation="landscape"
                         views={["year"]}
-                        variant="inline"
-                        format="YYYY-MM-DD"
+                        inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={selectedStartDate}
                         style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
+                        renderInput={(props) => <TextField {...props} />}
                       />
                     }
                     { dateOption == "custom-date" &&
-                      <KeyboardDatePicker
-                        variant="inline"
-                        format="YYYY-MM-DD"
+                      <DesktopDatePicker
+                        orientation="landscape"
+                        inputFormat="yyyy-MM-dd"
                         label="End Date"
                         value={selectedEndDate}
                         style={{marginRight: 15, width: 150}}
                         onChange={handleEndDateChange}
+                        renderInput={(props) => <TextField {...props} />}
                       />
                     }
-                  </MuiPickersUtilsProvider>
+                  </LocalizationProvider>
                   <Button 
                     variant="outlined"
                     style={{
@@ -5793,515 +5722,146 @@ const Home = () => {
                       textTransform: "none",
                       marginTop: 8
                     }}
-                    disableRipples
+                    disableRipple
                     onClick={applyCustomDate}
                   >
                     Apply
                   </Button>
                 </Grid>
               }
-            </Paper>
-          </Grid>
+            </Box>
+            { (dateOption == "custom-daily" 
+              || dateOption == "custom-weekly"
+              || dateOption == "custom-monthly"
+              || dateOption == "custom-yearly"
+              || dateOption == "custom-date") && isMobile &&
+              <Grid style={{margin: 10}}>  
+                <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                  { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
+                    <MobileDatePicker
+                      inputFormat="yyyy-MM-dd"
+                      label="Start Date"
+                      value={selectedStartDate}
+                      style={{marginRight: 15, width: 150}}
+                      onChange={handleStartDateChange}
+                      renderInput={(props) => <TextField {...props} />}
+                    />
+                  }
+                  { dateOption == "custom-monthly" &&
+                    <MobileDatePicker
+                      views={["month"]}
+                      inputFormat="yyyy-MM-dd"
+                      label="Start Date"
+                      value={selectedStartDate}
+                      style={{marginRight: 15, width: 150}}
+                      onChange={handleStartDateChange}
+                      renderInput={(props) => <TextField {...props} />}
+                    />
+                  }
+                  { dateOption == "custom-yearly" &&
+                    <MobileDatePicker
+                      views={["year"]}
+                      inputFormat="yyyy-MM-dd"
+                      label="Start Date"
+                      value={selectedStartDate}
+                      style={{marginRight: 15, width: 150}}
+                      onChange={handleStartDateChange}
+                      renderInput={(props) => <TextField {...props} />}
+                    />
+                  }
+                  { dateOption == "custom-date" &&
+                    <MobileDatePicker
+                      inputFormat="yyyy-MM-dd"
+                      label="End Date"
+                      value={selectedEndDate}
+                      style={{marginRight: 15, width: 150}}
+                      onChange={handleEndDateChange}
+                      renderInput={(props) => <TextField {...props} />}
+                    />
+                  }
+                </LocalizationProvider>
+                <Button 
+                  variant="outlined"
+                  style={{
+                    borderRadius: 4,
+                    textTransform: "none",
+                    marginTop: 8
+                  }}
+                  disableRipples
+                  onClick={applyCustomDate}
+                >
+                  Apply
+                </Button>
+              </Grid>
+            }
+          </Paper>
+        </Grid>
 
-          <Grid item xs={12}>
-            <Paper className={classes.paper} elevation={3}>
-              <Box className={classes.inline}>
-                { isMobile
-                  ? <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        marginTop: 9,
-                        marginBottom: 9,
-                        marginRight: 9,
-                        marginLeft: 9
-                      }}
-                    >
-                      Kriteria<br/>Utama
-                    </Typography>
-                  : <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        marginTop: 22,
-                        marginBottom: 9,
-                        marginRight: 15,
-                        marginLeft: 9
-                      }}
-                    >
-                      Kriteria Utama
-                    </Typography>
-                }
-                <FormControl variant="outlined" className={classes.formControl}>
-                  <InputLabel>Channel</InputLabel>
-                  <Select
-                    value={channel}
-                    onChange={handleChannelChange}
-                    style={{width: 295, height: 55}}
-                    label="Channel"
-                    classes={{ root: classes.selectRoot }}
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            <Box className={classes.inline}>
+              { isMobile
+                ? <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      marginTop: 9,
+                      marginBottom: 9,
+                      marginRight: 9,
+                      marginLeft: 9
+                    }}
                   >
-                    {channelList && channelList.map((item, index) => (
-                      <MenuItem key={index} disableRipple value={item}>{item}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-
-
-
-              <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
-                { totalSalesData &&
-                  <HtmlTooltip title={<span><p>{salesDataDescription.split("\n")[0]}</p><p>{salesDataDescription.split("\n")[1]}</p></span>}>
-                    <Card variant={toggleSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: toggleSales ? '#367fe3' : 'transparent', height: 5, width: '100%'}}/>
-                      <CardActionArea style={{padding: 15}} onClick={handleToggleSalesChange} disableRipple>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Penjualan
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesData.value)}</span>
-                        </Typography>
-                        <Grid container style={{marginTop: 10}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 11,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {totalSalesData.range}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500,
-                                display: 'inline'
-                              }}
-                            >
-                              {Intl.NumberFormat('id').format(totalSalesData.growth.toFixed(2))}%
-                            </Typography>
-                            { totalSalesData.growthTrend == 'up'
-                              ? <TrendingUpIcon
-                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                                />
-                              : <TrendingDownIcon
-                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                                />
-                            }
-                          </Grid>
-                        </Grid>
-                      </CardActionArea>
-                    </Card>
-                  </HtmlTooltip>
-                }
-
-                { totalSalesCountData &&
-                  <HtmlTooltip title={<span><p>{salesCountDataDescription.split("\n")[0]}</p><p>{salesCountDataDescription.split("\n")[1]}</p></span>}>
-                    <Card variant={toggleSalesCount ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: toggleSalesCount ? '#f6bd16' : 'transparent', height: 5, width: '100%'}}/>
-                      <CardActionArea style={{padding: 15}} onClick={handleToggleSalesCountChange} disableRipple>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Pesanan
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesCountData.value)}</span>
-                        </Typography>
-                        <Grid container style={{marginTop: 10}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 11,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {totalSalesCountData.range}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500,
-                                display: 'inline'
-                              }}
-                            >
-                              {Intl.NumberFormat('id').format(totalSalesCountData.growth.toFixed(2))}%
-                            </Typography>
-                            { totalSalesCountData.growthTrend == 'up'
-                              ? <TrendingUpIcon
-                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                                />
-                              : <TrendingDownIcon
-                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                                />
-                            }
-                          </Grid>
-                        </Grid>
-                      </CardActionArea>
-                    </Card>
-                  </HtmlTooltip>
-                }
-
-                { totalAverageSalesData &&
-                  <HtmlTooltip title={<span><p>{averageSalesDataDescription.split("\n")[0]}</p><p>{averageSalesDataDescription.split("\n")[1]}</p></span>}>
-                    <Card variant={toggleAverageSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: toggleAverageSales ? '#fd5151' : 'transparent', height: 5, width: '100%'}}/>
-                      <CardActionArea style={{padding: 15}} onClick={handleToggleAverageSalesChange} disableRipple>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Penjualan/Pesanan
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalAverageSalesData.value)}</span>
-                        </Typography>
-                        <Grid container style={{marginTop: 10}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 11,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {totalAverageSalesData.range}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500,
-                                display: 'inline'
-                              }}
-                            >
-                              {Intl.NumberFormat('id').format(totalAverageSalesData.growth.toFixed(2))}%
-                            </Typography>
-                            { totalAverageSalesData.growthTrend == 'up'
-                              ? <TrendingUpIcon
-                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                                />
-                              : <TrendingDownIcon
-                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                                />
-                            }
-                          </Grid>
-                        </Grid>
-                      </CardActionArea>
-                    </Card>
-                  </HtmlTooltip>
-                }
-
-                { totalMarginValueData &&
-                  <HtmlTooltip title={<span><p>{marginDataDescription.split("\n")[0]}</p><p>{marginDataDescription.split("\n")[1]}</p></span>}>
-                    <Card variant={toggleMarginValue ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: toggleMarginValue ? '#aa88ff' : 'transparent', height: 5, width: '100%'}}/>
-                      <CardActionArea style={{padding: 15}} onClick={handleToggleMarginValueChange} disableRipple>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Margin (Rp)
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginValueData.value)}</span>
-                        </Typography>
-                        <Grid container style={{marginTop: 10}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 11,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {totalMarginValueData.range}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500,
-                                display: 'inline'
-                              }}
-                            >
-                              {Intl.NumberFormat('id').format(totalMarginValueData.growth.toFixed(2))}%
-                            </Typography>
-                            { totalMarginValueData.growthTrend == 'up'
-                              ? <TrendingUpIcon
-                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                                />
-                              : <TrendingDownIcon
-                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                                />
-                            }
-                          </Grid>
-                        </Grid>
-                      </CardActionArea>
-                    </Card>
-                  </HtmlTooltip>
-                }
-
-                { totalMarginRateData &&
-                  <HtmlTooltip title={<span><p>{marginRateDataDescription.split("\n")[0]}</p><p>{marginRateDataDescription.split("\n")[1]}</p></span>}>
-                    <Card variant={toggleMarginRate ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: toggleMarginRate ? '#23aaab' : 'transparent', height: 5, width: '100%'}}/>
-                      <CardActionArea style={{padding: 15}} onClick={handleToggleMarginRateChange} disableRipple>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Margin (%)
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginRateData.value.toFixed(2))}</span>%
-                        </Typography>
-                        <Grid container style={{marginTop: 10}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 11,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {totalMarginRateData.range}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500,
-                                display: 'inline'
-                              }}
-                            >
-                              {Intl.NumberFormat('id').format(totalMarginRateData.growth.toFixed(2))}%
-                            </Typography>
-                            { totalMarginRateData.growthTrend == 'up'
-                              ? <TrendingUpIcon
-                                  style={{ color: 'green', fontSize: 20, marginLeft: 3}}
-                                />
-                              : <TrendingDownIcon
-                                  style={{ color: 'red', fontSize: 20, marginLeft: 3}}
-                                />
-                            }
-                          </Grid>
-                        </Grid>
-                      </CardActionArea>
-                    </Card>
-                  </HtmlTooltip>
-                }
-              </Box>
-
-              
-              <Grid container>
-                <Grid item xs={12} md={4}>
-                  <Typography 
+                    Kriteria<br/>Utama
+                  </Typography>
+                : <Typography 
                     style={{
                       color: "#000", 
                       fontSize: 18,
                       fontWeight: 'bold',
-                      margin: 9
+                      marginTop: 22,
+                      marginBottom: 9,
+                      marginRight: 15,
+                      marginLeft: 9
                     }}
                   >
-                    Grafik Setiap Kriteria
+                    Kriteria Utama
                   </Typography>
-                </Grid>
-                <Grid item xs={12} md={8} container justifyContent="flex-end">
-                  { toggleSales && 
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+              }
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Channel</InputLabel>
+                <Select
+                  value={channel}
+                  onChange={handleChannelChange}
+                  style={{width: 295, height: 55}}
+                  label="Channel"
+                  classes={{ root: classes.selectRoot }}
+                >
+                  {channelList && channelList.map((item, index) => (
+                    <MenuItem key={index} disableRipple value={item}>{item}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+
+
+
+            <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
+              { totalSalesData &&
+                <HtmlTooltip title={<span><p>{salesDataDescription.split("\n")[0]}</p><p>{salesDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant={toggleSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: toggleSales ? '#367fe3' : 'transparent', height: 5, width: '100%'}}/>
+                    <CardActionArea style={{padding: 15}} onClick={handleToggleSalesChange} disableRipple>
                       <Typography 
                         style={{
                           color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
                         }}
                       >
                         Penjualan
                       </Typography>
-                    </Box>
-                  }
-                  { toggleSalesCount && 
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#f6bd16', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
-                        }}
-                      >
-                        Pesanan
-                      </Typography>
-                    </Box>
-                  }
-                  { toggleAverageSales && 
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#fd5151', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
-                        }}
-                      >
-                        Penjualan/Pesanan
-                      </Typography>
-                    </Box>
-                  }
-                  { toggleMarginValue && 
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#aa88ff', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
-                        }}
-                      >
-                        Margin (Rp)
-                      </Typography>
-                    </Box>
-                  }
-                  { toggleMarginRate && 
-                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#23aaab', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
-                        }}
-                      >
-                        Margin (%)
-                      </Typography>
-                    </Box>
-                  }
-                </Grid>
-              </Grid>
-
-              { masterSalesData &&
-                <MultiTypeChart line={masterSalesData.line} chart={masterSalesData.chart} width={width}/>
-              }
-
-              <Grid item xs={12}>
-                { (salesDataLoading || salesCountDataLoading || averageSalesDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousAverageSalesDataLoading || previousMarginDataLoading) &&
-                  <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                    <CircularProgress size={25} />
-                    <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        marginLeft: 12
-                      }}
-                    >
-                      Loading
-                    </Typography>
-                  </Box>
-                }
-              </Grid>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Paper className={classes.paper} elevation={3}>
-              <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
-                { toggleMultipleSales && Object.entries(toggleMultipleSales).map(([key,value])=> (
-                  <Card key={key} variant={value.toggle ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: value.toggle ? randomColorHSL(key) : 'transparent', height: 5, width: '100%'}}/>
-                    <CardActionArea style={{padding: 15}} onClick={() => handleToggleMultipleSalesChange(key)} disableRipple>
                       <Typography 
                         style={{
                           color: "#000", 
@@ -6310,17 +5870,7 @@ const Home = () => {
                           fontWeight: 'bold'
                         }}
                       >
-                        {key}
-                      </Typography>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          textAlign: 'left',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(value.value)}</span>
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesData.value)}</span>
                       </Typography>
                       <Grid container style={{marginTop: 10}}>
                         <Grid item xs={7}>
@@ -6332,7 +5882,7 @@ const Home = () => {
                               fontWeight: 500
                             }}
                           >
-                            {value.range}
+                            {totalSalesData.range}
                           </Typography>
                         </Grid>
                         <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
@@ -6345,9 +5895,9 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format(value.growth.toFixed(2))}%
+                            {Intl.NumberFormat('id').format(totalSalesData.growth.toFixed(2))}%
                           </Typography>
-                          { value.growthTrend == 'up'
+                          { totalSalesData.growthTrend == 'up'
                             ? <TrendingUpIcon
                                 style={{ color: 'green', fontSize: 20, marginLeft: 3}}
                               />
@@ -6359,11 +5909,517 @@ const Home = () => {
                       </Grid>
                     </CardActionArea>
                   </Card>
-                ))}
-              </Box>
+                </HtmlTooltip>
+              }
 
+              { totalSalesCountData &&
+                <HtmlTooltip title={<span><p>{salesCountDataDescription.split("\n")[0]}</p><p>{salesCountDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant={toggleSalesCount ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: toggleSalesCount ? '#f6bd16' : 'transparent', height: 5, width: '100%'}}/>
+                    <CardActionArea style={{padding: 15}} onClick={handleToggleSalesCountChange} disableRipple>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Pesanan
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalSalesCountData.value)}</span>
+                      </Typography>
+                      <Grid container style={{marginTop: 10}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 11,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {totalSalesCountData.range}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format(totalSalesCountData.growth.toFixed(2))}%
+                          </Typography>
+                          { totalSalesCountData.growthTrend == 'up'
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                              />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                              />
+                          }
+                        </Grid>
+                      </Grid>
+                    </CardActionArea>
+                  </Card>
+                </HtmlTooltip>
+              }
+
+              { totalAverageSalesData &&
+                <HtmlTooltip title={<span><p>{averageSalesDataDescription.split("\n")[0]}</p><p>{averageSalesDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant={toggleAverageSales ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: toggleAverageSales ? '#fd5151' : 'transparent', height: 5, width: '100%'}}/>
+                    <CardActionArea style={{padding: 15}} onClick={handleToggleAverageSalesChange} disableRipple>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Penjualan/Pesanan
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalAverageSalesData.value)}</span>
+                      </Typography>
+                      <Grid container style={{marginTop: 10}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 11,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {totalAverageSalesData.range}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format(totalAverageSalesData.growth.toFixed(2))}%
+                          </Typography>
+                          { totalAverageSalesData.growthTrend == 'up'
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                              />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                              />
+                          }
+                        </Grid>
+                      </Grid>
+                    </CardActionArea>
+                  </Card>
+                </HtmlTooltip>
+              }
+
+              { totalMarginValueData &&
+                <HtmlTooltip title={<span><p>{marginDataDescription.split("\n")[0]}</p><p>{marginDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant={toggleMarginValue ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: toggleMarginValue ? '#aa88ff' : 'transparent', height: 5, width: '100%'}}/>
+                    <CardActionArea style={{padding: 15}} onClick={handleToggleMarginValueChange} disableRipple>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Margin (Rp)
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginValueData.value)}</span>
+                      </Typography>
+                      <Grid container style={{marginTop: 10}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 11,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {totalMarginValueData.range}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format(totalMarginValueData.growth.toFixed(2))}%
+                          </Typography>
+                          { totalMarginValueData.growthTrend == 'up'
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                              />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                              />
+                          }
+                        </Grid>
+                      </Grid>
+                    </CardActionArea>
+                  </Card>
+                </HtmlTooltip>
+              }
+
+              { totalMarginRateData &&
+                <HtmlTooltip title={<span><p>{marginRateDataDescription.split("\n")[0]}</p><p>{marginRateDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant={toggleMarginRate ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: toggleMarginRate ? '#23aaab' : 'transparent', height: 5, width: '100%'}}/>
+                    <CardActionArea style={{padding: 15}} onClick={handleToggleMarginRateChange} disableRipple>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Margin (%)
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginRateData.value.toFixed(2))}</span>%
+                      </Typography>
+                      <Grid container style={{marginTop: 10}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 11,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {totalMarginRateData.range}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format(totalMarginRateData.growth.toFixed(2))}%
+                          </Typography>
+                          { totalMarginRateData.growthTrend == 'up'
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                              />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                              />
+                          }
+                        </Grid>
+                      </Grid>
+                    </CardActionArea>
+                  </Card>
+                </HtmlTooltip>
+              }
+            </Box>
+
+            
+            <Grid container>
+              <Grid item xs={12} md={4}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Grafik Setiap Kriteria
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={8} container justifyContent="flex-end">
+                { toggleSales && 
+                  <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      Penjualan
+                    </Typography>
+                  </Box>
+                }
+                { toggleSalesCount && 
+                  <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: '#f6bd16', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      Pesanan
+                    </Typography>
+                  </Box>
+                }
+                { toggleAverageSales && 
+                  <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: '#fd5151', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      Penjualan/Pesanan
+                    </Typography>
+                  </Box>
+                }
+                { toggleMarginValue && 
+                  <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: '#aa88ff', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      Margin (Rp)
+                    </Typography>
+                  </Box>
+                }
+                { toggleMarginRate && 
+                  <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: '#23aaab', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      Margin (%)
+                    </Typography>
+                  </Box>
+                }
+              </Grid>
+            </Grid>
+
+            { masterSalesData &&
+              <MultiTypeChart line={masterSalesData.line} chart={masterSalesData.chart} width={width}/>
+            }
+
+            <Grid item xs={12}>
+              { (salesDataLoading || salesCountDataLoading || averageSalesDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousAverageSalesDataLoading || previousMarginDataLoading) &&
+                <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                  <CircularProgress size={25} />
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      marginLeft: 12
+                    }}
+                  >
+                    Loading
+                  </Typography>
+                </Box>
+              }
+            </Grid>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
+              { toggleMultipleSales && Object.entries(toggleMultipleSales).map(([key,value])=> (
+                <Card key={key} variant={value.toggle ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                  <div style={{backgroundColor: value.toggle ? randomColorHSL(key) : 'transparent', height: 5, width: '100%'}}/>
+                  <CardActionArea style={{padding: 15}} onClick={() => handleToggleMultipleSalesChange(key)} disableRipple>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {key}
+                    </Typography>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(value.value)}</span>
+                    </Typography>
+                    <Grid container style={{marginTop: 10}}>
+                      <Grid item xs={7}>
+                        <Typography 
+                          style={{
+                            color: "#888", 
+                            fontSize: 11,
+                            textAlign: 'left',
+                            fontWeight: 500
+                          }}
+                        >
+                          {value.range}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 13,
+                            textAlign: 'left',
+                            fontWeight: 500,
+                            display: 'inline'
+                          }}
+                        >
+                          {Intl.NumberFormat('id').format(value.growth.toFixed(2))}%
+                        </Typography>
+                        { value.growthTrend == 'up'
+                          ? <TrendingUpIcon
+                              style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                            />
+                          : <TrendingDownIcon
+                              style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                            />
+                        }
+                      </Grid>
+                    </Grid>
+                  </CardActionArea>
+                </Card>
+              ))}
+            </Box>
+
+            <Grid container>
+              <Grid item xs={12} md={4}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Grafik Penjualan (Channel)
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={8} container justifyContent="flex-end">
+                { toggleMultipleSales && Object.entries(toggleMultipleSales).map(([key,value])=> (
+                  <>
+                  { value.toggle == true && 
+                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                      <FiberManualRecordIcon style={{ color: randomColorHSL(key), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          marginRight: 8,
+                          marginTop: 3,
+                        }}
+                      >
+                        {key}
+                      </Typography>
+                    </Box>
+                  }
+                  </>
+                ))}
+              </Grid>
+            </Grid>
+
+            { masterMultipleSalesData && 
+              <MultiChannelChart line={toggleMultipleSales} chart={masterMultipleSalesData.chart} width={width}/>
+            }
+
+            <Grid item xs={12}>
+              { (salesDataLoading || previousSalesDataLoading) &&
+                <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                  <CircularProgress size={25} />
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      marginLeft: 12
+                    }}
+                  >
+                    Loading
+                  </Typography>
+                </Box>
+              }
+            </Grid>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <InView onChange={(inView, entry) => handleSegmentationFetchChange(inView)}>
+            <Paper className={classes.paper} elevation={3}>
               <Grid container>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12}>
                   <Typography 
                     style={{
                       color: "#000", 
@@ -6372,38 +6428,686 @@ const Home = () => {
                       margin: 9
                     }}
                   >
-                    Grafik Penjualan (Channel)
+                    Segmentasi
                   </Typography>
                 </Grid>
-                <Grid item xs={12} md={8} container justifyContent="flex-end">
-                  { toggleMultipleSales && Object.entries(toggleMultipleSales).map(([key,value])=> (
-                    <>
-                    { value.toggle == true && 
-                      <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                        <FiberManualRecordIcon style={{ color: randomColorHSL(key), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            marginRight: 8,
-                            marginTop: 3,
-                          }}
-                        >
-                          {key}
-                        </Typography>
-                      </Box>
-                    }
-                    </>
-                  ))}
+                <Grid item xs={12}>
+                  <TabContext value={segmentationTab}>
+                    <Box style={{marginLeft: 10, marginRight: 10}}>
+                      <TabList onChange={handleSegmentationTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Harga Pesanan" value="1" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Jumlah Pesanan" value="2" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Tipe Pembeli" value="3" />
+                      </TabList>
+                    </Box>
+                    <TabPanel value="1">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Rentang Harga</TableCell>
+                              <TableCell align="right">Total Pembeli</TableCell>
+                              <TableCell align="right">% Pembeli</TableCell>
+                              <TableCell align="right">Total Transaksi</TableCell>
+                              <TableCell align="right">% Transaksi</TableCell>
+                              <TableCell align="right">Penjualan</TableCell>
+                              <TableCell align="right">% Penjualan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {segmentationSalesData && segmentationSalesData.Data.map((row) => (
+                              <TableRow
+                                key={row.PriceRange}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell align="left" style={{minWidth: 150}}>
+                                  <Typography>
+                                    Rp {row.PriceRange}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalCustomer)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalCustomerPercentage)}%
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalTransaction)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalTransactionPercentage)}%
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{minWidth: 200}}>
+                                  <Typography>
+                                    Rp {Intl.NumberFormat('id').format(row.TotalSales)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalSalesPercentage)}%
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                    <TabPanel value="2">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell align="center">Jumlah Transaksi</TableCell>
+                              <TableCell align="right">Total Pembeli</TableCell>
+                              <TableCell align="right">% Pembeli</TableCell>
+                              <TableCell align="right">Penjualan</TableCell>
+                              <TableCell align="right">% Penjualan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {segmentationTransactionCountData && segmentationTransactionCountData.Data.map((row) => (
+                              <TableRow
+                                key={row.TransactionCount}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell align="center" style={{minWidth: 150}}>
+                                  <Typography>
+                                    {row.TransactionCount}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalCustomer)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalCustomerPercentage)}%
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{minWidth: 200}}>
+                                  <Typography>
+                                    Rp {Intl.NumberFormat('id').format(row.TotalSales)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalSalesPercentage)}%
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                    <TabPanel value="3">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Rentang Harga</TableCell>
+                              <TableCell align="right">Total Pembeli</TableCell>
+                              <TableCell align="right">% Pembeli</TableCell>
+                              <TableCell align="right">Penjualan</TableCell>
+                              <TableCell align="right">% Penjualan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {segmentationCustomerTypeData && segmentationCustomerTypeData.Data.map((row) => (
+                              <TableRow
+                                key={row.CustomerStatus}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell align="left" style={{minWidth: 150}}>
+                                  <Typography>
+                                    {row.CustomerStatus}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalCustomer)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalCustomerPercentage)}%
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{minWidth: 200}}>
+                                  <Typography>
+                                    Rp {Intl.NumberFormat('id').format(row.TotalSales)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.TotalSalesPercentage)}%
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                  </TabContext>
+                </Grid>
+                <Grid item xs={12}>
+                  { (segmentationSalesDataLoading || segmentationTransactionCountDataLoading || segmentationCustomerTypeDataLoading) &&
+                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                      <CircularProgress size={25} />
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          marginLeft: 12
+                        }}
+                      >
+                        Loading
+                      </Typography>
+                    </Box>
+                  }
                 </Grid>
               </Grid>
+            </Paper>
+          </InView>
+        </Grid>
 
-              { masterMultipleSalesData && 
-                <MultiChannelChart line={toggleMultipleSales} chart={masterMultipleSalesData.chart} width={width}/>
-              }
+        <Grid item xs={12}>
+          <InView onChange={(inView, entry) => handleProductFetchChange(inView)}>
+            <Paper className={classes.paper} elevation={3}>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      margin: 9
+                    }}
+                  >
+                    Peringkat Produk (teratas)
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} container justifyContent="flex-end">
+                  <Link
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      textDecoration: "none"
+                    }}
+                    href={`/analytic/productranking`}
+                  >
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      style={{
+                        color: "#4084e1",
+                        fontWeight: "normal",
+                        marginTop: 7
+                      }}
+                    >
+                      Lainnya
+                    </Typography>
+                    <KeyboardArrowRightIcon
+                      style={{ color: '#4084e1', fontSize: 20, marginRight: 3}}
+                    />
+                  </Link>
+                </Grid>
+                <Grid item xs={12}>
+                  <TabContext value={productTab}>
+                    <Box style={{marginLeft: 10, marginRight: 10}}>
+                      <TabList onChange={handleProductTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (model)" value="1" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (model)" value="2" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="3" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="4" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="5" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="6" />
+                      </TabList>
+                    </Box>
+                    <TabPanel value="1">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell sx={{ width: 50 }}/>
+                              <TableCell>Peringkat</TableCell>
+                              <TableCell align="left">Informasi Produk</TableCell>
+                              <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Proporsi</TableCell>
+                              <TableCell align="right">Tingkat Perubahan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {modelSalesData && modelSalesData.Data.map((row) => (
+                              <CustomSalesRow key={row.Rank} row={row} />
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                    <TabPanel value="2">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell sx={{ width: 50 }}/>
+                              <TableCell>Peringkat</TableCell>
+                              <TableCell align="left">Informasi Produk</TableCell>
+                              <TableCell align="right">Total Produk Dipesan</TableCell>
+                              <TableCell align="right">Proporsi</TableCell>
+                              <TableCell align="right">Tingkat Perubahan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {modelSalesCountData && modelSalesCountData.Data.map((row) => (
+                              <CustomSalesCountRow key={row.Rank} row={row} />
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                    <TabPanel value="3">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell sx={{ width: 50 }}/>
+                              <TableCell>Peringkat</TableCell>
+                              <TableCell align="left">Informasi Produk</TableCell>
+                              <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Proporsi</TableCell>
+                              <TableCell align="right">Tingkat Perubahan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {categorySalesData && categorySalesData.Data.map((row) => (
+                              <CustomCategorySalesRow key={row.Rank} row={row} />
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                    <TabPanel value="4">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell sx={{ width: 50 }}/>
+                              <TableCell>Peringkat</TableCell>
+                              <TableCell align="left">Informasi Produk</TableCell>
+                              <TableCell align="right">Total Produk Dipesan</TableCell>
+                              <TableCell align="right">Proporsi</TableCell>
+                              <TableCell align="right">Tingkat Perubahan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {categorySalesCountData && categorySalesCountData.Data.map((row) => (
+                              <CustomCategorySalesCountRow key={row.Rank} row={row} />
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                    <TabPanel value="5">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Peringkat</TableCell>
+                              <TableCell align="left">Informasi Produk</TableCell>
+                              <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Proporsi</TableCell>
+                              <TableCell align="right">Tingkat Perubahan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {productSalesData && productSalesData.Data.map((row) => (
+                              <TableRow
+                                key={row.Rank}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                                  <Typography>
+                                    {row.Rank}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="left">
+                                  <Grid container style={{marginTop: 10}}>
+                                    <Image 
+                                      src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
+                                      width={75} 
+                                      height={75} 
+                                      style={{borderRadius: 5}} 
+                                      alt="Product Image"
+                                    />
+                                    <Typography 
+                                      style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                        marginTop: 5,
+                                        marginLeft: 10
+                                      }}
+                                    >
+                                      {row.ProductName}
+                                      <br/>
+                                      <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+                                    </Typography>
+                                  </Grid>
+                                </TableCell>
+                                <TableCell align="right" style={{width: 225}}>
+                                  <Typography>
+                                    Rp {Intl.NumberFormat('id').format(row.Value)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{width: 150}}>
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.Proportion)}%
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{width: 175}}>
+                                  <Grid container justifyContent="flex-end">
+                                    <Typography>
+                                      {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+                                    </Typography>
+                                    { row.Growth >= 0
+                                      ? <TrendingUpIcon
+                                          style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                        />
+                                      : <TrendingDownIcon
+                                          style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                        />
+                                    }
+                                  </Grid>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                    <TabPanel value="6">
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Peringkat</TableCell>
+                              <TableCell align="left">Informasi Produk</TableCell>
+                              <TableCell align="right">Total Produk Dipesan</TableCell>
+                              <TableCell align="right">Proporsi</TableCell>
+                              <TableCell align="right">Tingkat Perubahan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {productSalesCountData && productSalesCountData.Data.map((row) => (
+                              <TableRow
+                                key={row.Rank}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                                  <Typography>
+                                    {row.Rank}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="left">
+                                  <Grid container style={{marginTop: 10}}>
+                                    <Image 
+                                      src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"} 
+                                      width={75} 
+                                      height={75} 
+                                      style={{borderRadius: 5}} 
+                                      alt="Product Image"
+                                    />
+                                    <Typography 
+                                      style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                        marginTop: 5,
+                                        marginLeft: 10
+                                      }}
+                                    >
+                                      {row.ProductName}
+                                      <br/>
+                                      <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+                                    </Typography>
+                                  </Grid>
+                                </TableCell>
+                                <TableCell align="right" style={{width: 225}}>
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.Value)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{width: 150}}>
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(row.Proportion)}%
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{width: 175}}>
+                                  <Grid container justifyContent="flex-end">
+                                    <Typography>
+                                      {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+                                    </Typography>
+                                    { row.Growth >= 0
+                                      ? <TrendingUpIcon
+                                          style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                        />
+                                      : <TrendingDownIcon
+                                          style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                        />
+                                    }
+                                  </Grid>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </TabPanel>
+                  </TabContext>
+                </Grid>
+                <Grid item xs={12}>
+                  { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || categorySalesDataLoading || categorySalesCountDataLoading)  &&
+                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                      <CircularProgress size={25} />
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          marginLeft: 12
+                        }}
+                      >
+                        Loading
+                      </Typography>
+                    </Box>
+                  }
+                </Grid>
+              </Grid>
+            </Paper>
+          </InView>
+        </Grid>
+
+        <Grid item xs={12}>
+          <InView onChange={(inView, entry) => handleValueStockFetchChange(inView)}>
+            <Paper className={classes.paper} elevation={3}>
+              <Grid item xs={12}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Value Stock
+                </Typography>
+              </Grid>
+
+              <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#367fe3', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock
+                        <br/>
+                        Packaging
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'StockValuePackaging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#f6bd16', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock by
+                        <br/>
+                        Harga Beli
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'StockValueByBuyPrice').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#fd5151', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock Aging {">"}90 Hari by Harga Beli
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'MoreThan90DaysStockAging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+                { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock Aging {">"}150 Hari by Harga Beli 
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key == 'MoreThan150DaysStockAging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+
+              { valueStockData &&
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Stock Aging {">"}210 Hari by Harga Beli
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          marginTop: 10,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'MoreThan210DaysStockAging').Value)}</span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                }
+              </Box>
 
               <Grid item xs={12}>
-                { (salesDataLoading || previousSalesDataLoading) &&
+                { valueStockDataLoading &&
                   <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                     <CircularProgress size={25} />
                     <Typography 
@@ -6419,1202 +7123,11 @@ const Home = () => {
                 }
               </Grid>
             </Paper>
-          </Grid>
-
-          <Grid item xs={12}>
-            <InView onChange={(inView, entry) => handleSegmentationFetchChange(inView)}>
-              <Paper className={classes.paper} elevation={3}>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        margin: 9
-                      }}
-                    >
-                      Segmentasi
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TabContext value={segmentationTab}>
-                      <Box style={{marginLeft: 10, marginRight: 10}}>
-                        <TabList onChange={handleSegmentationTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Harga Pesanan" value="1" />
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Jumlah Pesanan" value="2" />
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Tipe Pembeli" value="3" />
-                        </TabList>
-                      </Box>
-                      <TabPanel value="1">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Rentang Harga</TableCell>
-                                <TableCell align="right">Total Pembeli</TableCell>
-                                <TableCell align="right">% Pembeli</TableCell>
-                                <TableCell align="right">Total Transaksi</TableCell>
-                                <TableCell align="right">% Transaksi</TableCell>
-                                <TableCell align="right">Penjualan</TableCell>
-                                <TableCell align="right">% Penjualan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {segmentationSalesData && segmentationSalesData.Data.map((row) => (
-                                <TableRow
-                                  key={row.PriceRange}
-                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                  <TableCell align="left" style={{minWidth: 150}}>
-                                    <Typography>
-                                      Rp {row.PriceRange}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalCustomer)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalCustomerPercentage)}%
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalTransaction)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalTransactionPercentage)}%
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right" style={{minWidth: 200}}>
-                                    <Typography>
-                                      Rp {Intl.NumberFormat('id').format(row.TotalSales)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalSalesPercentage)}%
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                      <TabPanel value="2">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell align="center">Jumlah Transaksi</TableCell>
-                                <TableCell align="right">Total Pembeli</TableCell>
-                                <TableCell align="right">% Pembeli</TableCell>
-                                <TableCell align="right">Penjualan</TableCell>
-                                <TableCell align="right">% Penjualan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {segmentationTransactionCountData && segmentationTransactionCountData.Data.map((row) => (
-                                <TableRow
-                                  key={row.TransactionCount}
-                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                  <TableCell align="center" style={{minWidth: 150}}>
-                                    <Typography>
-                                      {row.TransactionCount}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalCustomer)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalCustomerPercentage)}%
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right" style={{minWidth: 200}}>
-                                    <Typography>
-                                      Rp {Intl.NumberFormat('id').format(row.TotalSales)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalSalesPercentage)}%
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                      <TabPanel value="3">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Rentang Harga</TableCell>
-                                <TableCell align="right">Total Pembeli</TableCell>
-                                <TableCell align="right">% Pembeli</TableCell>
-                                <TableCell align="right">Penjualan</TableCell>
-                                <TableCell align="right">% Penjualan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {segmentationCustomerTypeData && segmentationCustomerTypeData.Data.map((row) => (
-                                <TableRow
-                                  key={row.CustomerStatus}
-                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                  <TableCell align="left" style={{minWidth: 150}}>
-                                    <Typography>
-                                      {row.CustomerStatus}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalCustomer)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalCustomerPercentage)}%
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right" style={{minWidth: 200}}>
-                                    <Typography>
-                                      Rp {Intl.NumberFormat('id').format(row.TotalSales)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.TotalSalesPercentage)}%
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                    </TabContext>
-                  </Grid>
-                  <Grid item xs={12}>
-                    { (segmentationSalesDataLoading || segmentationTransactionCountDataLoading || segmentationCustomerTypeDataLoading) &&
-                      <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                        <CircularProgress size={25} />
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 18,
-                            marginLeft: 12
-                          }}
-                        >
-                          Loading
-                        </Typography>
-                      </Box>
-                    }
-                  </Grid>
-                </Grid>
-              </Paper>
-            </InView>
-          </Grid>
-
-          <Grid item xs={12}>
-            <InView onChange={(inView, entry) => handleProductFetchChange(inView)}>
-              <Paper className={classes.paper} elevation={3}>
-                <Grid container>
-                  <Grid item xs={6}>
-                    <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        margin: 9
-                      }}
-                    >
-                      Peringkat Produk (teratas)
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6} container justifyContent="flex-end">
-                    <Link
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        textDecoration: "none"
-                      }}
-                      href={`/analytic/productranking`}
-                    >
-                      <Typography
-                        gutterBottom
-                        variant="body2"
-                        style={{
-                          color: "#4084e1",
-                          fontWeight: "normal",
-                          marginTop: 7
-                        }}
-                      >
-                        Lainnya
-                      </Typography>
-                      <KeyboardArrowRightIcon
-                        style={{ color: '#4084e1', fontSize: 20, marginRight: 3}}
-                      />
-                    </Link>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TabContext value={productTab}>
-                      <Box style={{marginLeft: 10, marginRight: 10}}>
-                        <TabList onChange={handleProductTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (model)" value="1" />
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (model)" value="2" />
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="3" />
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="4" />
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="5" />
-                          <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="6" />
-                        </TabList>
-                      </Box>
-                      <TabPanel value="1">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ width: 50 }}/>
-                                <TableCell>Peringkat</TableCell>
-                                <TableCell align="left">Informasi Produk</TableCell>
-                                <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                                <TableCell align="right">Proporsi</TableCell>
-                                <TableCell align="right">Tingkat Perubahan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {modelSalesData && modelSalesData.Data.map((row) => (
-                                <CustomSalesRow key={row.Rank} row={row} />
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                      <TabPanel value="2">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ width: 50 }}/>
-                                <TableCell>Peringkat</TableCell>
-                                <TableCell align="left">Informasi Produk</TableCell>
-                                <TableCell align="right">Total Produk Dipesan</TableCell>
-                                <TableCell align="right">Proporsi</TableCell>
-                                <TableCell align="right">Tingkat Perubahan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {modelSalesCountData && modelSalesCountData.Data.map((row) => (
-                                <CustomSalesCountRow key={row.Rank} row={row} />
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                      <TabPanel value="3">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ width: 50 }}/>
-                                <TableCell>Peringkat</TableCell>
-                                <TableCell align="left">Informasi Produk</TableCell>
-                                <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                                <TableCell align="right">Proporsi</TableCell>
-                                <TableCell align="right">Tingkat Perubahan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {categorySalesData && categorySalesData.Data.map((row) => (
-                                <CustomCategorySalesRow key={row.Rank} row={row} />
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                      <TabPanel value="4">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ width: 50 }}/>
-                                <TableCell>Peringkat</TableCell>
-                                <TableCell align="left">Informasi Produk</TableCell>
-                                <TableCell align="right">Total Produk Dipesan</TableCell>
-                                <TableCell align="right">Proporsi</TableCell>
-                                <TableCell align="right">Tingkat Perubahan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {categorySalesCountData && categorySalesCountData.Data.map((row) => (
-                                <CustomCategorySalesCountRow key={row.Rank} row={row} />
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                      <TabPanel value="5">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Peringkat</TableCell>
-                                <TableCell align="left">Informasi Produk</TableCell>
-                                <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                                <TableCell align="right">Proporsi</TableCell>
-                                <TableCell align="right">Tingkat Perubahan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {productSalesData && productSalesData.Data.map((row) => (
-                                <TableRow
-                                  key={row.Rank}
-                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                  <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                                    <Typography>
-                                      {row.Rank}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="left">
-                                    <Grid container style={{marginTop: 10}}>
-                                      <Image 
-                                        src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
-                                        width={75} 
-                                        height={75} 
-                                        style={{borderRadius: 5}} 
-                                        alt="Product Image"
-                                      />
-                                      <Typography 
-                                        style={{
-                                          color: "#000", 
-                                          fontSize: 16,
-                                          fontWeight: 500,
-                                          marginTop: 5,
-                                          marginLeft: 10
-                                        }}
-                                      >
-                                        {row.ProductName}
-                                        <br/>
-                                        <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-                                      </Typography>
-                                    </Grid>
-                                  </TableCell>
-                                  <TableCell align="right" style={{width: 225}}>
-                                    <Typography>
-                                      Rp {Intl.NumberFormat('id').format(row.Value)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right" style={{width: 150}}>
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.Proportion)}%
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right" style={{width: 175}}>
-                                    <Grid container justifyContent="flex-end">
-                                      <Typography>
-                                        {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-                                      </Typography>
-                                      { row.Growth >= 0
-                                        ? <TrendingUpIcon
-                                            style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                          />
-                                        : <TrendingDownIcon
-                                            style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                          />
-                                      }
-                                    </Grid>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                      <TabPanel value="6">
-                        <TableContainer component={Paper} variant="outlined">
-                          <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Peringkat</TableCell>
-                                <TableCell align="left">Informasi Produk</TableCell>
-                                <TableCell align="right">Total Produk Dipesan</TableCell>
-                                <TableCell align="right">Proporsi</TableCell>
-                                <TableCell align="right">Tingkat Perubahan</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {productSalesCountData && productSalesCountData.Data.map((row) => (
-                                <TableRow
-                                  key={row.Rank}
-                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                  <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                                    <Typography>
-                                      {row.Rank}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="left">
-                                    <Grid container style={{marginTop: 10}}>
-                                      <Image 
-                                        src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"} 
-                                        width={75} 
-                                        height={75} 
-                                        style={{borderRadius: 5}} 
-                                        alt="Product Image"
-                                      />
-                                      <Typography 
-                                        style={{
-                                          color: "#000", 
-                                          fontSize: 16,
-                                          fontWeight: 500,
-                                          marginTop: 5,
-                                          marginLeft: 10
-                                        }}
-                                      >
-                                        {row.ProductName}
-                                        <br/>
-                                        <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-                                      </Typography>
-                                    </Grid>
-                                  </TableCell>
-                                  <TableCell align="right" style={{width: 225}}>
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.Value)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right" style={{width: 150}}>
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(row.Proportion)}%
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right" style={{width: 175}}>
-                                    <Grid container justifyContent="flex-end">
-                                      <Typography>
-                                        {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-                                      </Typography>
-                                      { row.Growth >= 0
-                                        ? <TrendingUpIcon
-                                            style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                          />
-                                        : <TrendingDownIcon
-                                            style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                          />
-                                      }
-                                    </Grid>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </TabPanel>
-                    </TabContext>
-                  </Grid>
-                  <Grid item xs={12}>
-                    { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || categorySalesDataLoading || categorySalesCountDataLoading)  &&
-                      <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                        <CircularProgress size={25} />
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 18,
-                            marginLeft: 12
-                          }}
-                        >
-                          Loading
-                        </Typography>
-                      </Box>
-                    }
-                  </Grid>
-                </Grid>
-              </Paper>
-            </InView>
-          </Grid>
-
-          <Grid item xs={12}>
-            <InView onChange={(inView, entry) => handleValueStockFetchChange(inView)}>
-              <Paper className={classes.paper} elevation={3}>
-                <Grid item xs={12}>
-                  <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 18,
-                      fontWeight: 'bold',
-                      margin: 9
-                    }}
-                  >
-                    Value Stock
-                  </Typography>
-                </Grid>
-
-                <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
-                  { valueStockData &&
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#367fe3', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Stock
-                          <br/>
-                          Packaging
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            marginTop: 10,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'StockValuePackaging').Value)}</span>
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  }
-
-                  { valueStockData &&
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#f6bd16', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Stock by
-                          <br/>
-                          Harga Beli
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            marginTop: 10,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'StockValueByBuyPrice').Value)}</span>
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  }
-
-                  { valueStockData &&
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#fd5151', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Stock Aging {">"}90 Hari by Harga Beli
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            marginTop: 10,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'MoreThan90DaysStockAging').Value)}</span>
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  }
-
-                  { valueStockData &&
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Stock Aging {">"}150 Hari by Harga Beli 
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            marginTop: 10,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key == 'MoreThan150DaysStockAging').Value)}</span>
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  }
-
-                { valueStockData &&
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Stock Aging {">"}210 Hari by Harga Beli
-                        </Typography>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 14,
-                            marginTop: 10,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(valueStockData.Data.find(o => o.Key === 'MoreThan210DaysStockAging').Value)}</span>
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  }
-                </Box>
-
-                <Grid item xs={12}>
-                  { valueStockDataLoading &&
-                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                      <CircularProgress size={25} />
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          marginLeft: 12
-                        }}
-                      >
-                        Loading
-                      </Typography>
-                    </Box>
-                  }
-                </Grid>
-              </Paper>
-            </InView>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <InView onChange={(inView, entry) => handleModelFetchChange(inView)}>
-              <Paper className={classes.paper} elevation={3}>
-                <Box className={classes.inline}>
-                  { isMobile
-                    ? <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          marginTop: 9,
-                          marginBottom: 9,
-                          marginRight: 21,
-                          marginLeft: 9
-                        }}
-                      >
-                        Model<br/>Produk
-                      </Typography>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 36,
-                          marginLeft: 9
-                        }}
-                      >
-                        Model Produk
-                      </Typography>
-                  }
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <Autocomplete
-                      value={model}
-                      onChange={handleModelChange}
-                      options={productModelsData}
-                      sx={{width: 295, height: 55}}
-                      renderInput={(params) => <TextField {...params} label="Model" />}
-                    />
-                  </FormControl>
-                </Box>
-
-                <Box className={classes.inline}>
-                  { isMobile
-                    ? <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          marginTop: 9,
-                          marginBottom: 9,
-                          marginRight: 9,
-                          marginLeft: 9
-                        }}
-                      >
-                        Kategori<br/>Produk
-                      </Typography>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 15,
-                          marginLeft: 9
-                        }}
-                      >
-                        Kategori Produk
-                      </Typography>
-                  }
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <Autocomplete
-                      value={category}
-                      onChange={handleCategoryChange}
-                      options={productCategoriesData}
-                      sx={{width: 295, height: 55}}
-                      renderInput={(params) => <TextField {...params} label="Category" />}
-                    />
-                  </FormControl>
-                </Box>
-
-                <FormControl style={{
-                  marginLeft: 9
-                }}>
-                  <RadioGroup
-                    row
-                    value={modelCategoryDataActive}
-                    onChange={handleModelCategoryDataActive}
-                  >
-                    <FormControlLabel value={true} control={<Radio />} label="Aktif" />
-                    <FormControlLabel value={false} control={<Radio />} label="Tidak Aktif" />
-                  </RadioGroup>
-                </FormControl>
-                            
-                { modelCategoryData &&
-                  <Grid container>
-                    <Grid item xs={12} md={8}>
-                      <Box className={classes.inline}>
-                        { isMobile
-                          ? <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 16,
-                                fontWeight: 'bold',
-                                marginTop: 9,
-                                marginBottom: 16,
-                                marginRight: 25,
-                                marginLeft: 9
-                              }}
-                            >
-                              Tanggal<br/>Akhir
-                            </Typography>
-                          : <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                                marginTop: 22,
-                                marginBottom: 30,
-                                marginRight: 47,
-                                marginLeft: 9
-                              }}
-                            >
-                              Tanggal Akhir
-                            </Typography>
-                        }
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
-                          <KeyboardDatePicker
-                            variant="inline"
-                            format="YYYY-MM-DD"
-                            label="End Date"
-                            value={modelCategoryEndDate}
-                            style={{marginTop: 10, width: 150}}
-                            onChange={handleModelCategoryEndDateChange}
-                          />
-                        </MuiPickersUtilsProvider>
-                      </Box>
-                    </Grid>
-                    { totalModelCategoryData && 
-                      <Grid item xs={12} md={4} container justifyContent="flex-end">
-                        <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 14,
-                              fontWeight: 'bold',
-                              textAlign: 'right',
-                              marginTop: isMobile ? 9 : 15,
-                              marginBottom: 9,
-                              marginRight: 9,
-                              marginLeft: 9
-                            }}
-                          >
-                            Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalModelCategoryData.value)}
-                            <br/>
-                            Total Jumlah: {Intl.NumberFormat('id').format(totalModelCategoryData.quantity)}
-                          </Typography>
-                      </Grid>
-                    }
-                  </Grid>
-                }
-                
-                <Grid container>
-                  <Grid item xs={12} md={4}>
-                    <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        margin: 9
-                      }}
-                    >
-                      Grafik Penjualan (Model & Kategori)
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} md={8} container justifyContent="flex-end">
-                    { modelCategoryData
-                      ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                          <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 16,
-                              marginRight: 8,
-                              marginTop: 3,
-                            }}
-                          >
-                            Penjualan
-                          </Typography>
-                        </Box>
-                      : <Box className={classes.inline} style={{height: 27}}/>
-                    }
-                  </Grid>
-                </Grid>
-
-                { modelCategoryData
-                  ? <MultiTypeChart line={modelCategoryData.line} chart={modelCategoryData.chart} width={width}/>
-                  : <EmptyChart width={width}/>
-                }
-
-                <Grid item xs={12}>
-                  { modelCategoryDataLoading &&
-                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                      <CircularProgress size={25} />
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          marginLeft: 12
-                        }}
-                      >
-                        Loading
-                      </Typography>
-                    </Box>
-                  }
-                </Grid>
-              </Paper>
-            </InView>
-          </Grid>
-
-          <Grid item xs={12}>
-            <InView onChange={(inView, entry) => handleModelCustomFetchChange(inView)}>
-              <Paper className={classes.paper} elevation={3}>
-                <Box className={classes.inline}>
-                  { isMobile
-                    ? <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          marginTop: 9,
-                          marginBottom: 9,
-                          marginRight: 21,
-                          marginLeft: 9
-                        }}
-                      >
-                        Model<br/>Produk
-                      </Typography>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 36,
-                          marginLeft: 9
-                        }}
-                      >
-                        Model Produk
-                      </Typography>
-                  }
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <Autocomplete
-                      value={modelCustom}
-                      onChange={handleModelCustomChange}
-                      options={productModelsCustomData}
-                      sx={{width: 295, height: 55}}
-                      renderInput={(params) => <TextField {...params} label="Model" />}
-                    />
-                  </FormControl>
-                </Box>
-
-                <Box className={classes.inline}>
-                  { isMobile
-                    ? <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          marginTop: 9,
-                          marginBottom: 9,
-                          marginRight: 9,
-                          marginLeft: 9
-                        }}
-                      >
-                        Kategori<br/>Produk
-                      </Typography>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 15,
-                          marginLeft: 9
-                        }}
-                      >
-                        Kategori Produk
-                      </Typography>
-                  }
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <Autocomplete
-                      value={categoryCustom}
-                      onChange={handleCategoryCustomChange}
-                      options={productCategoriesCustomData}
-                      sx={{width: 295, height: 55}}
-                      renderInput={(params) => <TextField {...params} label="Category" />}
-                    />
-                  </FormControl>
-                </Box>
-
-                <FormControl style={{
-                  marginLeft: 9
-                }}>
-                  <RadioGroup
-                    row
-                    value={modelCategoryCustomDataActive}
-                    onChange={handleModelCategoryCustomDataActive}
-                  >
-                    <FormControlLabel value={true} control={<Radio />} label="Aktif" />
-                    <FormControlLabel value={false} control={<Radio />} label="Tidak Aktif" />
-                  </RadioGroup>
-                </FormControl>
-                
-                { modelCategoryCustomData &&
-                  <Grid container>
-                    <Grid item xs={12} md={8}>
-                      <Box className={classes.inline}>
-                        { isMobile
-                          ? <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 16,
-                                fontWeight: 'bold',
-                                marginTop: 9,
-                                marginBottom: 16,
-                                marginRight: 25,
-                                marginLeft: 9
-                              }}
-                            >
-                              Tanggal<br/>Awal
-                            </Typography>
-                          : <Typography 
-                              style={{
-                                color: "#000", 
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                                marginTop: 22,
-                                marginBottom: 30,
-                                marginRight: 97,
-                                marginLeft: 9
-                              }}
-                            >
-                              Tanggal
-                            </Typography>
-                        }
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
-                          <KeyboardDatePicker
-                            variant="inline"
-                            format="YYYY-MM-DD"
-                            label="Start Date"
-                            value={modelCategoryCustomStartDate}
-                            style={{marginTop: 10, marginRight: 10, width: 150}}
-                            onChange={handleModelCategoryCustomStartDateChange}
-                          />
-                          { !isMobile && 
-                            <KeyboardDatePicker
-                              variant="inline"
-                              format="YYYY-MM-DD"
-                              label="End Date"
-                              value={modelCategoryCustomEndDate}
-                              style={{marginTop: 10, width: 150}}
-                              onChange={handleModelCategoryCustomEndDateChange}
-                            />
-                          }
-                        </MuiPickersUtilsProvider>
-                      </Box>
-                    </Grid>
-                    { isMobile && 
-                      <Grid item xs={12} md={8}>
-                        <Box className={classes.inline}>
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 16,
-                              fontWeight: 'bold',
-                              marginTop: 9,
-                              marginBottom: 16,
-                              marginRight: 25,
-                              marginLeft: 9
-                            }}
-                          >
-                            Tanggal<br/>Akhir
-                          </Typography>
-                          <MuiPickersUtilsProvider utils={MomentUtils}>
-                            <KeyboardDatePicker
-                              variant="inline"
-                              format="YYYY-MM-DD"
-                              label="End Date"
-                              value={modelCategoryCustomEndDate}
-                              style={{marginTop: 10, width: 150}}
-                              onChange={handleModelCategoryCustomEndDateChange}
-                            />
-                          </MuiPickersUtilsProvider>
-                        </Box>
-                      </Grid>
-                    }
-                    { totalModelCategoryCustomData && 
-                      <Grid item xs={12} md={4} container justifyContent="flex-end">
-                        <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 14,
-                              fontWeight: 'bold',
-                              textAlign: 'right',
-                              marginTop: isMobile ? 9 : 15,
-                              marginBottom: 9,
-                              marginRight: 9,
-                              marginLeft: 9
-                            }}
-                          >
-                            Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalModelCategoryCustomData.value)}
-                            <br/>
-                            Total Jumlah: {Intl.NumberFormat('id').format(totalModelCategoryCustomData.quantity)}
-                          </Typography>
-                      </Grid>
-                    }
-                  </Grid>
-                }
-                
-                <Grid container>
-                  <Grid item xs={12} md={4}>
-                    <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        margin: 9
-                      }}
-                    >
-                      Grafik Penjualan Custom (Model & Kategori)
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} md={8} container justifyContent="flex-end">
-                    { modelCategoryCustomData
-                      ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                          <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                          <Typography 
-                            style={{
-                              color: "#000", 
-                              fontSize: 16,
-                              marginRight: 8,
-                              marginTop: 3,
-                            }}
-                          >
-                            Penjualan
-                          </Typography>
-                        </Box>
-                      : <Box className={classes.inline} style={{height: 27}}/>
-                    }
-                  </Grid>
-                </Grid>
-
-                { modelCategoryCustomData
-                  ? <MultiTypeChart line={modelCategoryCustomData.line} chart={modelCategoryCustomData.chart} width={width}/>
-                  : <EmptyChart width={width}/>
-                }
-
-                <Grid item xs={12}>
-                  { modelCategoryCustomDataLoading &&
-                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                      <CircularProgress size={25} />
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          marginLeft: 12
-                        }}
-                      >
-                        Loading
-                      </Typography>
-                    </Box>
-                  }
-                </Grid>
-              </Paper>
-            </InView>
-          </Grid>
-              
-          {/*
-          <Grid item xs={12}>
+          </InView>
+        </Grid>
+        
+        <Grid item xs={12}>
+          <InView onChange={(inView, entry) => handleModelFetchChange(inView)}>
             <Paper className={classes.paper} elevation={3}>
               <Box className={classes.inline}>
                 { isMobile
@@ -7625,11 +7138,11 @@ const Home = () => {
                         fontWeight: 'bold',
                         marginTop: 9,
                         marginBottom: 9,
-                        marginRight: 10,
+                        marginRight: 21,
                         marginLeft: 9
                       }}
                     >
-                      Tier<br/>Kategori
+                      Model<br/>Produk
                     </Typography>
                   : <Typography 
                       style={{
@@ -7638,20 +7151,20 @@ const Home = () => {
                         fontWeight: 'bold',
                         marginTop: 22,
                         marginBottom: 9,
-                        marginRight: 42,
+                        marginRight: 36,
                         marginLeft: 9
                       }}
                     >
-                      Tier Kategori
+                      Model Produk
                     </Typography>
                 }
                 <FormControl variant="outlined" className={classes.formControl}>
                   <Autocomplete
-                    value={tierCustom}
-                    onChange={handleTierCustomChange}
-                    options={productTiersCustomData}
+                    value={model}
+                    onChange={handleModelChange}
+                    options={productModelsData}
                     sx={{width: 295, height: 55}}
-                    renderInput={(params) => <TextField {...params} label="Tier" />}
+                    renderInput={(params) => <TextField {...params} label="Model" />}
                   />
                 </FormControl>
               </Box>
@@ -7687,16 +7200,250 @@ const Home = () => {
                 }
                 <FormControl variant="outlined" className={classes.formControl}>
                   <Autocomplete
-                    value={tierCategoryCustom}
-                    onChange={handleTierCategoryCustomChange}
-                    options={productTierCategoriesCustomData}
+                    value={category}
+                    onChange={handleCategoryChange}
+                    options={productCategoriesData}
                     sx={{width: 295, height: 55}}
                     renderInput={(params) => <TextField {...params} label="Category" />}
                   />
                 </FormControl>
               </Box>
+
+              <FormControl style={{
+                marginLeft: 9
+              }}>
+                <RadioGroup
+                  row
+                  value={modelCategoryDataActive}
+                  onChange={handleModelCategoryDataActive}
+                >
+                  <FormControlLabel value={true} control={<Radio />} label="Aktif" />
+                  <FormControlLabel value={false} control={<Radio />} label="Tidak Aktif" />
+                </RadioGroup>
+              </FormControl>
+                          
+              { modelCategoryData &&
+                <Grid container>
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      { isMobile
+                        ? <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              marginTop: 9,
+                              marginBottom: 16,
+                              marginRight: 25,
+                              marginLeft: 9
+                            }}
+                          >
+                            Tanggal<br/>Akhir
+                          </Typography>
+                        : <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              fontWeight: 'bold',
+                              marginTop: 22,
+                              marginBottom: 30,
+                              marginRight: 47,
+                              marginLeft: 9
+                            }}
+                          >
+                            Tanggal Akhir
+                          </Typography>
+                      }
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
+                          inputFormat="yyyy-MM-dd"
+                          label="End Date"
+                          value={modelCategoryEndDate}
+                          style={{marginTop: 10, width: 150}}
+                          onChange={handleModelCategoryEndDateChange}
+                          renderInput={(props) => <TextField {...props} />}
+                        />
+                      </LocalizationProvider>
+                    </Box>
+                  </Grid>
+                  { totalModelCategoryData && 
+                    <Grid item xs={12} md={4} container justifyContent="flex-end">
+                      <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            textAlign: 'right',
+                            marginTop: isMobile ? 9 : 15,
+                            marginBottom: 9,
+                            marginRight: 9,
+                            marginLeft: 9
+                          }}
+                        >
+                          Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalModelCategoryData.value)}
+                          <br/>
+                          Total Jumlah: {Intl.NumberFormat('id').format(totalModelCategoryData.quantity)}
+                        </Typography>
+                    </Grid>
+                  }
+                </Grid>
+              }
               
-              { tierCategoryCustomData &&
+              <Grid container>
+                <Grid item xs={12} md={4}>
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      margin: 9
+                    }}
+                  >
+                    Grafik Penjualan (Model & Kategori)
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={8} container justifyContent="flex-end">
+                  { modelCategoryData
+                    ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                        <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 16,
+                            marginRight: 8,
+                            marginTop: 3,
+                          }}
+                        >
+                          Penjualan
+                        </Typography>
+                      </Box>
+                    : <Box className={classes.inline} style={{height: 27}}/>
+                  }
+                </Grid>
+              </Grid>
+
+              { modelCategoryData
+                ? <MultiTypeChart line={modelCategoryData.line} chart={modelCategoryData.chart} width={width}/>
+                : <EmptyChart width={width}/>
+              }
+
+              <Grid item xs={12}>
+                { modelCategoryDataLoading &&
+                  <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                    <CircularProgress size={25} />
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        marginLeft: 12
+                      }}
+                    >
+                      Loading
+                    </Typography>
+                  </Box>
+                }
+              </Grid>
+            </Paper>
+          </InView>
+        </Grid>
+
+        <Grid item xs={12}>
+          <InView onChange={(inView, entry) => handleModelCustomFetchChange(inView)}>
+            <Paper className={classes.paper} elevation={3}>
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 9,
+                        marginRight: 21,
+                        marginLeft: 9
+                      }}
+                    >
+                      Model<br/>Produk
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 36,
+                        marginLeft: 9
+                      }}
+                    >
+                      Model Produk
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={modelCustom}
+                    onChange={handleModelCustomChange}
+                    options={productModelsCustomData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Model" />}
+                  />
+                </FormControl>
+              </Box>
+
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 9,
+                        marginRight: 9,
+                        marginLeft: 9
+                      }}
+                    >
+                      Kategori<br/>Produk
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 15,
+                        marginLeft: 9
+                      }}
+                    >
+                      Kategori Produk
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={categoryCustom}
+                    onChange={handleCategoryCustomChange}
+                    options={productCategoriesCustomData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Category" />}
+                  />
+                </FormControl>
+              </Box>
+
+              <FormControl style={{
+                marginLeft: 9
+              }}>
+                <RadioGroup
+                  row
+                  value={modelCategoryCustomDataActive}
+                  onChange={handleModelCategoryCustomDataActive}
+                >
+                  <FormControlLabel value={true} control={<Radio />} label="Aktif" />
+                  <FormControlLabel value={false} control={<Radio />} label="Tidak Aktif" />
+                </RadioGroup>
+              </FormControl>
+              
+              { modelCategoryCustomData &&
                 <Grid container>
                   <Grid item xs={12} md={8}>
                     <Box className={classes.inline}>
@@ -7728,26 +7475,26 @@ const Home = () => {
                             Tanggal
                           </Typography>
                       }
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardDatePicker
-                          variant="inline"
-                          format="YYYY-MM-DD"
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
+                          inputFormat="yyyy-MM-dd"
                           label="Start Date"
-                          value={tierCategoryCustomStartDate}
+                          value={modelCategoryCustomStartDate}
                           style={{marginTop: 10, marginRight: 10, width: 150}}
-                          onChange={handleTierCategoryCustomStartDateChange}
+                          onChange={handleModelCategoryCustomStartDateChange}
+                          renderInput={(props) => <TextField {...props} />}
                         />
                         { !isMobile && 
-                          <KeyboardDatePicker
-                            variant="inline"
-                            format="YYYY-MM-DD"
+                          <DatePicker
+                            inputFormat="yyyy-MM-dd"
                             label="End Date"
-                            value={tierCategoryCustomEndDate}
+                            value={modelCategoryCustomEndDate}
                             style={{marginTop: 10, width: 150}}
-                            onChange={handleTierCategoryCustomEndDateChange}
+                            onChange={handleModelCategoryCustomEndDateChange}
+                            renderInput={(props) => <TextField {...props} />}
                           />
                         }
-                      </MuiPickersUtilsProvider>
+                      </LocalizationProvider>
                     </Box>
                   </Grid>
                   { isMobile && 
@@ -7766,20 +7513,20 @@ const Home = () => {
                         >
                           Tanggal<br/>Akhir
                         </Typography>
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
-                          <KeyboardDatePicker
-                            variant="inline"
-                            format="YYYY-MM-DD"
+                        <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                          <DatePicker
+                            inputFormat="yyyy-MM-dd"
                             label="End Date"
-                            value={tierCategoryCustomEndDate}
+                            value={modelCategoryCustomEndDate}
                             style={{marginTop: 10, width: 150}}
-                            onChange={handleTierCategoryCustomEndDateChange}
+                            onChange={handleModelCategoryCustomEndDateChange}
+                            renderInput={(props) => <TextField {...props} />}
                           />
-                        </MuiPickersUtilsProvider>
+                        </LocalizationProvider>
                       </Box>
                     </Grid>
                   }
-                  { totalTierCategoryCustomData && 
+                  { totalModelCategoryCustomData && 
                     <Grid item xs={12} md={4} container justifyContent="flex-end">
                       <Typography 
                           style={{
@@ -7793,9 +7540,9 @@ const Home = () => {
                             marginLeft: 9
                           }}
                         >
-                          Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierCategoryCustomData.value)}
+                          Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalModelCategoryCustomData.value)}
                           <br/>
-                          Total Jumlah: {Intl.NumberFormat('id').format(totalTierCategoryCustomData.quantity)}
+                          Total Jumlah: {Intl.NumberFormat('id').format(totalModelCategoryCustomData.quantity)}
                         </Typography>
                     </Grid>
                   }
@@ -7812,11 +7559,11 @@ const Home = () => {
                       margin: 9
                     }}
                   >
-                    Grafik Penjualan Custom (Tier & Kategori)
+                    Grafik Penjualan Custom (Model & Kategori)
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={8} container justifyContent="flex-end">
-                  { tierCategoryCustomData
+                  { modelCategoryCustomData
                     ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
                         <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                         <Typography 
@@ -7835,13 +7582,13 @@ const Home = () => {
                 </Grid>
               </Grid>
 
-              { tierCategoryCustomData
-                ? <MultiTypeChart line={tierCategoryCustomData.line} chart={tierCategoryCustomData.chart} width={width}/>
+              { modelCategoryCustomData
+                ? <MultiTypeChart line={modelCategoryCustomData.line} chart={modelCategoryCustomData.chart} width={width}/>
                 : <EmptyChart width={width}/>
               }
 
               <Grid item xs={12}>
-                { tierCategoryCustomDataLoading &&
+                { modelCategoryCustomDataLoading &&
                   <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                     <CircularProgress size={25} />
                     <Typography 
@@ -7857,70 +7604,93 @@ const Home = () => {
                 }
               </Grid>
             </Paper>
-          </Grid>
-          */}
-
-          <Grid item xs={12}>
-            <Paper className={classes.paper} elevation={3}>
-              <Box className={classes.inline}>
-                { isMobile
-                  ? <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        marginTop: 9,
-                        marginBottom: 9,
-                        marginRight: 10,
-                        marginLeft: 9
-                      }}
-                    >
-                      Tier<br/>Kategori
-                    </Typography>
-                  : <Typography 
-                      style={{
-                        color: "#000", 
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        marginTop: 22,
-                        marginBottom: 9,
-                        marginRight: 42,
-                        marginLeft: 9
-                      }}
-                    >
-                      Tier Kategori
-                    </Typography>
-                }
-                <FormControl variant="outlined" className={classes.formControl}>
-                  <Autocomplete
-                    value={tierMultipleCustom}
-                    onChange={handleTierMultipleCustomChange}
-                    options={productTiersMultipleCustomData}
-                    sx={{width: 295, height: 55}}
-                    renderInput={(params) => <TextField {...params} label="Tier" />}
-                  />
-                </FormControl>
-              </Box>
-
-              { productTierMultipleCategoriesCustomData && 
-                <Grid item xs={12} style={{ marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, height: 371, maxWidth: isMobile ? 377 : 457 }}>
-                  <DataGrid
-                    rows={productTierMultipleCategoriesCustomData}
-                    columns={columns}
-                    pageSize={100}
-                    rowsPerPageOptions={[100]}
-                    onSelectionModelChange={handleSelection}
-                    selectionModel={selectionModel}
-                    checkboxSelection
-                    sx={{
-                      "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
-                        display: "none"
-                      }
+          </InView>
+        </Grid>
+            
+        {/*
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            <Box className={classes.inline}>
+              { isMobile
+                ? <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      marginTop: 9,
+                      marginBottom: 9,
+                      marginRight: 10,
+                      marginLeft: 9
                     }}
-                  />
-                </Grid>
+                  >
+                    Tier<br/>Kategori
+                  </Typography>
+                : <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      marginTop: 22,
+                      marginBottom: 9,
+                      marginRight: 42,
+                      marginLeft: 9
+                    }}
+                  >
+                    Tier Kategori
+                  </Typography>
               }
-              
+              <FormControl variant="outlined" className={classes.formControl}>
+                <Autocomplete
+                  value={tierCustom}
+                  onChange={handleTierCustomChange}
+                  options={productTiersCustomData}
+                  sx={{width: 295, height: 55}}
+                  renderInput={(params) => <TextField {...params} label="Tier" />}
+                />
+              </FormControl>
+            </Box>
+
+            <Box className={classes.inline}>
+              { isMobile
+                ? <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      marginTop: 9,
+                      marginBottom: 9,
+                      marginRight: 9,
+                      marginLeft: 9
+                    }}
+                  >
+                    Kategori<br/>Produk
+                  </Typography>
+                : <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      marginTop: 22,
+                      marginBottom: 9,
+                      marginRight: 15,
+                      marginLeft: 9
+                    }}
+                  >
+                    Kategori Produk
+                  </Typography>
+              }
+              <FormControl variant="outlined" className={classes.formControl}>
+                <Autocomplete
+                  value={tierCategoryCustom}
+                  onChange={handleTierCategoryCustomChange}
+                  options={productTierCategoriesCustomData}
+                  sx={{width: 295, height: 55}}
+                  renderInput={(params) => <TextField {...params} label="Category" />}
+                />
+              </FormControl>
+            </Box>
+            
+            { tierCategoryCustomData &&
               <Grid container>
                 <Grid item xs={12} md={8}>
                   <Box className={classes.inline}>
@@ -7952,43 +7722,26 @@ const Home = () => {
                           Tanggal
                         </Typography>
                     }
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <KeyboardDatePicker
-                        variant="inline"
-                        format="YYYY-MM-DD"
+                    <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                      <DatePicker
+                        inputFormat="yyyy-MM-dd"
                         label="Start Date"
-                        value={tierMultipleCategoryCustomStartDate}
+                        value={tierCategoryCustomStartDate}
                         style={{marginTop: 10, marginRight: 10, width: 150}}
-                        onChange={handleTierMultipleCategoryCustomStartDateChange}
+                        onChange={handleTierCategoryCustomStartDateChange}
+                        renderInput={(props) => <TextField {...props} />}
                       />
                       { !isMobile && 
-                        <KeyboardDatePicker
-                          variant="inline"
-                          format="YYYY-MM-DD"
+                        <DatePicker
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
-                          value={tierMultipleCategoryCustomEndDate}
+                          value={tierCategoryCustomEndDate}
                           style={{marginTop: 10, width: 150}}
-                          onChange={handleTierMultipleCategoryCustomEndDateChange}
+                          onChange={handleTierCategoryCustomEndDateChange}
+                          renderInput={(props) => <TextField {...props} />}
                         />
                       }
-                    </MuiPickersUtilsProvider>
-                    { !isMobile && 
-                      <Button 
-                        variant="outlined"
-                        style={{
-                          borderRadius: 4,
-                          textTransform: "none",
-                          marginLeft: 10,
-                          marginTop: 10,
-                          width: 100,
-                          height: 50
-                        }}
-                        disableRipple
-                        onClick={handleTierMultipleCategoryData}
-                      >
-                        Apply
-                      </Button>
-                    }
+                    </LocalizationProvider>
                   </Box>
                 </Grid>
                 { isMobile && 
@@ -8007,35 +7760,20 @@ const Home = () => {
                       >
                         Tanggal<br/>Akhir
                       </Typography>
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardDatePicker
-                          variant="inline"
-                          format="YYYY-MM-DD"
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
-                          value={tierMultipleCategoryCustomEndDate}
+                          value={tierCategoryCustomEndDate}
                           style={{marginTop: 10, width: 150}}
-                          onChange={handleTierMultipleCategoryCustomEndDateChange}
+                          onChange={handleTierCategoryCustomEndDateChange}
+                          renderInput={(props) => <TextField {...props} />}
                         />
-                      </MuiPickersUtilsProvider>
+                      </LocalizationProvider>
                     </Box>
-                    <Button 
-                      variant="outlined"
-                      style={{
-                        borderRadius: 4,
-                        textTransform: "none",
-                        marginLeft: 10,
-                        marginBottom: 16,
-                        width: 80,
-                        height: 40
-                      }}
-                      disableRipple
-                      onClick={handleTierMultipleCategoryData}
-                    >
-                      Apply
-                    </Button>
                   </Grid>
                 }
-                { totalTierMultipleCategoryCustomData && 
+                { totalTierCategoryCustomData && 
                   <Grid item xs={12} md={4} container justifyContent="flex-end">
                     <Typography 
                         style={{
@@ -8049,31 +7787,32 @@ const Home = () => {
                           marginLeft: 9
                         }}
                       >
-                        Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierMultipleCategoryCustomData.value)}
+                        Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierCategoryCustomData.value)}
                         <br/>
-                        Total Jumlah: {Intl.NumberFormat('id').format(totalTierMultipleCategoryCustomData.quantity)}
+                        Total Jumlah: {Intl.NumberFormat('id').format(totalTierCategoryCustomData.quantity)}
                       </Typography>
                   </Grid>
                 }
               </Grid>
-              
-              <Grid container>
-                <Grid item xs={12} md={4}>
-                  <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 18,
-                      fontWeight: 'bold',
-                      margin: 9
-                    }}
-                  >
-                    Grafik Penjualan Custom (Tier & Kategori)
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} md={8} container justifyContent="flex-end">
-                  { tierMultipleCategoryLiveCustom && tierMultipleCategoryLiveCustom.map((value)=> (
-                    <Box key={value} className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: randomColorHSL(value), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+            }
+            
+            <Grid container>
+              <Grid item xs={12} md={4}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Grafik Penjualan Custom (Tier & Kategori)
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={8} container justifyContent="flex-end">
+                { tierCategoryCustomData
+                  ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                      <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                       <Typography 
                         style={{
                           color: "#000", 
@@ -8082,20 +7821,579 @@ const Home = () => {
                           marginTop: 3,
                         }}
                       >
-                        {value}
+                        Penjualan
                       </Typography>
                     </Box>
-                  ))}
-                </Grid>
+                  : <Box className={classes.inline} style={{height: 27}}/>
+                }
               </Grid>
+            </Grid>
 
-              { tierMultipleCategoryCustomData
-                ? <MultiCategoryChart line={tierMultipleCategoryCustomData.line} chart={tierMultipleCategoryCustomData.chart} width={width}/>
-                : <EmptyChart width={width}/>
+            { tierCategoryCustomData
+              ? <MultiTypeChart line={tierCategoryCustomData.line} chart={tierCategoryCustomData.chart} width={width}/>
+              : <EmptyChart width={width}/>
+            }
+
+            <Grid item xs={12}>
+              { tierCategoryCustomDataLoading &&
+                <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                  <CircularProgress size={25} />
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      marginLeft: 12
+                    }}
+                  >
+                    Loading
+                  </Typography>
+                </Box>
+              }
+            </Grid>
+          </Paper>
+        </Grid>
+        */}
+
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            <Box className={classes.inline}>
+              { isMobile
+                ? <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      marginTop: 9,
+                      marginBottom: 9,
+                      marginRight: 10,
+                      marginLeft: 9
+                    }}
+                  >
+                    Tier<br/>Kategori
+                  </Typography>
+                : <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      marginTop: 22,
+                      marginBottom: 9,
+                      marginRight: 42,
+                      marginLeft: 9
+                    }}
+                  >
+                    Tier Kategori
+                  </Typography>
+              }
+              <FormControl variant="outlined" className={classes.formControl}>
+                <Autocomplete
+                  value={tierMultipleCustom}
+                  onChange={handleTierMultipleCustomChange}
+                  options={productTiersMultipleCustomData}
+                  sx={{width: 295, height: 55}}
+                  renderInput={(params) => <TextField {...params} label="Tier" />}
+                />
+              </FormControl>
+            </Box>
+
+            { productTierMultipleCategoriesCustomData && 
+              <Grid item xs={12} style={{ marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, height: 371, maxWidth: isMobile ? 377 : 457 }}>
+                <DataGrid
+                  rows={productTierMultipleCategoriesCustomData}
+                  columns={columns}
+                  pageSize={100}
+                  rowsPerPageOptions={[100]}
+                  onSelectionModelChange={handleSelection}
+                  selectionModel={selectionModel}
+                  checkboxSelection
+                  sx={{
+                    "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
+                      display: "none"
+                    }
+                  }}
+                />
+              </Grid>
+            }
+            
+            <Grid container>
+              <Grid item xs={12} md={8}>
+                <Box className={classes.inline}>
+                  { isMobile
+                    ? <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Awal
+                      </Typography>
+                    : <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          fontWeight: 'bold',
+                          marginTop: 22,
+                          marginBottom: 30,
+                          marginRight: 97,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal
+                      </Typography>
+                  }
+                  <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                    <DatePicker
+                      inputFormat="yyyy-MM-dd"
+                      label="Start Date"
+                      value={tierMultipleCategoryCustomStartDate}
+                      style={{marginTop: 10, marginRight: 10, width: 150}}
+                      onChange={handleTierMultipleCategoryCustomStartDateChange}
+                      renderInput={(props) => <TextField {...props} />}
+                    />
+                    { !isMobile && 
+                      <DatePicker
+                        inputFormat="yyyy-MM-dd"
+                        label="End Date"
+                        value={tierMultipleCategoryCustomEndDate}
+                        style={{marginTop: 10, width: 150}}
+                        onChange={handleTierMultipleCategoryCustomEndDateChange}
+                        renderInput={(props) => <TextField {...props} />}
+                      />
+                    }
+                  </LocalizationProvider>
+                  { !isMobile && 
+                    <Button 
+                      variant="outlined"
+                      style={{
+                        borderRadius: 4,
+                        textTransform: "none",
+                        marginLeft: 10,
+                        marginTop: 10,
+                        width: 100,
+                        height: 50
+                      }}
+                      disableRipple
+                      onClick={handleTierMultipleCategoryData}
+                    >
+                      Apply
+                    </Button>
+                  }
+                </Box>
+              </Grid>
+              { isMobile && 
+                <Grid item xs={12} md={8}>
+                  <Box className={classes.inline}>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 16,
+                        marginRight: 25,
+                        marginLeft: 9
+                      }}
+                    >
+                      Tanggal<br/>Akhir
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                      <DatePicker
+                        inputFormat="yyyy-MM-dd"
+                        label="End Date"
+                        value={tierMultipleCategoryCustomEndDate}
+                        style={{marginTop: 10, width: 150}}
+                        onChange={handleTierMultipleCategoryCustomEndDateChange}
+                        renderInput={(props) => <TextField {...props} />}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                  <Button 
+                    variant="outlined"
+                    style={{
+                      borderRadius: 4,
+                      textTransform: "none",
+                      marginLeft: 10,
+                      marginBottom: 16,
+                      width: 80,
+                      height: 40
+                    }}
+                    disableRipple
+                    onClick={handleTierMultipleCategoryData}
+                  >
+                    Apply
+                  </Button>
+                </Grid>
+              }
+              { totalTierMultipleCategoryCustomData && 
+                <Grid item xs={12} md={4} container justifyContent="flex-end">
+                  <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        textAlign: 'right',
+                        marginTop: isMobile ? 9 : 15,
+                        marginBottom: 9,
+                        marginRight: 9,
+                        marginLeft: 9
+                      }}
+                    >
+                      Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierMultipleCategoryCustomData.value)}
+                      <br/>
+                      Total Jumlah: {Intl.NumberFormat('id').format(totalTierMultipleCategoryCustomData.quantity)}
+                    </Typography>
+                </Grid>
+              }
+            </Grid>
+            
+            <Grid container>
+              <Grid item xs={12} md={4}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Grafik Penjualan Custom (Tier & Kategori)
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={8} container justifyContent="flex-end">
+                { tierMultipleCategoryLiveCustom && tierMultipleCategoryLiveCustom.map((value)=> (
+                  <Box key={value} className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: randomColorHSL(value), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      {value}
+                    </Typography>
+                  </Box>
+                ))}
+              </Grid>
+            </Grid>
+
+            { tierMultipleCategoryCustomData
+              ? <MultiCategoryChart line={tierMultipleCategoryCustomData.line} chart={tierMultipleCategoryCustomData.chart} width={width}/>
+              : <EmptyChart width={width}/>
+            }
+
+            <Grid item xs={12}>
+              { tierMultipleCategoryCustomDataLoading &&
+                <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                  <CircularProgress size={25} />
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      marginLeft: 12
+                    }}
+                  >
+                    Loading
+                  </Typography>
+                </Box>
+              }
+            </Grid>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <InView onChange={(inView, entry) => handleModelStockFetchChange(inView)}>
+            <Paper className={classes.paper} elevation={3}>
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 21,
+                        marginLeft: 9
+                      }}
+                    >
+                      Model
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 86,
+                        marginLeft: 9
+                      }}
+                    >
+                      Model
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={modelStock}
+                    onChange={handleModelStockChange}
+                    options={modelStockData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Model" />}
+                  />
+                </FormControl>
+              </Box>
+
+              <Box className={classes.inline}>
+                { isMobile
+                  ? <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 34,
+                        marginLeft: 9
+                      }}
+                    >
+                      Stok
+                    </Typography>
+                  : <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 22,
+                        marginBottom: 9,
+                        marginRight: 101,
+                        marginLeft: 9
+                      }}
+                    >
+                      Stok
+                    </Typography>
+                }
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Autocomplete
+                    value={stock}
+                    onChange={handleStockChange}
+                    options={stockData}
+                    sx={{width: 295, height: 55}}
+                    renderInput={(params) => <TextField {...params} label="Stock" />}
+                  />
+                </FormControl>
+              </Box>
+              
+              { performanceData && 
+                <Box className={classes.inline}>
+                  { isMobile
+                    ? <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 9,
+                          marginBottom: 5,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Launch<br/>Date
+                      </Typography>
+                    : <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          fontWeight: 'bold',
+                          marginTop: 22,
+                          marginBottom: 5,
+                          marginRight: 44,
+                          marginLeft: 9
+                        }}
+                      >
+                        Launch Date
+                      </Typography>
+                  }
+                  { isMobile
+                    ? <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 21,
+                          marginBottom: 5,
+                          marginRight: 5
+                        }}
+                      >
+                        {performanceData.Data.find(o => o.Key === 'LaunchDate').Value ? moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL') : '-'}
+                      </Typography>
+                    : <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          fontWeight: 'bold',
+                          marginTop: 22,
+                          marginBottom: 5,
+                          marginRight: 5
+                        }}
+                      >
+                        {performanceData.Data.find(o => o.Key === 'LaunchDate').Value ? moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL') : '-'}
+                      </Typography>
+                  }
+                </Box>
               }
 
+              <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
+                { performanceData && 
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#fd5151', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        45 Days Peformance
+                      </Typography>
+                      <Grid container style={{marginTop: 15}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
+                            <br/>
+                            terjual
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000",  
+                              fontSize: 18,
+                              textAlign: 'left',
+                              fontWeight: 800,
+                              display: 'inline'
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                }
+
+                { performanceData && 
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        60 Days Peformance
+                      </Typography>
+                      <Grid container style={{marginTop: 15}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
+                            <br/>
+                            terjual
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000",  
+                              fontSize: 18,
+                              textAlign: 'left',
+                              fontWeight: 800,
+                              display: 'inline'
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                }
+
+                { performanceData && 
+                  <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
+                    <CardContent>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        90 Days Peformance
+                      </Typography>
+                      <Grid container style={{marginTop: 15}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
+                            <br/>
+                            terjual
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000",  
+                              fontSize: 18,
+                              textAlign: 'left',
+                              fontWeight: 800,
+                              display: 'inline'
+                            }}
+                          >
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                }
+              </Box>
+
               <Grid item xs={12}>
-                { tierMultipleCategoryCustomDataLoading &&
+                { performanceDataLoading &&
                   <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                     <CircularProgress size={25} />
                     <Typography 
@@ -8111,315 +8409,10 @@ const Home = () => {
                 }
               </Grid>
             </Paper>
-          </Grid>
-
-          <Grid item xs={12}>
-            <InView onChange={(inView, entry) => handleModelStockFetchChange(inView)}>
-              <Paper className={classes.paper} elevation={3}>
-                <Box className={classes.inline}>
-                  { isMobile
-                    ? <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 21,
-                          marginLeft: 9
-                        }}
-                      >
-                        Model
-                      </Typography>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 86,
-                          marginLeft: 9
-                        }}
-                      >
-                        Model
-                      </Typography>
-                  }
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <Autocomplete
-                      value={modelStock}
-                      onChange={handleModelStockChange}
-                      options={modelStockData}
-                      sx={{width: 295, height: 55}}
-                      renderInput={(params) => <TextField {...params} label="Model" />}
-                    />
-                  </FormControl>
-                </Box>
-
-                <Box className={classes.inline}>
-                  { isMobile
-                    ? <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 34,
-                          marginLeft: 9
-                        }}
-                      >
-                        Stok
-                      </Typography>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 22,
-                          marginBottom: 9,
-                          marginRight: 101,
-                          marginLeft: 9
-                        }}
-                      >
-                        Stok
-                      </Typography>
-                  }
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <Autocomplete
-                      value={stock}
-                      onChange={handleStockChange}
-                      options={stockData}
-                      sx={{width: 295, height: 55}}
-                      renderInput={(params) => <TextField {...params} label="Stock" />}
-                    />
-                  </FormControl>
-                </Box>
-                
-                { performanceData && 
-                  <Box className={classes.inline}>
-                    { isMobile
-                      ? <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            marginTop: 9,
-                            marginBottom: 5,
-                            marginRight: 25,
-                            marginLeft: 9
-                          }}
-                        >
-                          Launch<br/>Date
-                        </Typography>
-                      : <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            marginTop: 22,
-                            marginBottom: 5,
-                            marginRight: 44,
-                            marginLeft: 9
-                          }}
-                        >
-                          Launch Date
-                        </Typography>
-                    }
-                    { isMobile
-                      ? <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            marginTop: 21,
-                            marginBottom: 5,
-                            marginRight: 5
-                          }}
-                        >
-                          {performanceData.Data.find(o => o.Key === 'LaunchDate').Value ? moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL') : '-'}
-                        </Typography>
-                      : <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            marginTop: 22,
-                            marginBottom: 5,
-                            marginRight: 5
-                          }}
-                        >
-                          {performanceData.Data.find(o => o.Key === 'LaunchDate').Value ? moment(performanceData.Data.find(o => o.Key === 'LaunchDate').Value).format('LL') : '-'}
-                        </Typography>
-                    }
-                  </Box>
-                }
-
-                <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
-                  { performanceData && 
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#fd5151', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          45 Days Peformance
-                        </Typography>
-                        <Grid container style={{marginTop: 15}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
-                              <br/>
-                              terjual
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000",  
-                                fontSize: 18,
-                                textAlign: 'left',
-                                fontWeight: 800,
-                                display: 'inline'
-                              }}
-                            >
-                              {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Card>
-                  }
-
-                  { performanceData && 
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#aa88ff', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          60 Days Peformance
-                        </Typography>
-                        <Grid container style={{marginTop: 15}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
-                              <br/>
-                              terjual
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000",  
-                                fontSize: 18,
-                                textAlign: 'left',
-                                fontWeight: 800,
-                                display: 'inline'
-                              }}
-                            >
-                              {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Card>
-                  }
-
-                  { performanceData && 
-                    <Card variant="elevation" style={{width: 220, height: 120, marginRight: 12, marginBottom: 12}}>
-                      <div style={{backgroundColor: '#23aaab', height: 5, width: '100%'}}/>
-                      <CardContent>
-                        <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            textAlign: 'left',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          90 Days Peformance
-                        </Typography>
-                        <Grid container style={{marginTop: 15}}>
-                          <Grid item xs={7}>
-                            <Typography 
-                              style={{
-                                color: "#888", 
-                                fontSize: 13,
-                                textAlign: 'left',
-                                fontWeight: 500
-                              }}
-                            >
-                              {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value}/${performanceData.Data.find(o => o.Key === 'StockQty').Value}` : "0/0"}
-                              <br/>
-                              terjual
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
-                            <Typography 
-                              style={{
-                                color: "#000",  
-                                fontSize: 18,
-                                textAlign: 'left',
-                                fontWeight: 800,
-                                display: 'inline'
-                              }}
-                            >
-                              {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Card>
-                  }
-                </Box>
-
-                <Grid item xs={12}>
-                  { performanceDataLoading &&
-                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                      <CircularProgress size={25} />
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          marginLeft: 12
-                        }}
-                      >
-                        Loading
-                      </Typography>
-                    </Box>
-                  }
-                </Grid>
-              </Paper>
-            </InView>
-          </Grid>
+          </InView>
         </Grid>
-      </Layout>
-    </div>
+      </Grid>
+    </Layout>
   );
 }
 

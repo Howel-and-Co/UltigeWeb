@@ -12,14 +12,14 @@ import {
   AppBar,
   Toolbar,
   IconButton
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
 import { useRouter } from 'next/router';
 
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../../src/utils/axios';
 
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="right" ref={ref} {...props} />;
@@ -184,7 +184,7 @@ const Lining = () => {
               disableFocusRipple
               disableTouchRipple
               style={{ backgroundColor: 'transparent' }}
-            >   
+              size="large">   
               <CloseIcon />
             </IconButton>
             <Typography style={{ marginLeft: 10, flex: 1 }} variant="h6" component="div">

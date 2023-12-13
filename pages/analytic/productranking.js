@@ -15,25 +15,25 @@ import {
   CircularProgress,
   Link,
   Tab
-} from "@material-ui/core";
+} from "@mui/material";
 import MomentUtils from '@date-io/moment';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
 import React, { useState, useEffect } from 'react';
 import axios from '../../src/utils/axios';
 
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
-import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -44,7 +44,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Pagination from '@material-ui/lab/Pagination';
+import Pagination from '@mui/material/Pagination';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 
@@ -1194,7 +1194,7 @@ const ProductRanking = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -1389,7 +1389,7 @@ const ProductRanking = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -1584,7 +1584,7 @@ const ProductRanking = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -1779,7 +1779,7 @@ const ProductRanking = () => {
           <TableCell align="left">
             <Grid container style={{marginTop: 10}}>
               <Image 
-                src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                 width={75} 
                 height={75} 
                 style={{borderRadius: 5}} 
@@ -2270,7 +2270,7 @@ const ProductRanking = () => {
                                 <TableCell align="left">
                                   <Grid container style={{marginTop: 10}}>
                                     <Image 
-                                      src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"}  
+                                      src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
                                       width={75} 
                                       height={75} 
                                       style={{borderRadius: 5}} 
@@ -2348,7 +2348,7 @@ const ProductRanking = () => {
                                 <TableCell align="left">
                                   <Grid container style={{marginTop: 10}}>
                                     <Image 
-                                      src={row.ProductImage != "" ? row.ProductImage : "/icons/no-image.jpg"} 
+                                      src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"} 
                                       width={75} 
                                       height={75} 
                                       style={{borderRadius: 5}} 

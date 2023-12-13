@@ -9,7 +9,9 @@ const useContainerDimensions = myRef => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   useLayoutEffect(() => {
-    setDimensions(getDimensions())
+    if (myRef.current) {
+      setDimensions(getDimensions())
+    }
   }, []);
 
   useEffect(() => {

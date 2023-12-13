@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
 
 import React, { useState, useEffect } from 'react';
 

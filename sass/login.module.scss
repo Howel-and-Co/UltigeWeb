@@ -4,7 +4,7 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
     outline: none;
-    padding-left: 18px;
+    padding-left: 0px;
     width: 100%;
     background-color: #f0f2f5 !important;
     border-radius: 4px;
@@ -38,11 +38,13 @@
 
   label {
     margin-bottom: 8px;
+    font-weight: bold;
   }
 
   .form {
     outline: none;
     padding-left: 18px;
+    padding-right: 18px;
     width: 100%;
     height: 44px;
     background: #f0f2f5;

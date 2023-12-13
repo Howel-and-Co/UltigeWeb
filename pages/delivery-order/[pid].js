@@ -15,9 +15,9 @@ import {
   AppBar,
   Toolbar,
   IconButton
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
@@ -26,7 +26,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
 import axios from '../../src/utils/axios';
 import { useRouter } from 'next/router';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { Document, Page as PdfPage, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `/js/pdf.worker.min.js`;

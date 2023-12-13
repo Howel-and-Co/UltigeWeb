@@ -9,9 +9,9 @@ import {
   CircularProgress,
   Button,
   TextField
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 const ProductImageTemplate = (props) => {
   return (
     <Image 
-      src={props.ProductImage != "" ? props.ProductImage : "/icons/no-image.jpg"}  
+      src={props.ProductImage != "" ? props.ProductImage : "/images/no-image.jpg"}  
       width={75} 
       height={75} 
       style={{borderRadius: 5}} 

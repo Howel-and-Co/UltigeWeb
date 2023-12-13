@@ -11,9 +11,9 @@ import {
   Button,
   CircularProgress,
   Card
-} from "@material-ui/core";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import classes from "../../sass/login.module.scss";
 import { checkToken, setToken } from "../../src/utils/config";
 import Cookies from "js-cookie";

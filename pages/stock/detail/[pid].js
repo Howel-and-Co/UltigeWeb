@@ -10,9 +10,9 @@ import {
   TextField,
   Dialog,
   DialogContent,
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
@@ -899,7 +899,7 @@ const StockDetail = () => {
                             </Grid>
                             <Grid item xs={12} style={{marginLeft: 10, marginRight: 10, marginBottom: 5}}>
                               <Image 
-                                src={stockImageBase64 != null ? stockImageBase64 : "/icons/no-image.jpg"}  
+                                src={stockImageBase64 != null ? stockImageBase64 : "/images/no-image.jpg"}  
                                 width={0}
                                 height={0}
                                 sizes="100vw"

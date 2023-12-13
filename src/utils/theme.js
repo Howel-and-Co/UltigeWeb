@@ -1,4 +1,4 @@
-import { createTheme } from "@material-ui/core/styles";
+import { createTheme } from "@mui/material/styles";
 
 const googleSans = {
   fontFamily: "GoogleSans",
@@ -60,7 +60,7 @@ const googleSansBoldItalic = {
   `
 };
 
-const theme = createTheme({
+let theme = createTheme({
   palette: {
     background: {
       default: "#FAFAFA"
@@ -91,32 +91,51 @@ const theme = createTheme({
     h6: {
       fontWeight: "bold"
     },
-    fontFamily: "GoogleSans,Arial"
+    fontFamily: "GoogleSans, Arial"
   },
-  overrides: {
+  components: {
     MuiButton: {
-      root: {
-        color: "#050505",
-        fontWeight: 500,
-        fontSize: 14
+      styleOverrides: {
+        root: {
+          color: "#050505",
+          border: "1px solid rgba(0, 0, 0, 0.23)",
+          fontWeight: 500,
+          fontSize: 14
+        }
       }
     },
     MuiContainer: {
-      root: {
-        marginLeft: 0,
-        marginRight: 0
+      styleOverrides: {
+        root: {
+          marginLeft: 0,
+          marginRight: 0
+        }
       }
     },
     MuiCssBaseline: {
-      "@global": {
-        "@font-face": [
-          googleSans,
-          googleSansMedium,
-          googleSansMediumItalic,
-          googleSansItalic,
-          googleSansBold,
-          googleSansBoldItalic
+      styleOverrides: {
+        '@font-face': googleSans,
+        fallbacks: [
+          {'@font-face': googleSansMedium},
+          {'@font-face': googleSansMediumItalic},
+          {'@font-face': googleSansItalic},
+          {'@font-face': googleSansBold},
+          {'@font-face': googleSansBoldItalic}
         ]
+      }
+    },
+  }
+});
+
+theme = createTheme(theme, {
+  components: {
+    MuiContainer: {
+      styleOverrides: {
+        maxWidthLg: {
+          [theme.breakpoints.up('lg')]: {
+              maxWidth: 1280
+          },
+        }
       }
     }
   }

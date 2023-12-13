@@ -10,10 +10,10 @@ import {
   Dialog,
   DialogContent,
   Button
-} from "@material-ui/core";
+} from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
 import moment from 'moment-timezone';
 import 'moment/locale/id';

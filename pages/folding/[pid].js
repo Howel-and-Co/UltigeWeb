@@ -14,9 +14,9 @@ import {
   Toolbar,
   IconButton,
   TextField,
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useRouter } from 'next/router';
 import moment from 'moment-timezone';
 import 'moment/locale/id';
@@ -24,7 +24,7 @@ import 'moment/locale/id';
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../../src/utils/axios';
 
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="right" ref={ref} {...props} />;
@@ -294,7 +294,7 @@ const Folding = () => {
               disableFocusRipple
               disableTouchRipple
               style={{ backgroundColor: 'transparent' }}
-            >   
+              size="large">   
               <CloseIcon />
             </IconButton>
             <Typography style={{ marginLeft: 10, flex: 1 }} variant="h6" component="div">

@@ -13,9 +13,9 @@ import {
   Toolbar,
   IconButton,
   Slide
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
@@ -36,7 +36,7 @@ import {
 import { Document, Page as PdfPage, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `/js/pdf.worker.min.js`;
 
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import { checkToken } from "../../src/utils/config";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -328,7 +328,7 @@ const SOP = () => {
               disableFocusRipple
               disableTouchRipple
               style={{ backgroundColor: 'transparent' }}
-            >   
+              size="large">   
               <CloseIcon />
             </IconButton>
             <Typography style={{ marginLeft: 10, flex: 1 }} variant="h6" component="div">

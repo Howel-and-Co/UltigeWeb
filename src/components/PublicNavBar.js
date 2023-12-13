@@ -1,46 +1,11 @@
 import {
-  Button,
   Grid,
   Container,
-} from "@material-ui/core";
+} from "@mui/material";
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
-import Link from "next/link";
-import NavButton from "./NavButton";
-import { Fragment } from "react";
-import { checkToken, removeToken } from "../utils/config";
-import Router from "next/router";
-
-const navButtons = [
-  {
-    label: "Home",
-    path: "/"
-  },
-  {
-    label: "About Us"
-  },
-  {
-    label: "FAQ"
-  },
-  {
-    label: "News"
-  },
-  {
-    label: "Gallery"
-  }
-];
-
-const navButtons2 = [];
+import React from 'react';
 
 const PublicNavBar = () => {
-  const handleSignOut = () => {
-    const logout = removeToken();
-    if (logout) {
-      Router.push("/login");
-    }
-  };
-  
-
   return (
     <div className="container">
       <Grid container justifyContent="center">
