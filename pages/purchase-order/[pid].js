@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -10,13 +9,13 @@ import {
   Dialog,
   DialogContent,
   Button
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
 
-import React, { useState, useEffect, useRef } from 'react';
-import useContainerDimensions from  "../../src/utils/screen.js";
+import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
 import { useRouter } from 'next/router';
 import moment from 'moment-timezone';
@@ -31,53 +30,52 @@ import {
     Filter,
     Inject,
     VirtualScroll
-  } from '@syncfusion/ej2-react-grids';
+} from '@syncfusion/ej2-react-grids';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 5,
-    margin: 5
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  inlineReverse: {
-    display: "flex",
-    flexDirection: "row-reverse"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
-    }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+const useStyles = makeStyles()((theme) => {
+    return {
+        paper: {
+            padding: 5,
+            margin: 5
+        },
+        paper2: {
+            margin: 10
+        },
+        inline: {
+            display: "flex",
+            flexDirection: "row"
+        },
+        inlineReverse: {
+            display: "flex",
+            flexDirection: "row-reverse"
+        },
+        formControl: {
+            margin: theme.spacing(1),
+            display: "flex",
+            flexDirection: "row"
+        },
+        selectRoot: {
+            '&:focus':{
+            backgroundColor: 'transparent'
+            }
+        },
+        tab: {
+            minWidth: 230,
+            width: 230,
+            fontSize: 16
+        },
+        text: {
+            height: 30
+        }
+    };
+});
 
 const PurchaseOrderDetail = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
-  const isLaptop = useMediaQuery(theme.breakpoints.down("md"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isLaptop = useMediaQuery(theme.breakpoints.down("lg"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const { pid } = router.query;
 
@@ -141,9 +139,6 @@ const PurchaseOrderDetail = () => {
 
   const [filterSettings, setFilterSettings] = React.useState({ type: 'Excel' });
   const [gridInstance, setGridInstance] = React.useState();
-
-  const componentRef = useRef();
-  const { width, height } = useContainerDimensions(componentRef);
 
   const StatusDescriptionColor = (status) => {
     if (status == 'ONGOING') {
@@ -499,18 +494,13 @@ const PurchaseOrderDetail = () => {
   }, [rejectActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid container sm={12} md={5} lg={4}>
             <Grid item xs={12}>
                 <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 300}}>
+                    <Grid container style={{height: 310}}>
                         <Grid item xs={12} style={{marginTop: 5}}>
                             <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
                                 <Typography 
@@ -918,6 +908,7 @@ const PurchaseOrderDetail = () => {
                                                 borderRadius: 4,
                                                 textTransform: "none",
                                                 backgroundColor: "#F14343",
+                                                color: "#FFFFFF",
                                                 height: 40
                                             }}
                                             disableRipple
@@ -933,6 +924,7 @@ const PurchaseOrderDetail = () => {
                                                 textTransform: "none",
                                                 marginRight: 5,
                                                 backgroundColor: "#3C8F4A",
+                                                color: "#FFFFFF",
                                                 height: 40
                                             }}
                                             disableRipple
@@ -1915,7 +1907,7 @@ const PurchaseOrderDetail = () => {
             color: #000;
          }
       `}</style> 
-    </div>
+    </>
   );
 }
 

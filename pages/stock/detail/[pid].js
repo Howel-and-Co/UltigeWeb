@@ -1,4 +1,4 @@
-import Head from "next/head";
+import Image from 'next/image';
 import Layout from "../../../src/components/Layout";
 import {
   Grid,
@@ -9,14 +9,14 @@ import {
   TextField,
   Dialog,
   DialogContent,
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
-import React, { useState, useEffect, useRef } from 'react';
-import useContainerDimensions from  "../../../src/utils/screen.js";
+import React, { useEffect } from 'react';
 import axios from '../../../src/utils/axios';
 import { useRouter } from 'next/router';
 
@@ -31,45 +31,44 @@ import {
     VirtualScroll
   } from '@syncfusion/ej2-react-grids';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 5,
-    margin: 5
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+        padding: 5,
+        margin: 5
+    },
+    paper2: {
+        margin: 10
+    },
+    inline: {
+        display: "flex",
+        flexDirection: "row"
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        display: "flex",
+        flexDirection: "row"
+    },
+    selectRoot: {
+        '&:focus':{
+        backgroundColor: 'transparent'
+        }
+    },
+    tab: {
+        minWidth: 230,
+        width: 230,
+        fontSize: 16
+    },
+    text: {
+        height: 30
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+  };
+});
 
 const StockDetail = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const { pid } = router.query;
 
@@ -110,9 +109,6 @@ const StockDetail = () => {
 
   const [filterSettings, setFilterSettings] = React.useState({ type: 'Excel' });
   const [gridInstance, setGridInstance] = React.useState();
-
-  const componentRef = useRef();
-  const { width, height } = useContainerDimensions(componentRef);
 
 
   useEffect(() => {
@@ -189,13 +185,8 @@ const StockDetail = () => {
   }, [pid]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid container xs={8}>
             <Grid item xs={12}>
@@ -858,7 +849,7 @@ const StockDetail = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <Paper className={classes.paper} elevation={3}>
-                        <Grid container style={{height: 57}}>
+                        <Grid container style={{height: 75}}>
                             <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
                                 <TextField
                                     variant="outlined"
@@ -897,10 +888,13 @@ const StockDetail = () => {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} style={{marginLeft: 10, marginRight: 10, marginBottom: 5}}>
-                              <img 
-                                src={stockImageBase64 != null ? stockImageBase64 : "/icons/no-image.jpg"}  
-                                height={250}
+                              <Image 
+                                src={stockImageBase64 != null ? stockImageBase64 : "/images/no-image.jpg"}  
+                                width={0}
+                                height={0}
+                                sizes="100vw"
                                 alt="Stock Image"
+                                style={{ width: 'auto', height: 250 }} 
                               />
                             </Grid>
                         </Grid>
@@ -938,7 +932,7 @@ const StockDetail = () => {
             color: #000;
          }
       `}</style> 
-    </div>
+    </>
   );
 }
 

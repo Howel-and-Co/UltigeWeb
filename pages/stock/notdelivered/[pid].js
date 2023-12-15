@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../../src/components/Layout";
 import {
   Grid,
@@ -6,13 +5,14 @@ import {
   Paper,
   Box,
   CircularProgress,
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../../src/utils/screen.js";
 import axios from '../../../src/utils/axios';
 import { useRouter } from 'next/router';
@@ -33,40 +33,39 @@ import {
     AggregatesDirective
   } from '@syncfusion/ej2-react-grids';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+  };
+});
 
 const TransactionCountColumnTemplate = (props) => {
   return (<span>{props.Count} baris</span>);
@@ -77,9 +76,9 @@ const QuantitySumColumnTemplate = (props) => {
 };
 
 const StockNotDelivered = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const { pid } = router.query;
 
@@ -157,13 +156,8 @@ const StockNotDelivered = () => {
   }, [pid]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <div ref={componentRef}>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>

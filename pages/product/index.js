@@ -1,4 +1,4 @@
-import Head from "next/head";
+import Image from 'next/image';
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -8,64 +8,64 @@ import {
   CircularProgress,
   Button,
   TextField
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
 import axios from '../../src/utils/axios';
 
 import {
-    GridComponent,
-    ColumnsDirective,
-    ColumnDirective,
-    Page,
-    Sort,
-    Filter,
-    Inject,
-    VirtualScroll
-  } from '@syncfusion/ej2-react-grids';
+  GridComponent,
+  ColumnsDirective,
+  ColumnDirective,
+  Page,
+  Sort,
+  Filter,
+  Inject,
+  VirtualScroll
+} from '@syncfusion/ej2-react-grids';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+  };
+});
 
 const ProductImageTemplate = (props) => {
   return (
-    <img 
-      src={props.ProductImage != "" ? props.ProductImage : "/icons/no-image.jpg"}  
+    <Image 
+      src={props.ProductImage != "" ? props.ProductImage : "/images/no-image.jpg"}  
       width={75} 
       height={75} 
       style={{borderRadius: 5}} 
@@ -165,9 +165,9 @@ const RowSelected = (props) => {
 };
 
 const Product = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [dataLoading, setDataLoading] = React.useState(true);
@@ -231,13 +231,8 @@ const Product = () => {
   }, [fetchActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <div ref={componentRef}>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
@@ -370,6 +365,7 @@ const Product = () => {
           </Grid>
         </Grid>
       </Layout>
+      
       <style jsx global>{` 
         .e-grid {
             font-family: GoogleSans;

@@ -1,45 +1,11 @@
 import {
-  Button,
   Grid,
   Container,
-} from "@material-ui/core";
-import React, { useState, useEffect } from 'react';
-import Link from "next/link";
-import NavButton from "./NavButton";
-import { Fragment } from "react";
-import { checkToken, removeToken } from "../utils/config";
-import Router from "next/router";
-
-const navButtons = [
-  {
-    label: "Home",
-    path: "/"
-  },
-  {
-    label: "About Us"
-  },
-  {
-    label: "FAQ"
-  },
-  {
-    label: "News"
-  },
-  {
-    label: "Gallery"
-  }
-];
-
-const navButtons2 = [];
+} from "@mui/material";
+import Image from 'next/image';
+import React from 'react';
 
 const PublicNavBar = () => {
-  const handleSignOut = () => {
-    const logout = removeToken();
-    if (logout) {
-      Router.push("/login");
-    }
-  };
-  
-
   return (
     <div className="container">
       <Grid container justifyContent="center">
@@ -52,8 +18,11 @@ const PublicNavBar = () => {
             alignItems="center"
           >
             <Grid item style={{ flexDirection: "column" }} xs={4}>
-              <img
-                style={{ paddingTop: 14, paddingBottom: 14, width: 55 }}
+              <Image
+                style={{ paddingTop: 14, paddingBottom: 14, width: 55, height: 'auto' }}
+                width={0}
+                height={0}
+                sizes="100vw"
                 src="/howel-logo-v2-bow.svg"
                 alt=""
               />

@@ -1,0 +1,8 @@
+{
+  "extends": "next/core-web-vitals",
+  "plugins": ["validate-jsx-nesting"],
+  "rules": {
+    "validate-jsx-nesting/no-invalid-jsx-nesting": "error",
+    "react-hooks/exhaustive-deps": "off"
+  }
+}

@@ -7,91 +7,91 @@ import {
   ListItem,
   IconButton,
   ListItemText,
-} from "@material-ui/core";
-import React, { useState, useEffect } from 'react';
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+} from "@mui/material";
+import Image from 'next/image';
+import React from 'react';
+import { makeStyles } from 'tss-react/mui';
 import Link from "next/link";
 import NavButton from "./NavButton";
 import { Fragment } from "react";
 import { checkToken, removeToken } from "../utils/config";
 import Router from "next/router";
 import Cookies from "js-cookie";
-import { useRouter, withRouter } from "next/router";
+import { useRouter } from "next/router";
 
-import CloseIcon from "@material-ui/icons/Close";
-import MenuIcon from '@material-ui/icons/Menu';
-import clsx from "clsx";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from '@mui/icons-material/Menu';
 
 import navButtons from "../../config/buttons";
 
-const useStyles = makeStyles(theme => ({
-  "@keyframes slideRight": {
-    from: {
-      opacity: 0,
-      transform: "translateX(-100px)"
-    },
-    to: {
-      opacity: 1,
-      transform: "none"
-    }
-  },
-  fixed: {},
-  openDrawer: {},
-  menu: {},
-  paperNav: {
-    width: "100%",
-    [theme.breakpoints.up(680)]: {
-      width: 300
-    }
-  },
-  mobileMenu: {
-    marginRight: theme.spacing(),
-    marginTop: 13,
-    "&:bar": {
-      backgroundColor: theme.palette.text.secondary,
-      "&:after, &:before": {
-        backgroundColor: theme.palette.text.secondary
+const useStyles = makeStyles()((theme, _params, classes) => {
+  return {
+    "@keyframes slideRight": {
+      from: {
+        opacity: 0,
+        transform: "translateX(-100px)"
+      },
+      to: {
+        opacity: 1,
+        transform: "none"
       }
-    }
-  },
-  mobileNav: {
-    background: theme.palette.background.paper,
-    "& $menu": {
-      padding: theme.spacing(0, 2),
-      overflow: "auto",
-      top: 70,
+    },
+    fixed: {},
+    openDrawer: {},
+    menu: {},
+    paperNav: {
       width: "100%",
-      position: "absolute",
-      height: "calc(100% - 80px)",
-      "& a": {
-        animationName: "$slideRight",
-        animationTimingFunction: "ease",
+      [theme.breakpoints.up(680)]: {
+        width: 300
       }
-    }
-  },
-  menuListCurrent: {
-    textTransform: "capitalize",
-    "& span": {
-      fontSize: 24
     },
-    color: "#8854D0"
-  },
-  menuList: {
-    textTransform: "capitalize",
-    "& span": {
-      fontSize: 24
+    mobileMenu: {
+      marginRight: theme.spacing(),
+      marginTop: 13,
+      "&:bar": {
+        backgroundColor: theme.palette.text.secondary,
+        "&:after, &:before": {
+          backgroundColor: theme.palette.text.secondary
+        }
+      }
+    },
+    mobileNav: {
+      background: theme.palette.background.paper,
+      [`& .${classes.menu}`]: {
+        padding: theme.spacing(0, 2),
+        overflow: "auto",
+        top: 70,
+        width: "100%",
+        position: "absolute",
+        height: "calc(100% - 80px)",
+        "& a": {
+          animationName: "$slideRight",
+          animationTimingFunction: "ease",
+        }
+      }
+    },
+    menuListCurrent: {
+      textTransform: "capitalize",
+      "& span": {
+        fontSize: 24
+      },
+      color: "#387AEF"
+    },
+    menuList: {
+      textTransform: "capitalize",
+      "& span": {
+        fontSize: 24
+      }
+    },
+    iconWrap: {
+      display: "flex",
+      justifyContent: "flex-end"
     }
-  },
-  iconWrap: {
-    display: "flex",
-    justifyContent: "flex-end"
-  }
-}));
+  };
+});
 
 const NavBar = ({isPrivate = true}) => {
-  const classes = useStyles();
-  const theme = useTheme();
+  const { classes, cx } = useStyles();
   const isMobile = true;
   const router = useRouter();
   
@@ -124,26 +124,30 @@ const NavBar = ({isPrivate = true}) => {
                 onClick={handleOpenDrawer}
                 style={{ backgroundColor: 'transparent' }}
                 disableRipple
-              >
+                size="large">
                 <MenuIcon style={{color: "#000"}} fontSize="large" />
               </IconButton>
             }
 
             { isPrivate ?
-              <Grid item style={{ flexDirection: "column" }}>
+              <Grid item style={{ flexDirection: "column", marginLeft: checkToken() ? 0 : 15 }}>
                 <Link href= {checkToken() ? "/login" : "/analytic"}>
-                  <a>
-                    <img
-                      style={{ paddingTop: 14, paddingBottom: 14, width: 55, marginLeft: checkToken() ? 0 : 15 }}
-                      src="/howel-logo-v2-bow.svg"   
-                      alt=""
-                    />
-                  </a>
+                  <Image
+                    style={{ paddingTop: 14, paddingBottom: 14, width: 55, height: 'auto' }}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    src="/howel-logo-v2-bow.svg"   
+                    alt=""
+                  />
                 </Link>
               </Grid> :
-              <Grid item style={{ flexDirection: "column" }}>
-                <img
-                  style={{ paddingTop: 14, paddingBottom: 14, width: 55, marginLeft: 15 }}
+              <Grid item style={{ flexDirection: "column", marginLeft: 15 }}>
+                <Image
+                  style={{ paddingTop: 14, paddingBottom: 14, width: 55, height: 'auto' }}
+                  width={0}
+                  height={0}
+                  sizes="100vw"
                   src="/howel-logo-v2-bow.svg"
                   alt=""
                 />
@@ -206,23 +210,26 @@ const NavBar = ({isPrivate = true}) => {
           <div className={classes.iconWrap}>
             <IconButton
               onClick={handleOpenDrawer}
-              className={clsx(
+              className={cx(
                 "hamburger hamburger--spin",
                 classes.mobileMenu,
                 openDrawer && "is-active"
               )}
               style={{ backgroundColor: 'transparent' }}
               disableRipple
-            >
+              size="large">
               <CloseIcon style={{color: "#000"}} fontSize="large"/>
             </IconButton>
           </div>
-          <div className={clsx(classes.menu, openDrawer && classes.menuOpen)}>
+          <div className={cx(classes.menu, openDrawer && classes.menuOpen)}>
             <List>
               {navButtons.map((item, index) => (
                 <Fragment key={index}>
                   { ((item.excludeRole.length == 0 && item.includeRole.includes(Cookies.get("role")) == true) || (item.includeRole.length == 0 && item.excludeRole.includes(Cookies.get("role")) == false)) && 
-                    <Link href={`${item.path}`}>
+                    <Link href={`${item.path}`} style={{
+                      textDecoration: "none",
+                      color: "#000"
+                    }}>
                       <ListItem
                         button
                         component="a"
@@ -262,7 +269,7 @@ const NavBar = ({isPrivate = true}) => {
         }
       `}</style>
     </div>
-  )
+  );
 }
 
 export default NavBar

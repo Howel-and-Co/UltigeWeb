@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../src/components/Layout";
 import axios from '../../src/utils/axios';
 import {
@@ -11,9 +10,9 @@ import {
   Button,
   CircularProgress,
   Card
-} from "@material-ui/core";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import classes from "../../sass/login.module.scss";
 import { checkToken, setToken } from "../../src/utils/config";
 import Cookies from "js-cookie";
@@ -113,10 +112,6 @@ const ChangePassword = () => {
     <>
         { checkToken() ? 
             <Layout>
-                <Head>
-                    <title>Ultige Web</title>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
                 <Grid
                     className={classes.register}
                     style={{ marginBottom: 60, marginTop: 30, minHeight: "50vh" }}
@@ -124,7 +119,6 @@ const ChangePassword = () => {
                     <Grid
                         container
                         spacing={0}
-                        direction="column"
                         alignItems="center"
                         justifyContent="center"
                         className={classes.login}
@@ -263,10 +257,6 @@ const ChangePassword = () => {
                 </Grid>
             </Layout> :
             <LoginLayout>
-                <Head>
-                    <title>Ultige Web</title>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
                 <Grid
                     className={classes.register}
                     style={{ marginBottom: 60, marginTop: 30, minHeight: "50vh" }}
@@ -274,7 +264,6 @@ const ChangePassword = () => {
                     <Grid
                         container
                         spacing={0}
-                        direction="column"
                         alignItems="center"
                         justifyContent="center"
                         className={classes.login}
