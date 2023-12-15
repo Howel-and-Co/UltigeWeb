@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import Image from 'next/image';
 import React from 'react';
-import { useTheme } from "@mui/material/styles";
 import { makeStyles } from 'tss-react/mui';
 import Link from "next/link";
 import NavButton from "./NavButton";

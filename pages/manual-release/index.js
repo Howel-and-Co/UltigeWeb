@@ -11,7 +11,6 @@ import {
   DialogContent,
 } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
-import { useTheme } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import moment from 'moment-timezone';
 import 'moment/locale/id';

@@ -12,12 +12,11 @@ import {
 } from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import { makeStyles } from 'tss-react/mui';
-import { useTheme } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
 import { useRouter } from 'next/router';
 
