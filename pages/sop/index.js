@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -14,7 +13,8 @@ import {
   IconButton,
   Slide
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -43,61 +43,60 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="right" ref={ref} {...props} />;
 });
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
+    },
+    pdfDocument: {
+      backgroundColor: '#fafafa',
+      paddingTop: 66
+    },
+    pdfPage: {
+      display: 'table',
+      margin: '0 auto',
+      marginTop: 20,
+      marginBottom: 20,
+      backgroundColor: '#fafafa'
+    },
+    pdfPageMobile: {
+      display: 'table',
+      margin: '0 auto',
+      marginTop: 10,
+      marginBottom: 10,
+      backgroundColor: '#fafafa'
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  },
-  pdfDocument: {
-    backgroundColor: '#fafafa',
-    paddingTop: 66
-  },
-  pdfPage: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 20,
-    marginBottom: 20,
-    backgroundColor: '#fafafa'
-  },
-  pdfPageMobile: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: '#fafafa'
-  }
-}));
+  };
+});
 
 const SOP = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -212,13 +211,8 @@ const SOP = () => {
   }, [fileFetchActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <div ref={componentRef}>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-        
         <Grid container style={{padding: 5}}>
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>

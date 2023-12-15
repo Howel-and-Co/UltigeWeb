@@ -30,8 +30,6 @@ import {
 import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import MobileDatePicker from '@mui/lab/MobileDatePicker';
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { makeStyles, withStyles } from 'tss-react/mui';
 import { useTheme } from "@mui/material/styles";
@@ -5669,7 +5667,7 @@ const Home = () => {
                 <Grid style={{margin: 10}}>  
                   <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                     { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
-                      <DesktopDatePicker
+                      <DatePicker
                         orientation="landscape"
                         inputFormat="yyyy-MM-dd"
                         label="Start Date"
@@ -5679,7 +5677,7 @@ const Home = () => {
                       />
                     }
                     { dateOption == "custom-monthly" &&
-                      <DesktopDatePicker
+                      <DatePicker
                         orientation="landscape"
                         views={["month"]}
                         inputFormat="yyyy-MM-dd"
@@ -5690,7 +5688,7 @@ const Home = () => {
                       />
                     }
                     { dateOption == "custom-yearly" &&
-                      <DesktopDatePicker
+                      <DatePicker
                         orientation="landscape"
                         views={["year"]}
                         inputFormat="yyyy-MM-dd"
@@ -5701,7 +5699,7 @@ const Home = () => {
                       />
                     }
                     { dateOption == "custom-date" &&
-                      <DesktopDatePicker
+                      <DatePicker
                         orientation="landscape"
                         inputFormat="yyyy-MM-dd"
                         label="End Date"
@@ -5735,7 +5733,7 @@ const Home = () => {
               <Grid style={{margin: 10}}>  
                 <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                   { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
-                    <MobileDatePicker
+                    <DatePicker
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
                       value={selectedStartDate}
@@ -5744,7 +5742,7 @@ const Home = () => {
                     />
                   }
                   { dateOption == "custom-monthly" &&
-                    <MobileDatePicker
+                    <DatePicker
                       views={["month"]}
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
@@ -5754,7 +5752,7 @@ const Home = () => {
                     />
                   }
                   { dateOption == "custom-yearly" &&
-                    <MobileDatePicker
+                    <DatePicker
                       views={["year"]}
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
@@ -5764,7 +5762,7 @@ const Home = () => {
                     />
                   }
                   { dateOption == "custom-date" &&
-                    <MobileDatePicker
+                    <DatePicker
                       inputFormat="yyyy-MM-dd"
                       label="End Date"
                       value={selectedEndDate}

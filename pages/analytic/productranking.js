@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Image from 'next/image';
 import Layout from "../../src/components/Layout";
 import {
@@ -14,14 +13,15 @@ import {
   Box,
   CircularProgress,
   Link,
-  Tab
+  Tab,
+  TextField
 } from "@mui/material";
 import MomentUtils from '@date-io/moment';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
@@ -50,37 +50,36 @@ import IconButton from '@mui/material/IconButton';
 
 import { checkToken } from "../../src/utils/config";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  }
-}));
+  };
+});
 
 const ProductRanking = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -1905,190 +1904,115 @@ const ProductRanking = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        <Grid container style={{padding: 5}}>
-          <Grid item xs={12}>
-            <Paper className={classes.paper} elevation={3}>
-              <Box className={classes.inline}>
-                <FormControl variant="outlined" className={classes.formControl}>
-                  { isMobile
-                    ? <InputLabel>Periode Data</InputLabel>
-                    : <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          fontWeight: 'bold',
-                          marginTop: 9,
-                          marginBottom: 9,
-                          marginRight: 15
-                        }}
-                      >
-                        Periode Data
-                      </Typography>
-                  }
-                  { isMobile
-                    ? <Select
-                        value={dateOption}
-                        onChange={handleChange}
-                        style={{height: 60, width: 375}}
-                        label="Periode Data"
-                        classes={{ root: classes.selectRoot }}
-                      >
-                        <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
-                        <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
-                        <Divider style={{margin: 12}}/>
-                        <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange != '' && <br/>}{customDayRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange != '' && <br/>}{customWeekRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange != '' && <br/>}{customMonthRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange != '' && <br/>}{customYearRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange != '' && <br/>}{customDateRange}</MenuItem>
-                      </Select>
-                    : <Select
-                        value={dateOption}
-                        onChange={handleChange}
-                        style={{height: 45, width: 450}}
-                        classes={{ root: classes.selectRoot }}
-                      >
-                        <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
-                        <MenuItem disableRipple value='yesterday'>Kemarin: {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                        <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
-                        <Divider style={{margin: 12}}/>
-                        <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange}</MenuItem>
-                        <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange}</MenuItem>
-                      </Select>
-                  }
-                </FormControl>
-                { (dateOption == "custom-daily" 
-                  || dateOption == "custom-weekly"
-                  || dateOption == "custom-monthly"
-                  || dateOption == "custom-yearly"
-                  || dateOption == "custom-date") && !isMobile &&
-                  <Grid style={{margin: 10}}>  
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="Start Date"
-                          value={selectedStartDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleStartDateChange}
-                        />
-                      }
-                      { dateOption == "custom-monthly" &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          views={["month"]}
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="Start Date"
-                          value={selectedStartDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleStartDateChange}
-                        />
-                      }
-                      { dateOption == "custom-yearly" &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          views={["year"]}
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="Start Date"
-                          value={selectedStartDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleStartDateChange}
-                        />
-                      }
-                      { dateOption == "custom-date" &&
-                        <KeyboardDatePicker
-                          orientation="landscape"
-                          variant="inline"
-                          format="YYYY-MM-DD"
-                          label="End Date"
-                          value={selectedEndDate}
-                          style={{marginRight: 15, width: 150}}
-                          onChange={handleEndDateChange}
-                        />
-                      }
-                    </MuiPickersUtilsProvider>
-                    <Button 
-                      variant="outlined"
+    <Layout>
+      <Grid container style={{padding: 5}}>
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            <Box className={classes.inline}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                { isMobile
+                  ? <InputLabel>Periode Data</InputLabel>
+                  : <Typography 
                       style={{
-                        borderRadius: 4,
-                        textTransform: "none",
-                        marginTop: 8
+                        color: "#000", 
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 9,
+                        marginRight: 15
                       }}
-                      disableRipple
-                      onClick={applyCustomDate}
                     >
-                      Apply
-                    </Button>
-                  </Grid>
+                      Periode Data
+                    </Typography>
                 }
-              </Box>
+                { isMobile
+                  ? <Select
+                      value={dateOption}
+                      onChange={handleChange}
+                      style={{height: 60, width: 375}}
+                      label="Periode Data"
+                      classes={{ root: classes.selectRoot }}
+                    >
+                      <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
+                      <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
+                      <Divider style={{margin: 12}}/>
+                      <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange != '' && <br/>}{customDayRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange != '' && <br/>}{customWeekRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange != '' && <br/>}{customMonthRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange != '' && <br/>}{customYearRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange != '' && <br/>}{customDateRange}</MenuItem>
+                    </Select>
+                  : <Select
+                      value={dateOption}
+                      onChange={handleChange}
+                      style={{height: 45, width: 450}}
+                      classes={{ root: classes.selectRoot }}
+                    >
+                      <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
+                      <MenuItem disableRipple value='yesterday'>Kemarin: {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
+                      <Divider style={{margin: 12}}/>
+                      <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-weekly'>Per Minggu{customWeekRange != '' && ': '}{customWeekRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-monthly'>Per Bulan{customMonthRange != '' && ': '}{customMonthRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-yearly'>Berdasarkan Tahun{customYearRange != '' && ': '}{customYearRange}</MenuItem>
+                      <MenuItem disableRipple value='custom-date'>Custom Tanggal{customDateRange != '' && ': '}{customDateRange}</MenuItem>
+                    </Select>
+                }
+              </FormControl>
               { (dateOption == "custom-daily" 
                 || dateOption == "custom-weekly"
                 || dateOption == "custom-monthly"
                 || dateOption == "custom-yearly"
-                || dateOption == "custom-date") && isMobile &&
+                || dateOption == "custom-date") && !isMobile &&
                 <Grid style={{margin: 10}}>  
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                     { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
-                      <KeyboardDatePicker
-                        variant="inline"
+                      <DatePicker
+                        orientation="landscape"
                         format="YYYY-MM-DD"
                         label="Start Date"
                         value={selectedStartDate}
-                        style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
                     { dateOption == "custom-monthly" &&
-                      <KeyboardDatePicker
+                      <DatePicker
+                        orientation="landscape"
                         views={["month"]}
-                        variant="inline"
                         format="YYYY-MM-DD"
                         label="Start Date"
                         value={selectedStartDate}
-                        style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
                     { dateOption == "custom-yearly" &&
-                      <KeyboardDatePicker
+                      <DatePicker
+                        orientation="landscape"
                         views={["year"]}
-                        variant="inline"
                         format="YYYY-MM-DD"
                         label="Start Date"
                         value={selectedStartDate}
-                        style={{marginRight: 15, width: 150}}
                         onChange={handleStartDateChange}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
                     { dateOption == "custom-date" &&
-                      <KeyboardDatePicker
-                        variant="inline"
+                      <DatePicker
+                        orientation="landscape"
                         format="YYYY-MM-DD"
                         label="End Date"
                         value={selectedEndDate}
-                        style={{marginRight: 15, width: 150}}
                         onChange={handleEndDateChange}
+                        renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                       />
                     }
-                  </MuiPickersUtilsProvider>
+                  </LocalizationProvider>
                   <Button 
                     variant="outlined"
                     style={{
@@ -2096,354 +2020,414 @@ const ProductRanking = () => {
                       textTransform: "none",
                       marginTop: 8
                     }}
-                    disableRipples
+                    disableRipple
                     onClick={applyCustomDate}
                   >
                     Apply
                   </Button>
                 </Grid>
               }
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Paper className={classes.paper} elevation={3}>
-              <Grid container>
-                <Grid item xs={6}>
-                  <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 18,
-                      fontWeight: 'bold',
-                      margin: 9
-                    }}
-                  >
-                    Peringkat Produk (teratas)
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} container justifyContent="flex-end">
-                  <Link
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      textDecoration: "none"
-                    }}
-                    href={"/analytic"}
-                  >
-                    <KeyboardArrowLeftIcon
-                      style={{ color: '#4084e1', fontSize: 20}}
+            </Box>
+            { (dateOption == "custom-daily" 
+              || dateOption == "custom-weekly"
+              || dateOption == "custom-monthly"
+              || dateOption == "custom-yearly"
+              || dateOption == "custom-date") && isMobile &&
+              <Grid style={{margin: 10}}>  
+                <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                  { (dateOption == "custom-daily" || dateOption == "custom-weekly" || dateOption == "custom-date") &&
+                    <DatePicker
+                      format="YYYY-MM-DD"
+                      label="Start Date"
+                      value={selectedStartDate}
+                      onChange={handleStartDateChange}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
                     />
-                    <Typography
-                      gutterBottom
-                      variant="body2"
+                  }
+                  { dateOption == "custom-monthly" &&
+                    <DatePicker
+                      views={["month"]}
+                      format="YYYY-MM-DD"
+                      label="Start Date"
+                      value={selectedStartDate}
+                      onChange={handleStartDateChange}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                    />
+                  }
+                  { dateOption == "custom-yearly" &&
+                    <DatePicker
+                      views={["year"]}
+                      format="YYYY-MM-DD"
+                      label="Start Date"
+                      value={selectedStartDate}
+                      onChange={handleStartDateChange}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                    />
+                  }
+                  { dateOption == "custom-date" &&
+                    <DatePicker
+                      format="YYYY-MM-DD"
+                      label="End Date"
+                      value={selectedEndDate}
+                      onChange={handleEndDateChange}
+                      renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                    />
+                  }
+                </LocalizationProvider>
+                <Button 
+                  variant="outlined"
+                  style={{
+                    borderRadius: 4,
+                    textTransform: "none",
+                    marginTop: 8
+                  }}
+                  disableRipples
+                  onClick={applyCustomDate}
+                >
+                  Apply
+                </Button>
+              </Grid>
+            }
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            <Grid container>
+              <Grid item xs={6}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Peringkat Produk (teratas)
+                </Typography>
+              </Grid>
+              <Grid item xs={6} container justifyContent="flex-end">
+                <Link
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    textDecoration: "none"
+                  }}
+                  href={"/analytic"}
+                >
+                  <KeyboardArrowLeftIcon
+                    style={{ color: '#4084e1', fontSize: 20}}
+                  />
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    style={{
+                      color: "#4084e1",
+                      fontWeight: "normal",
+                      marginTop: 7,
+                      marginRight: 3
+                    }}
+                  >
+                    Kembali
+                  </Typography>
+                </Link>
+              </Grid>
+              <Grid item xs={12}>
+                <TabContext value={productTab}>
+                  <Box style={{marginLeft: 10, marginRight: 10}}>
+                    <TabList onChange={handleProductTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (model)" value="1" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (model)" value="2" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="3" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="4" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="5" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="6" />
+                    </TabList>
+                  </Box>
+                  <TabPanel value="1">
+                    <TableContainer component={Paper} variant="outlined">
+                      <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ width: 50 }}/>
+                            <TableCell>Peringkat</TableCell>
+                            <TableCell align="left">Informasi Produk</TableCell>
+                            <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                            <TableCell align="right">Proporsi</TableCell>
+                            <TableCell align="right">Tingkat Perubahan</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {modelSalesCachePaginationData && modelSalesCachePaginationData.Data.map((row) => (
+                            <CustomSalesRow key={row.Rank} row={row} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </TabPanel>
+                  <TabPanel value="2">
+                    <TableContainer component={Paper} variant="outlined">
+                      <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ width: 50 }}/>
+                            <TableCell>Peringkat</TableCell>
+                            <TableCell align="left">Informasi Produk</TableCell>
+                            <TableCell align="right">Total Produk Dipesan</TableCell>
+                            <TableCell align="right">Proporsi</TableCell>
+                            <TableCell align="right">Tingkat Perubahan</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {modelSalesCountCachePaginationData && modelSalesCountCachePaginationData.Data.map((row) => (
+                            <CustomSalesCountRow key={row.Rank} row={row} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </TabPanel>
+                  <TabPanel value="3">
+                    <TableContainer component={Paper} variant="outlined">
+                      <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ width: 50 }}/>
+                            <TableCell>Peringkat</TableCell>
+                            <TableCell align="left">Informasi Produk</TableCell>
+                            <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                            <TableCell align="right">Proporsi</TableCell>
+                            <TableCell align="right">Tingkat Perubahan</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {categorySalesCachePaginationData && categorySalesCachePaginationData.Data.map((row) => (
+                            <CustomCategorySalesRow key={row.Rank} row={row} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </TabPanel>
+                  <TabPanel value="4">
+                    <TableContainer component={Paper} variant="outlined">
+                      <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ width: 50 }}/>
+                            <TableCell>Peringkat</TableCell>
+                            <TableCell align="left">Informasi Produk</TableCell>
+                            <TableCell align="right">Total Produk Dipesan</TableCell>
+                            <TableCell align="right">Proporsi</TableCell>
+                            <TableCell align="right">Tingkat Perubahan</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {categorySalesCountCachePaginationData && categorySalesCountCachePaginationData.Data.map((row) => (
+                            <CustomCategorySalesCountRow key={row.Rank} row={row} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </TabPanel>
+                  <TabPanel value="5">
+                    <TableContainer component={Paper} variant="outlined">
+                      <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Peringkat</TableCell>
+                            <TableCell align="left">Informasi Produk</TableCell>
+                            <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                            <TableCell align="right">Proporsi</TableCell>
+                            <TableCell align="right">Tingkat Perubahan</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {productSalesCachePaginationData && productSalesCachePaginationData.Data.map((row) => (
+                            <TableRow
+                              key={row.Rank}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                              <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                                <Typography>
+                                  {row.Rank}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                <Grid container style={{marginTop: 10}}>
+                                  <Image 
+                                    src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
+                                    width={75} 
+                                    height={75} 
+                                    style={{borderRadius: 5}} 
+                                    alt="Product Image"
+                                  />
+                                  <Typography 
+                                    style={{
+                                      color: "#000", 
+                                      fontSize: 16,
+                                      fontWeight: 500,
+                                      marginTop: 5,
+                                      marginLeft: 10
+                                    }}
+                                  >
+                                    {row.ProductName}
+                                    <br/>
+                                    <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+                                  </Typography>
+                                </Grid>
+                              </TableCell>
+                              <TableCell align="right" style={{width: 225}}>
+                                <Typography>
+                                  Rp {Intl.NumberFormat('id').format(row.Value)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="right" style={{width: 150}}>
+                                <Typography>
+                                  {Intl.NumberFormat('id').format(row.Proportion)}%
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="right" style={{width: 175}}>
+                                <Grid container justifyContent="flex-end">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+                                  </Typography>
+                                  { row.Growth >= 0
+                                    ? <TrendingUpIcon
+                                        style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                      />
+                                    : <TrendingDownIcon
+                                        style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                      />
+                                  }
+                                </Grid>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </TabPanel>
+                  <TabPanel value="6">
+                    <TableContainer component={Paper} variant="outlined">
+                      <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Peringkat</TableCell>
+                            <TableCell align="left">Informasi Produk</TableCell>
+                            <TableCell align="right">Total Produk Dipesan</TableCell>
+                            <TableCell align="right">Proporsi</TableCell>
+                            <TableCell align="right">Tingkat Perubahan</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {productSalesCountCachePaginationData && productSalesCountCachePaginationData.Data.map((row) => (
+                            <TableRow
+                              key={row.Rank}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                              <TableCell component="th" scope="row" align="center" style={{width: 100}}>
+                                <Typography>
+                                  {row.Rank}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                <Grid container style={{marginTop: 10}}>
+                                  <Image 
+                                    src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"} 
+                                    width={75} 
+                                    height={75} 
+                                    style={{borderRadius: 5}} 
+                                    alt="Product Image"
+                                  />
+                                  <Typography 
+                                    style={{
+                                      color: "#000", 
+                                      fontSize: 16,
+                                      fontWeight: 500,
+                                      marginTop: 5,
+                                      marginLeft: 10
+                                    }}
+                                  >
+                                    {row.ProductName}
+                                    <br/>
+                                    <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
+                                  </Typography>
+                                </Grid>
+                              </TableCell>
+                              <TableCell align="right" style={{width: 225}}>
+                                <Typography>
+                                  {Intl.NumberFormat('id').format(row.Value)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="right" style={{width: 150}}>
+                                <Typography>
+                                  {Intl.NumberFormat('id').format(row.Proportion)}%
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="right" style={{width: 175}}>
+                                <Grid container justifyContent="flex-end">
+                                  <Typography>
+                                    {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
+                                  </Typography>
+                                  { row.Growth >= 0
+                                    ? <TrendingUpIcon
+                                        style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                      />
+                                    : <TrendingDownIcon
+                                        style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
+                                      />
+                                  }
+                                </Grid>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </TabPanel>
+                </TabContext>
+              </Grid>
+              <Grid item xs={4}>
+                { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || categorySalesDataLoading || categorySalesCountDataLoading) &&
+                  <Box className={classes.inline} style={{marginTop: 20, marginLeft: 30}}>
+                    <CircularProgress size={25} />
+                    <Typography 
                       style={{
-                        color: "#4084e1",
-                        fontWeight: "normal",
-                        marginTop: 7,
-                        marginRight: 3
+                        color: "#000", 
+                        fontSize: 18,
+                        marginLeft: 12
                       }}
                     >
-                      Kembali
+                      Loading
                     </Typography>
-                  </Link>
-                </Grid>
-                <Grid item xs={12}>
-                  <TabContext value={productTab}>
-                    <Box style={{marginLeft: 10, marginRight: 10}}>
-                      <TabList onChange={handleProductTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (model)" value="1" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (model)" value="2" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="3" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="4" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="5" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="6" />
-                      </TabList>
-                    </Box>
-                    <TabPanel value="1">
-                      <TableContainer component={Paper} variant="outlined">
-                        <Table sx={{ minWidth: 650 }}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell sx={{ width: 50 }}/>
-                              <TableCell>Peringkat</TableCell>
-                              <TableCell align="left">Informasi Produk</TableCell>
-                              <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                              <TableCell align="right">Proporsi</TableCell>
-                              <TableCell align="right">Tingkat Perubahan</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {modelSalesCachePaginationData && modelSalesCachePaginationData.Data.map((row) => (
-                              <CustomSalesRow key={row.Rank} row={row} />
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </TabPanel>
-                    <TabPanel value="2">
-                      <TableContainer component={Paper} variant="outlined">
-                        <Table sx={{ minWidth: 650 }}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell sx={{ width: 50 }}/>
-                              <TableCell>Peringkat</TableCell>
-                              <TableCell align="left">Informasi Produk</TableCell>
-                              <TableCell align="right">Total Produk Dipesan</TableCell>
-                              <TableCell align="right">Proporsi</TableCell>
-                              <TableCell align="right">Tingkat Perubahan</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {modelSalesCountCachePaginationData && modelSalesCountCachePaginationData.Data.map((row) => (
-                              <CustomSalesCountRow key={row.Rank} row={row} />
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </TabPanel>
-                    <TabPanel value="3">
-                      <TableContainer component={Paper} variant="outlined">
-                        <Table sx={{ minWidth: 650 }}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell sx={{ width: 50 }}/>
-                              <TableCell>Peringkat</TableCell>
-                              <TableCell align="left">Informasi Produk</TableCell>
-                              <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                              <TableCell align="right">Proporsi</TableCell>
-                              <TableCell align="right">Tingkat Perubahan</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {categorySalesCachePaginationData && categorySalesCachePaginationData.Data.map((row) => (
-                              <CustomCategorySalesRow key={row.Rank} row={row} />
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </TabPanel>
-                    <TabPanel value="4">
-                      <TableContainer component={Paper} variant="outlined">
-                        <Table sx={{ minWidth: 650 }}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell sx={{ width: 50 }}/>
-                              <TableCell>Peringkat</TableCell>
-                              <TableCell align="left">Informasi Produk</TableCell>
-                              <TableCell align="right">Total Produk Dipesan</TableCell>
-                              <TableCell align="right">Proporsi</TableCell>
-                              <TableCell align="right">Tingkat Perubahan</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {categorySalesCountCachePaginationData && categorySalesCountCachePaginationData.Data.map((row) => (
-                              <CustomCategorySalesCountRow key={row.Rank} row={row} />
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </TabPanel>
-                    <TabPanel value="5">
-                      <TableContainer component={Paper} variant="outlined">
-                        <Table sx={{ minWidth: 650 }}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Peringkat</TableCell>
-                              <TableCell align="left">Informasi Produk</TableCell>
-                              <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
-                              <TableCell align="right">Proporsi</TableCell>
-                              <TableCell align="right">Tingkat Perubahan</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {productSalesCachePaginationData && productSalesCachePaginationData.Data.map((row) => (
-                              <TableRow
-                                key={row.Rank}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                              >
-                                <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                                  <Typography>
-                                    {row.Rank}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="left">
-                                  <Grid container style={{marginTop: 10}}>
-                                    <Image 
-                                      src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"}  
-                                      width={75} 
-                                      height={75} 
-                                      style={{borderRadius: 5}} 
-                                      alt="Product Image"
-                                    />
-                                    <Typography 
-                                      style={{
-                                        color: "#000", 
-                                        fontSize: 16,
-                                        fontWeight: 500,
-                                        marginTop: 5,
-                                        marginLeft: 10
-                                      }}
-                                    >
-                                      {row.ProductName}
-                                      <br/>
-                                      <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-                                    </Typography>
-                                  </Grid>
-                                </TableCell>
-                                <TableCell align="right" style={{width: 225}}>
-                                  <Typography>
-                                    Rp {Intl.NumberFormat('id').format(row.Value)}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right" style={{width: 150}}>
-                                  <Typography>
-                                    {Intl.NumberFormat('id').format(row.Proportion)}%
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right" style={{width: 175}}>
-                                  <Grid container justifyContent="flex-end">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-                                    </Typography>
-                                    { row.Growth >= 0
-                                      ? <TrendingUpIcon
-                                          style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                        />
-                                      : <TrendingDownIcon
-                                          style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                        />
-                                    }
-                                  </Grid>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </TabPanel>
-                    <TabPanel value="6">
-                      <TableContainer component={Paper} variant="outlined">
-                        <Table sx={{ minWidth: 650 }}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Peringkat</TableCell>
-                              <TableCell align="left">Informasi Produk</TableCell>
-                              <TableCell align="right">Total Produk Dipesan</TableCell>
-                              <TableCell align="right">Proporsi</TableCell>
-                              <TableCell align="right">Tingkat Perubahan</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {productSalesCountCachePaginationData && productSalesCountCachePaginationData.Data.map((row) => (
-                              <TableRow
-                                key={row.Rank}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                              >
-                                <TableCell component="th" scope="row" align="center" style={{width: 100}}>
-                                  <Typography>
-                                    {row.Rank}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="left">
-                                  <Grid container style={{marginTop: 10}}>
-                                    <Image 
-                                      src={row.ProductImage != "" ? row.ProductImage : "/images/no-image.jpg"} 
-                                      width={75} 
-                                      height={75} 
-                                      style={{borderRadius: 5}} 
-                                      alt="Product Image"
-                                    />
-                                    <Typography 
-                                      style={{
-                                        color: "#000", 
-                                        fontSize: 16,
-                                        fontWeight: 500,
-                                        marginTop: 5,
-                                        marginLeft: 10
-                                      }}
-                                    >
-                                      {row.ProductName}
-                                      <br/>
-                                      <span style={{fontSize: 14, color: "#999"}}>ID Produk: {row.ProductID}</span>
-                                    </Typography>
-                                  </Grid>
-                                </TableCell>
-                                <TableCell align="right" style={{width: 225}}>
-                                  <Typography>
-                                    {Intl.NumberFormat('id').format(row.Value)}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right" style={{width: 150}}>
-                                  <Typography>
-                                    {Intl.NumberFormat('id').format(row.Proportion)}%
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right" style={{width: 175}}>
-                                  <Grid container justifyContent="flex-end">
-                                    <Typography>
-                                      {Intl.NumberFormat('id').format(Math.abs(row.Growth))}%
-                                    </Typography>
-                                    { row.Growth >= 0
-                                      ? <TrendingUpIcon
-                                          style={{ color: 'green', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                        />
-                                      : <TrendingDownIcon
-                                          style={{ color: 'red', fontSize: 20, marginLeft: 3, marginTop: 2}}
-                                        />
-                                    }
-                                  </Grid>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </TabPanel>
-                  </TabContext>
-                </Grid>
-                <Grid item xs={4}>
-                  { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || categorySalesDataLoading || categorySalesCountDataLoading) &&
-                    <Box className={classes.inline} style={{marginTop: 20, marginLeft: 30}}>
-                      <CircularProgress size={25} />
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          marginLeft: 12
-                        }}
-                      >
-                        Loading
-                      </Typography>
-                    </Box>
-                  }
-                </Grid>
-                <Grid item xs={8} container justifyContent="flex-end">
-                  <Box style={{margin: 15}}>
-                    <Pagination
-                      count={productTab == 1 ? modelSalesPageCount 
-                        : productTab == 2 ? modelSalesCountPageCount
-                        : productTab == 3 ? categorySalesPageCount
-                        : productTab == 4 ? categorySalesCountPageCount
-                        : productTab == 5 ? productSalesPageCount
-                        : productSalesCountPageCount}
-                      page={productTab == 1 ? modelSalesPage 
-                        : productTab == 2 ? modelSalesCountPage
-                        : productTab == 3 ? categorySalesPage
-                        : productTab == 4 ? categorySalesCountPage
-                        : productTab == 5 ? productSalesPage
-                        : productSalesCountPage}
-                      onChange={handlePageChange}
-                      color='primary'
-                    />
                   </Box>
-                </Grid>
+                }
               </Grid>
-            </Paper>
-          </Grid>
+              <Grid item xs={8} container justifyContent="flex-end">
+                <Box style={{margin: 15}}>
+                  <Pagination
+                    count={productTab == 1 ? modelSalesPageCount 
+                      : productTab == 2 ? modelSalesCountPageCount
+                      : productTab == 3 ? categorySalesPageCount
+                      : productTab == 4 ? categorySalesCountPageCount
+                      : productTab == 5 ? productSalesPageCount
+                      : productSalesCountPageCount}
+                    page={productTab == 1 ? modelSalesPage 
+                      : productTab == 2 ? modelSalesCountPage
+                      : productTab == 3 ? categorySalesPage
+                      : productTab == 4 ? categorySalesCountPage
+                      : productTab == 5 ? productSalesPage
+                      : productSalesCountPage}
+                    onChange={handlePageChange}
+                    color='primary'
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
         </Grid>
-      </Layout>
-    </div>
+      </Grid>
+    </Layout>
   );
 }
 

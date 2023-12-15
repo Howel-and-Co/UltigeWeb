@@ -1,4 +1,3 @@
-import Head from "next/head";
 import FullScreenLayout from "../../src/components/FullScreenLayout";
 import {
   Grid,
@@ -15,21 +14,20 @@ import {
   Dialog,
   DialogContent,
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MomentUtils from '@date-io/moment';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
 import axios from '../../src/utils/axios';
-import Router from "next/router";
 
 import {
     GridComponent,
@@ -43,44 +41,43 @@ import {
   } from '@syncfusion/ej2-react-grids';
 import { getValue } from '@syncfusion/ej2-base';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  inlineReverse: {
-    display: "flex",
-    flexDirection: "row-reverse"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    inlineReverse: {
+      display: "flex",
+      flexDirection: "row-reverse"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+  };
+});
 
 const CustomizeCell = (args) => {
   if (args.column.field === "StatusDescription" && args.data && args.cell) {
@@ -136,7 +133,7 @@ const CustomizeCell = (args) => {
 };
 
 const PurchaseOrder = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -290,13 +287,8 @@ const PurchaseOrder = () => {
   }, [fetchActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <div ref={componentRef}>
       <FullScreenLayout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
@@ -370,24 +362,22 @@ const PurchaseOrder = () => {
                         </Select>
                     </FormControl>
                     { !isMobile && 
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardDatePicker
-                          variant="inline"
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
                           format="YYYY-MM-DD"
                           label="Start Date"
                           value={purchaseOrderStartDate}
-                          style={{marginRight: 10, minWidth: 150, maxWidth: 150}}
                           onChange={handlePurchaseOrderStartDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginRight: 10, minWidth: 150, width: 150}} {...props} />}
                         />
-                        <KeyboardDatePicker
-                          variant="inline"
+                        <DatePicker
                           format="YYYY-MM-DD"
                           label="End Date"
                           value={purchaseOrderEndDate}
-                          style={{minWidth: 150, maxWidth: 150}}
                           onChange={handlePurchaseOrderEndDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{minWidth: 150, width: 150}} {...props} />}
                         />
-                      </MuiPickersUtilsProvider>
+                      </LocalizationProvider>
                     }
                   </Box>
                 </Grid>
@@ -406,16 +396,15 @@ const PurchaseOrder = () => {
                       >
                         Tanggal<br/>Awal
                       </Typography>
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardDatePicker
-                          variant="inline"
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
                           format="YYYY-MM-DD"
                           label="Start Date"
                           value={purchaseOrderStartDate}
-                          style={{marginTop: 10, minWidth: 150, maxWidth: 150}}
                           onChange={handlePurchaseOrderStartDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
                         />
-                      </MuiPickersUtilsProvider>
+                      </LocalizationProvider>
                     </Box>
                   </Grid>
                 }
@@ -434,16 +423,15 @@ const PurchaseOrder = () => {
                       >
                         Tanggal<br/>Akhir
                       </Typography>
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardDatePicker
-                          variant="inline"
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
                           format="YYYY-MM-DD"
                           label="End Date"
                           value={purchaseOrderEndDate}
-                          style={{marginTop: 10, minWidth: 150, maxWidth: 150}}
                           onChange={handlePurchaseOrderEndDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
                         />
-                      </MuiPickersUtilsProvider>
+                      </LocalizationProvider>
                     </Box>
                   </Grid>
                 }
@@ -468,7 +456,7 @@ const PurchaseOrder = () => {
                         borderRadius: 4,
                         textTransform: "none",
                         margin: 10,
-                        backgroundColor: "#8854D0",
+                        color: "#FFFFFF",
                         height: 40
                     }}
                     disableRipple

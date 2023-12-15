@@ -9,25 +9,23 @@ import {
   ListItemText,
 } from "@mui/material";
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
-import { withStyles, useTheme } from "@mui/material/styles";
+import React from 'react';
+import { useTheme } from "@mui/material/styles";
 import { makeStyles } from 'tss-react/mui';
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Link from "next/link";
 import NavButton from "./NavButton";
 import { Fragment } from "react";
 import { checkToken, removeToken } from "../utils/config";
 import Router from "next/router";
 import Cookies from "js-cookie";
-import { useRouter, withRouter } from "next/router";
+import { useRouter } from "next/router";
 
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from '@mui/icons-material/Menu';
-import clsx from "clsx";
 
 import navButtons from "../../config/buttons";
 
-const useStyles = makeStyles()((theme) => {
+const useStyles = makeStyles()((theme, _params, classes) => {
   return {
     "@keyframes slideRight": {
       from: {
@@ -60,7 +58,7 @@ const useStyles = makeStyles()((theme) => {
     },
     mobileNav: {
       background: theme.palette.background.paper,
-      "& $menu": {
+      [`& .${classes.menu}`]: {
         padding: theme.spacing(0, 2),
         overflow: "auto",
         top: 70,
@@ -94,8 +92,7 @@ const useStyles = makeStyles()((theme) => {
 });
 
 const NavBar = ({isPrivate = true}) => {
-  const { classes } = useStyles();
-  const theme = useTheme();
+  const { classes, cx } = useStyles();
   const isMobile = true;
   const router = useRouter();
   
@@ -214,7 +211,7 @@ const NavBar = ({isPrivate = true}) => {
           <div className={classes.iconWrap}>
             <IconButton
               onClick={handleOpenDrawer}
-              className={clsx(
+              className={cx(
                 "hamburger hamburger--spin",
                 classes.mobileMenu,
                 openDrawer && "is-active"
@@ -225,7 +222,7 @@ const NavBar = ({isPrivate = true}) => {
               <CloseIcon style={{color: "#000"}} fontSize="large"/>
             </IconButton>
           </div>
-          <div className={clsx(classes.menu, openDrawer && classes.menuOpen)}>
+          <div className={cx(classes.menu, openDrawer && classes.menuOpen)}>
             <List>
               {navButtons.map((item, index) => (
                 <Fragment key={index}>

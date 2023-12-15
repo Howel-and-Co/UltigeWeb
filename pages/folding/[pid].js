@@ -1,4 +1,3 @@
-import Head from "next/head";
 import PublicLayout from "../../src/components/PublicLayout";
 import {
   Grid,
@@ -15,13 +14,14 @@ import {
   IconButton,
   TextField,
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useRouter } from 'next/router';
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -30,61 +30,60 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="right" ref={ref} {...props} />;
 });
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
+    },
+    pdfDocument: {
+      backgroundColor: '#fafafa',
+      paddingTop: 66
+    },
+    pdfPage: {
+      display: 'table',
+      margin: '0 auto',
+      marginTop: 20,
+      marginBottom: 20,
+      backgroundColor: '#fafafa'
+    },
+    pdfPageMobile: {
+      display: 'table',
+      margin: '0 auto',
+      marginTop: 10,
+      marginBottom: 10,
+      backgroundColor: '#fafafa'
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  },
-  pdfDocument: {
-    backgroundColor: '#fafafa',
-    paddingTop: 66
-  },
-  pdfPage: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 20,
-    marginBottom: 20,
-    backgroundColor: '#fafafa'
-  },
-  pdfPageMobile: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: '#fafafa'
-  }
-}));
+  };
+});
 
 const Folding = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter()
@@ -144,13 +143,8 @@ const Folding = () => {
   }, [pid]);
 
   return (
-    <div className={classes.root}>
+    <>
       <PublicLayout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 15}}>
           <Grid item xs={12} style={{marginBottom: 10}}>
             <Box className={classes.inline} style={{marginBottom: 7}}>
@@ -331,7 +325,7 @@ const Folding = () => {
           </Box>
         }
       </Dialog>
-    </div>
+    </>
   );
 }
 

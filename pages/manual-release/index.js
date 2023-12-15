@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -8,72 +7,63 @@ import {
   CircularProgress,
   Button,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Dialog,
   DialogContent,
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import Cookies from "js-cookie";
-import MomentUtils from '@date-io/moment';
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
-import React, { useState, useEffect, useRef } from 'react';
-import useContainerDimensions from "../../src/utils/screen.js";
+import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  inlineSpace: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  inlineReverse: {
-    display: "flex",
-    flexDirection: "row-reverse"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus': {
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    inlineSpace: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between"
+    },
+    inlineReverse: {
+      display: "flex",
+      flexDirection: "row-reverse"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus': {
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+  };
+});
 
 const ManualRelease = () => {
-  const classes = useStyles();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { classes } = useStyles();
 
   const [fetchTransactionDataActive, setFetchTransactionData] = React.useState(false);
   const [processReleaseActive, setProcessReleaseActive] = React.useState(false);
@@ -90,9 +80,6 @@ const ManualRelease = () => {
   const [releaseReason, setReleaseReason] = React.useState('');
 
   moment.locale('id');
-
-  const componentRef = useRef();
-  const { width, height } = useContainerDimensions(componentRef);
 
   const handleRefreshTransactionData = () => {
     setFetchTransactionData(true);
@@ -211,13 +198,8 @@ const ManualRelease = () => {
   }, [processReleaseActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <>
       <Layout>
-        <Head>
-          <title>Ultige Web</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{ padding: 5 }}>
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
@@ -253,7 +235,7 @@ const ManualRelease = () => {
                       borderRadius: 4,
                       textTransform: "none",
                       margin: 10,
-                      backgroundColor: "#8854D0",
+                      color: "#FFFFFF",
                       height: 40
                     }}
                     disableRipple
@@ -493,7 +475,7 @@ const ManualRelease = () => {
                       borderRadius: 4,
                       textTransform: "none",
                       margin: 10,
-                      backgroundColor: "#8854D0",
+                      color: "#FFFFFF",
                       height: 40
                     }}
                     disableRipple
@@ -527,17 +509,7 @@ const ManualRelease = () => {
           </Box>
         </DialogContent>
       </Dialog>
-
-      <style jsx global>{` 
-        .e-grid {
-            font-family: GoogleSans;
-        }
-
-        .e-grid .e-headercelldiv {
-            color: #000;
-         }
-      `}</style>
-    </div>
+    </>
   );
 }
 

@@ -1,4 +1,3 @@
-import Head from "next/head";
 import {
   Grid,
   Typography,
@@ -13,10 +12,10 @@ import {
   Toolbar,
   IconButton
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
 import { useRouter } from 'next/router';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,62 +24,60 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="right" ref={ref} {...props} />;
 });
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
+    },
+    pdfDocument: {
+      backgroundColor: '#fafafa',
+      paddingTop: 66
+    },
+    pdfPage: {
+      display: 'table',
+      margin: '0 auto',
+      marginTop: 20,
+      marginBottom: 20,
+      backgroundColor: '#fafafa'
+    },
+    pdfPageMobile: {
+      display: 'table',
+      margin: '0 auto',
+      marginTop: 10,
+      marginBottom: 10,
+      backgroundColor: '#fafafa'
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  },
-  pdfDocument: {
-    backgroundColor: '#fafafa',
-    paddingTop: 66
-  },
-  pdfPage: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 20,
-    marginBottom: 20,
-    backgroundColor: '#fafafa'
-  },
-  pdfPageMobile: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: '#fafafa'
-  }
-}));
+  };
+});
 
 const Lining = () => {
-  const classes = useStyles();
-  const theme = useTheme();
+  const { classes } = useStyles();
   const router = useRouter()
   const { pid } = router.query;
 
@@ -121,12 +118,7 @@ const Lining = () => {
   }, [pid]);
 
   return (
-    <div className={classes.root}>
-      <Head>
-          <title>Ultige Web</title>
-          <link rel="icon" href="/favicon.ico" />
-      </Head>
-
+    <>
       <Grid container style={{padding: 15}}>
         { liningImages && liningImages.map((value, index) => (
           <Grid key={index} item xs={4} style={{marginBottom: 15}}>
@@ -203,7 +195,7 @@ const Lining = () => {
           />
         }
       </Dialog>
-    </div>
+    </>
   );
 }
 

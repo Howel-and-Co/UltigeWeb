@@ -3,26 +3,28 @@ import PublicNavBar from "./PublicNavBar";
 import Router from "next/router";
 import Cookies from "js-cookie";
 
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
 import { Container } from "@mui/material";
 import { checkToken } from "../utils/config";
 import { useRouter } from "next/router";
 
 import navButtons from "../../config/buttons";
 
-const useStyles = makeStyles(theme => ({
-  mainWrap: {
-    position: "relative",
-    width: "100%",
-    overflow: "hidden",
-    display: "flex",
-    justifyContent: "center",
-    paddingTop: 90
-  }
-}));
+const useStyles = makeStyles()((theme) => {
+  return {
+    mainWrap: {
+      position: "relative",
+      width: "100%",
+      overflow: "hidden",
+      display: "flex",
+      justifyContent: "center",
+      paddingTop: 90
+    }
+  };
+});
 
 const PublicLayout = props => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const router = useRouter();
 
   useEffect(() => {

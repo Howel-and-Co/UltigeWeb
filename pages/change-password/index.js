@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../src/components/Layout";
 import axios from '../../src/utils/axios';
 import {
@@ -113,10 +112,6 @@ const ChangePassword = () => {
     <>
         { checkToken() ? 
             <Layout>
-                <Head>
-                    <title>Ultige Web</title>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
                 <Grid
                     className={classes.register}
                     style={{ marginBottom: 60, marginTop: 30, minHeight: "50vh" }}
@@ -124,12 +119,11 @@ const ChangePassword = () => {
                     <Grid
                         container
                         spacing={0}
-                        direction="column"
                         alignItems="center"
                         justifyContent="center"
                         className={classes.login}
                     >
-                        <Grid item xs={10} sm={8} md={6} lg={4}>
+                        <Grid item xs={10} sm={8} md={6} lg={5}>
                             <Card variant="outlined" style={{padding: 30}}>
                                 <Typography variant="h6">Change Password</Typography>
 
@@ -263,10 +257,6 @@ const ChangePassword = () => {
                 </Grid>
             </Layout> :
             <LoginLayout>
-                <Head>
-                    <title>Ultige Web</title>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
                 <Grid
                     className={classes.register}
                     style={{ marginBottom: 60, marginTop: 30, minHeight: "50vh" }}
@@ -274,12 +264,11 @@ const ChangePassword = () => {
                     <Grid
                         container
                         spacing={0}
-                        direction="column"
                         alignItems="center"
                         justifyContent="center"
                         className={classes.login}
                     >
-                        <Grid item xs={10} sm={8} md={6} lg={4}>
+                        <Grid item xs={10} sm={8} md={6} lg={5}>
                             <Card variant="outlined" style={{padding: 30}}>
                                 <Typography variant="h6">Change Password</Typography>
 

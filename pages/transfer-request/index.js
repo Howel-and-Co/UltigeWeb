@@ -1,4 +1,3 @@
-import Head from "next/head";
 import FullScreenLayout from "../../src/components/FullScreenLayout";
 import {
   Grid,
@@ -13,21 +12,20 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MomentUtils from '@date-io/moment';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
 import axios from '../../src/utils/axios';
-import Router from "next/router";
 
 import {
     GridComponent,
@@ -41,40 +39,39 @@ import {
   } from '@syncfusion/ej2-react-grids';
 import { getValue } from '@syncfusion/ej2-base';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+  };
+});
 
 const CustomizeCell = (args) => {
   if (args.column.field === "StatusDescription" && args.data && args.cell) {
@@ -124,7 +121,7 @@ const GetDateFilter = (dateType) => {
 }
 
 const TransferRequest = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -253,13 +250,8 @@ const TransferRequest = () => {
   }, [fetchActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <div ref={componentRef}>
       <FullScreenLayout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
@@ -290,6 +282,7 @@ const TransferRequest = () => {
                       <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
                   </Box>
                 </Grid>
+
                 <Grid item xs={12} sm={8}>
                   <Box className={classes.inline}>
                     { isMobile
@@ -303,7 +296,7 @@ const TransferRequest = () => {
                             marginLeft: 9
                           }}
                         >
-                          Tanggal<br/>Awal
+                          Jenis<br/>Tanggal
                         </Typography>
                       : <Typography 
                           style={{
@@ -318,7 +311,7 @@ const TransferRequest = () => {
                           Tanggal
                         </Typography>
                     }
-                    <FormControl variant="outlined" style={{marginTop: 6, marginRight: 10, display: "flex", flexDirection: "row"}}>
+                    <FormControl variant="outlined" style={{marginTop: isMobile ? 16 : 6, marginRight: 10, display: "flex", flexDirection: "row"}}>
                       <InputLabel>Date Type</InputLabel>
                         <Select
                           value={dateType}
@@ -332,28 +325,81 @@ const TransferRequest = () => {
                           ))}
                         </Select>
                     </FormControl>
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <KeyboardDatePicker
-                        variant="inline"
-                        format="YYYY-MM-DD"
-                        label="Start Date"
-                        value={transferRequestStartDate}
-                        style={{marginRight: 10, minWidth: 150, maxWidth: 150}}
-                        onChange={handleTransferRequestStartDateChange}
-                      />
-                      { !isMobile && 
-                        <KeyboardDatePicker
-                          variant="inline"
+                    { !isMobile && 
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
+                          format="YYYY-MM-DD"
+                          label="Start Date"
+                          value={transferRequestStartDate}
+                          onChange={handleTransferRequestStartDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginRight: 10, minWidth: 150, width: 150}} {...props} />}
+                        />
+                        <DatePicker
                           format="YYYY-MM-DD"
                           label="End Date"
                           value={transferRequestEndDate}
-                          style={{minWidth: 150, maxWidth: 150}}
                           onChange={handleTransferRequestEndDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{minWidth: 150, width: 150}} {...props} />}
                         />
-                      }
-                    </MuiPickersUtilsProvider>
+                      </LocalizationProvider>
+                    }
                   </Box>
                 </Grid>
+                { isMobile && 
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Awal
+                      </Typography>
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
+                          format="YYYY-MM-DD"
+                          label="Start Date"
+                          value={transferRequestStartDate}
+                          onChange={handleTransferRequestStartDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                        />
+                      </LocalizationProvider>
+                    </Box>
+                  </Grid>
+                }
+                { isMobile && 
+                  <Grid item xs={12} md={8}>
+                    <Box className={classes.inline}>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Akhir
+                      </Typography>
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
+                          format="YYYY-MM-DD"
+                          label="End Date"
+                          value={transferRequestEndDate}
+                          onChange={handleTransferRequestEndDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                        />
+                      </LocalizationProvider>
+                    </Box>
+                  </Grid>
+                }        
+
                 <Grid item xs={12} sm={4} container justifyContent="flex-end">
                     <Button 
                         variant="outlined"
@@ -375,7 +421,7 @@ const TransferRequest = () => {
                         borderRadius: 4,
                         textTransform: "none",
                         margin: 10,
-                        backgroundColor: "#8854D0",
+                        color: "#FFFFFF",
                         height: 40
                     }}
                     disableRipple

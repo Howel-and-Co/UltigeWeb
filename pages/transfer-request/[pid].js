@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -12,14 +11,13 @@ import {
   Button
 } from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
-import React, { useState, useEffect, useRef } from 'react';
-import useContainerDimensions from  "../../src/utils/screen.js";
+import React, { useEffect, useRef } from 'react';
 import axios from '../../src/utils/axios';
 import { useRouter } from 'next/router';
 
@@ -34,49 +32,46 @@ import {
     VirtualScroll
   } from '@syncfusion/ej2-react-grids';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 5,
-    margin: 5
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  inlineReverse: {
-    display: "flex",
-    flexDirection: "row-reverse"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
-    }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+const useStyles = makeStyles()((theme) => {
+    return {
+        paper: {
+            padding: 5,
+            margin: 5
+        },
+        paper2: {
+            margin: 10
+        },
+        inline: {
+            display: "flex",
+            flexDirection: "row"
+        },
+        inlineReverse: {
+            display: "flex",
+            flexDirection: "row-reverse"
+        },
+        formControl: {
+            margin: theme.spacing(1),
+            display: "flex",
+            flexDirection: "row"
+        },
+        selectRoot: {
+            '&:focus':{
+            backgroundColor: 'transparent'
+            }
+        },
+        tab: {
+            minWidth: 230,
+            width: 230,
+            fontSize: 16
+        },
+        text: {
+            height: 30
+        }
+    };
+});
 
 const TransferRequestDetail = () => {
-  const classes = useStyles();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { classes } = useStyles();
   const router = useRouter();
   const { pid } = router.query;
 
@@ -134,9 +129,6 @@ const TransferRequestDetail = () => {
 
   const [filterSettings, setFilterSettings] = React.useState({ type: 'Excel' });
   const [gridInstance, setGridInstance] = React.useState();
-
-  const componentRef = useRef();
-  const { width, height } = useContainerDimensions(componentRef);
 
   const handleApprovalReasonChange = (e) => {
     setApprovalReason(e.target.value);
@@ -456,13 +448,8 @@ const TransferRequestDetail = () => {
   }, [paymentProof1FetchActive, paymentProof2FetchActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid container xs={7}>
             <Grid item xs={12}>
@@ -902,7 +889,7 @@ const TransferRequestDetail = () => {
           <Grid container xs={9}>
             <Grid item xs={6}>
                 <Paper className={classes.paper} elevation={3}>
-                    <Grid style={{height: 477}}>
+                    <Grid style={{height: 487}}>
                         <Grid item xs={12} style={{marginTop: 5}}>
                             <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
                                 <Typography 
@@ -1170,7 +1157,7 @@ const TransferRequestDetail = () => {
             </Grid>
             <Grid item xs={6}>
                 <Paper className={classes.paper} elevation={3}>
-                    <Grid style={{height: 482}}>
+                    <Grid style={{height: 492}}>
                         <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
                             <Typography 
                                 style={{
@@ -1479,6 +1466,7 @@ const TransferRequestDetail = () => {
                                                 borderRadius: 4,
                                                 textTransform: "none",
                                                 backgroundColor: "#F14343",
+                                                color: "#FFFFFF",
                                                 height: 40
                                             }}
                                             disableRipple
@@ -1494,6 +1482,7 @@ const TransferRequestDetail = () => {
                                                 textTransform: "none",
                                                 marginRight: 5,
                                                 backgroundColor: "#3C8F4A",
+                                                color: "#FFFFFF",
                                                 height: 40
                                             }}
                                             disableRipple
@@ -1540,7 +1529,7 @@ const TransferRequestDetail = () => {
             color: #000;
          }
       `}</style> 
-    </div>
+    </>
   );
 }
 

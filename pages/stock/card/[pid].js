@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../../src/components/Layout";
 import {
   Grid,
@@ -7,21 +6,21 @@ import {
   Box,
   CircularProgress,
   Button,
+  TextField
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../../src/utils/screen.js";
 import axios from '../../../src/utils/axios';
-import Router from "next/router";
 import { useRouter } from 'next/router';
 
 import MomentUtils from '@date-io/moment';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import moment from 'moment-timezone';
 import 'moment/locale/id';
 
@@ -36,43 +35,42 @@ import {
     VirtualScroll,
   } from '@syncfusion/ej2-react-grids';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 10,
-    margin: 10
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
+const useStyles = makeStyles()((theme) => {
+  return {
+    paper: {
+      padding: 10,
+      margin: 10
+    },
+    paper2: {
+      margin: 10
+    },
+    inline: {
+      display: "flex",
+      flexDirection: "row"
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      display: "flex",
+      flexDirection: "row"
+    },
+    selectRoot: {
+      '&:focus':{
+        backgroundColor: 'transparent'
+      }
+    },
+    tab: {
+      minWidth: 230,
+      width: 230,
+      fontSize: 16
+    },
+    text: {
+      height: 30
     }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  }
-}));
+  };
+});
 
 const StockCard = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -170,13 +168,8 @@ const StockCard = () => {
   }, [fetchActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <div ref={componentRef}>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid item xs={12}>
             <Paper className={classes.paper} elevation={3}>
@@ -223,26 +216,24 @@ const StockCard = () => {
                             Tanggal
                           </Typography>
                       }
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardDatePicker
-                          variant="inline"
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
                           format="YYYY-MM-DD"
                           label="Start Date"
                           value={stockStartDate}
-                          style={{marginTop: 10, marginRight: 10, width: 150}}
                           onChange={handleStockStartDateChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
                         />
                         { !isMobile && 
-                          <KeyboardDatePicker
-                            variant="inline"
+                          <DatePicker
                             format="YYYY-MM-DD"
                             label="End Date"
                             value={stockEndDate}
-                            style={{marginTop: 10, width: 150}}
                             onChange={handleStockEndDateChange}
+                            renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                           />
                         }
-                      </MuiPickersUtilsProvider>
+                      </LocalizationProvider>
                       { !isMobile && 
                         <Button 
                             variant="outlined"
@@ -278,16 +269,15 @@ const StockCard = () => {
                         >
                           Tanggal<br/>Akhir
                         </Typography>
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
-                          <KeyboardDatePicker
-                            variant="inline"
+                        <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                          <DatePicker
                             format="YYYY-MM-DD"
                             label="End Date"
                             value={stockEndDate}
-                            style={{marginTop: 10, width: 150}}
                             onChange={handleStockEndDateChange}
+                            renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
                           />
-                        </MuiPickersUtilsProvider>
+                        </LocalizationProvider>
                       </Box>
                         <Button 
                             variant="outlined"

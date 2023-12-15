@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Layout from "../../src/components/Layout";
 import {
   Grid,
@@ -16,7 +15,8 @@ import {
   Toolbar,
   IconButton
 } from "@mui/material";
-import { makeStyles, withStyles, useTheme } from "@mui/material/styles";
+import { makeStyles } from 'tss-react/mui';
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
 import moment from 'moment-timezone';
@@ -51,74 +51,73 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="right" ref={ref} {...props} />;
 });
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: 5,
-    margin: 5
-  },
-  paper2: {
-    margin: 10
-  },
-  inline: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  inlineSpace: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  inlineReverse: {
-    display: "flex",
-    flexDirection: "row-reverse"
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "row"
-  },
-  selectRoot: {
-    '&:focus':{
-      backgroundColor: 'transparent'
-    }
-  },
-  tab: {
-    minWidth: 230,
-    width: 230,
-    fontSize: 16
-  },
-  text: {
-    height: 30
-  },
-  pdfDocument: {
-    backgroundColor: '#fafafa',
-    paddingTop: 66
-  },
-  pdfPage: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 20,
-    marginBottom: 20,
-    backgroundColor: '#fafafa'
-  },
-  pdfPageMobile: {
-    display: 'table',
-    margin: '0 auto',
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: '#fafafa'
-  }
-}));
+const useStyles = makeStyles()((theme) => {
+    return {
+        paper: {
+            padding: 5,
+            margin: 5
+        },
+        paper2: {
+            margin: 10
+        },
+        inline: {
+            display: "flex",
+            flexDirection: "row"
+        },
+        inlineSpace: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between"
+        },
+        inlineReverse: {
+            display: "flex",
+            flexDirection: "row-reverse"
+        },
+        formControl: {
+            margin: theme.spacing(1),
+            display: "flex",
+            flexDirection: "row"
+        },
+        selectRoot: {
+            '&:focus':{
+            backgroundColor: 'transparent'
+            }
+        },
+        tab: {
+            minWidth: 230,
+            width: 230,
+            fontSize: 16
+        },
+        text: {
+            height: 30
+        },
+        pdfDocument: {
+            backgroundColor: '#fafafa',
+            paddingTop: 66
+        },
+        pdfPage: {
+            display: 'table',
+            margin: '0 auto',
+            marginTop: 20,
+            marginBottom: 20,
+            backgroundColor: '#fafafa'
+        },
+        pdfPageMobile: {
+            display: 'table',
+            margin: '0 auto',
+            marginTop: 10,
+            marginBottom: 10,
+            backgroundColor: '#fafafa'
+        }
+    };
+});
 
 const TotalPriceColumnTemplate = (props) => {
     return (<span>Rp {Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(props.Sum)}</span>);
 };
 
 const DeliveryOrderDetail = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -479,18 +478,13 @@ const DeliveryOrderDetail = () => {
   }, [rejectActive]);
 
   return (
-    <div className={classes.root} ref={componentRef}>
+    <div ref={componentRef}>
       <Layout>
-        <Head>
-            <title>Ultige Web</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <Grid container style={{padding: 5}}>
           <Grid container sm={12} md={5} lg={4}>
             <Grid item xs={12}>
                 <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 580}}>
+                    <Grid container style={{height: 590}}>
                         <Grid item xs={12} style={{marginTop: 5}}>
                             <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
                                 <Typography 
@@ -979,6 +973,7 @@ const DeliveryOrderDetail = () => {
                                             borderRadius: 4,
                                             textTransform: "none",
                                             backgroundColor: "#F14343",
+                                            color: "#FFFFFF",
                                             height: 40
                                         }}
                                         disableRipple
@@ -994,6 +989,7 @@ const DeliveryOrderDetail = () => {
                                             textTransform: "none",
                                             marginRight: 5,
                                             backgroundColor: "#3C8F4A",
+                                            color: "#FFFFFF",
                                             height: 40
                                         }}
                                         disableRipple

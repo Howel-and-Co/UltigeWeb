@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 
 import { makeStyles } from 'tss-react/mui';
 import { Container } from "@mui/material";
-import { checkToken, removeToken } from "../utils/config";
+import { checkToken } from "../utils/config";
 
 const useStyles = makeStyles()((theme) => {
   return {
