@@ -81,7 +81,7 @@ const useStyles = makeStyles()((theme) => {
 const ProductRanking = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [newFetchActive, setNewFetchActive] = React.useState(false);

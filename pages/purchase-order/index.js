@@ -135,7 +135,7 @@ const CustomizeCell = (args) => {
 const PurchaseOrder = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [fetchActive, setFetchActive] = React.useState(false);
   const [dataLoading, setDataLoading] = React.useState(false);

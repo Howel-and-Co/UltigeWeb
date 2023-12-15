@@ -116,7 +116,7 @@ const PriceColumnTemplate = (props) => {
 const Stock = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [dataLoading, setDataLoading] = React.useState(false);

@@ -98,7 +98,7 @@ const useStyles = makeStyles()((theme) => {
 const SOP = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [fileFetchActive, setFileFetchActive] = React.useState(false);

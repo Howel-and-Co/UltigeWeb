@@ -56,12 +56,12 @@ const Layout = props => {
 
   if (checkToken() && authorized == true) {
     return (
-      <div>
+      <>
         <NavBar />
         <main className={classes.mainWrap} style={{ minHeight: "100vh" }}>
           <Container maxWidth="lg" disableGutters>{props.children}</Container>
         </main>
-      </div>
+      </>
     );
   }
   else {

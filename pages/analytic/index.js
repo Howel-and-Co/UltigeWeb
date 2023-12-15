@@ -149,7 +149,7 @@ const CustomMultipleTooltip = ({ active, payload, label }) => {
 
 const MultiTypeChart = (props) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   return (
     <LineChart
@@ -192,7 +192,7 @@ const MultiTypeChart = (props) => {
 
 const EmptyChart = (props) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   return (
     <>
@@ -217,7 +217,7 @@ const EmptyChart = (props) => {
 
 const MultiChannelChart = (props) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   return (
     <LineChart
@@ -257,7 +257,7 @@ const MultiChannelChart = (props) => {
 
 const MultiCategoryChart = (props) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   return (
     <LineChart
@@ -310,7 +310,7 @@ const columns = [
 const Home = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [salesData, setSalesData] = useState();
   const [salesCountData, setSalesCountData] = useState();

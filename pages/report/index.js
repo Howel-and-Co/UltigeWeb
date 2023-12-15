@@ -52,7 +52,7 @@ const useStyles = makeStyles()((theme) => {
 const Report = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [transactionDataFetchActive, setTransactionDataFetchActive] = React.useState(false);
   const [transactionDataLoading, setTransactionDataLoading] = React.useState(false);

@@ -48,12 +48,12 @@ const PublicLayout = props => {
   }, []);
   
   return (
-    <div>
+    <>
       <PublicNavBar/>
       <main className={classes.mainWrap} style={{ minHeight: "100vh" }}>
         <Container maxWidth="lg" disableGutters>{props.children}</Container>
       </main>
-    </div>
+    </>
   );
 };
 

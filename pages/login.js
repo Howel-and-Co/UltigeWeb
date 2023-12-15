@@ -77,7 +77,7 @@ const Login = () => {
                   justifyContent="center"
                   className={classes.login}
               >
-                  <Grid item xs={10} sm={8} md={6} lg={5}>
+                  <Grid item xs={10} sm={8} md={6} lg={4}>
                       <Card variant="outlined" style={{padding: 30}}>
                           <Typography variant="h6">Login</Typography>
 

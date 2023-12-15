@@ -123,7 +123,7 @@ const GetDateFilter = (dateType) => {
 const TransferRequest = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [fetchActive, setFetchActive] = React.useState(false);
   const [dataLoading, setDataLoading] = React.useState(false);
@@ -400,7 +400,7 @@ const TransferRequest = () => {
                   </Grid>
                 }        
 
-                <Grid item xs={12} sm={4} container justifyContent="flex-end">
+                <Grid item xs={12} md={4} container justifyContent="flex-end">
                     <Button 
                         variant="outlined"
                         style={{

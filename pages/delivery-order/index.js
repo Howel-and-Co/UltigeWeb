@@ -110,7 +110,7 @@ const CustomizeCell = (args) => {
 const DeliveryOrder = () => {
   const { classes } = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   const [fetchActive, setFetchActive] = React.useState(false);
   const [dataLoading, setDataLoading] = React.useState(false);

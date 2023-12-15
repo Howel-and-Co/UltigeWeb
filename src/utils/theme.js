@@ -61,6 +61,15 @@ const googleSansBoldItalic = {
 };
 
 let theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
   palette: {
     background: {
       default: "#FAFAFA"
@@ -128,20 +137,6 @@ let theme = createTheme({
         }
       }
     },
-  }
-});
-
-theme = createTheme(theme, {
-  components: {
-    MuiContainer: {
-      styleOverrides: {
-        maxWidthLg: {
-          [theme.breakpoints.up('lg')]: {
-              maxWidth: 1280
-          },
-        }
-      }
-    }
   }
 });
 
