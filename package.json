@@ -1,6 +1,6 @@
 {
   "name": "ultige-web",
-  "version": "2.12.2",
+  "version": "2.12.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -40,6 +40,7 @@
     "react-pdf": "5.7.2",
     "recharts": "^2.1.2",
     "sass": "^1.68.0",
+    "sharp": "^0.33.1",
     "tss-react": "^4.9.3",
     "webpack": "^5.89.0"
   },
