@@ -5886,7 +5886,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format(totalSalesData.growth.toFixed(2))}%
+                            {Intl.NumberFormat('id').format(parseFloat(totalSalesData.growth).toFixed(2))}%
                           </Typography>
                           { totalSalesData.growthTrend == 'up'
                             ? <TrendingUpIcon
@@ -5951,7 +5951,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format(totalSalesCountData.growth.toFixed(2))}%
+                            {Intl.NumberFormat('id').format(parseFloat(totalSalesCountData.growth).toFixed(2))}%
                           </Typography>
                           { totalSalesCountData.growthTrend == 'up'
                             ? <TrendingUpIcon
@@ -6016,7 +6016,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format(totalAverageSalesData.growth.toFixed(2))}%
+                            {Intl.NumberFormat('id').format(parseFloat(totalAverageSalesData.growth).toFixed(2))}%
                           </Typography>
                           { totalAverageSalesData.growthTrend == 'up'
                             ? <TrendingUpIcon
@@ -6081,7 +6081,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format(totalMarginValueData.growth.toFixed(2))}%
+                            {Intl.NumberFormat('id').format(parseFloat(totalMarginValueData.growth).toFixed(2))}%
                           </Typography>
                           { totalMarginValueData.growthTrend == 'up'
                             ? <TrendingUpIcon
@@ -6121,7 +6121,7 @@ const Home = () => {
                           fontWeight: 'bold'
                         }}
                       >
-                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalMarginRateData.value.toFixed(2))}</span>%
+                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(parseFloat(totalMarginRateData.value).toFixed(2))}</span>%
                       </Typography>
                       <Grid container style={{marginTop: 10}}>
                         <Grid item xs={7}>
@@ -6146,7 +6146,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {Intl.NumberFormat('id').format(totalMarginRateData.growth.toFixed(2))}%
+                            {Intl.NumberFormat('id').format(parseFloat(totalMarginRateData.growth).toFixed(2))}%
                           </Typography>
                           { totalMarginRateData.growthTrend == 'up'
                             ? <TrendingUpIcon
@@ -6330,7 +6330,7 @@ const Home = () => {
                             display: 'inline'
                           }}
                         >
-                          {Intl.NumberFormat('id').format(value.growth.toFixed(2))}%
+                          {Intl.NumberFormat('id').format(parseFloat(value.growth).toFixed(2))}%
                         </Typography>
                         { value.growthTrend == 'up'
                           ? <TrendingUpIcon
@@ -8273,7 +8273,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value ? `${Intl.NumberFormat('id').format(parseFloat(performanceData.Data.find(o => o.Key === 'StockSoldIn45Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -8320,7 +8320,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value ? `${Intl.NumberFormat('id').format(parseFloat(performanceData.Data.find(o => o.Key === 'StockSoldIn60Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -8367,7 +8367,7 @@ const Home = () => {
                               display: 'inline'
                             }}
                           >
-                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${Intl.NumberFormat('id').format((performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
+                            {performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value ? `${Intl.NumberFormat('id').format(parseFloat(performanceData.Data.find(o => o.Key === 'StockSoldIn90Days').Value / performanceData.Data.find(o => o.Key === 'StockQty').Value * 100).toFixed(2))}%` : "NaN%"}
                           </Typography>
                         </Grid>
                       </Grid>
