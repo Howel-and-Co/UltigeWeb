@@ -9,8 +9,7 @@ import {
 import { makeStyles } from 'tss-react/mui';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
 
 import React, { useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../../src/utils/screen.js";
@@ -83,8 +82,6 @@ const StockNotDelivered = () => {
   const { pid } = router.query;
 
   const [dataLoading, setDataLoading] = React.useState(false);
-
-  moment.locale('id');
 
   const [stockNotDeliveredData, setStockNotDeliveredData] = React.useState();
   const [stockID, setStockID] = React.useState();

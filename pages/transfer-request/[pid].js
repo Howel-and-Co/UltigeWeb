@@ -13,8 +13,7 @@ import {
 import Checkbox from '@mui/material/Checkbox';
 import { makeStyles } from 'tss-react/mui';
 import Cookies from "js-cookie";
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
 
 import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
@@ -75,8 +74,6 @@ const TransferRequestDetail = () => {
   const { pid } = router.query;
 
   const [dataLoading, setDataLoading] = React.useState(false);
-
-  moment.locale('id');
 
   const [fetchActive, setFetchActive] = React.useState(false);
   const [approveActive, setApproveActive] = React.useState(false);

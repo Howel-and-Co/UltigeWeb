@@ -19,8 +19,8 @@ import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
+import { getCurrentTime } from '../../src/utils/momentSystem';
 
 
 import React, { useEffect, useRef } from 'react';
@@ -137,10 +137,8 @@ const TransferRequest = () => {
   const [searchValue, setSearchValue] = React.useState('');
   const [recordClickIndex, setRecordClickIndex] = React.useState(-1);
 
-  moment.locale('id');
-
-  const [transferRequestStartDate, setTransferRequestStartDate] = React.useState(moment());
-  const [transferRequestEndDate, setTransferRequestEndDate] = React.useState(moment());
+  const [transferRequestStartDate, setTransferRequestStartDate] = React.useState(getCurrentTime());
+  const [transferRequestEndDate, setTransferRequestEndDate] = React.useState(getCurrentTime());
 
   const handleTransferRequestStartDateChange = (date) => {
     setTransferRequestStartDate(date);
@@ -328,18 +326,22 @@ const TransferRequest = () => {
                     { !isMobile && 
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="Start Date"
                           value={transferRequestStartDate}
                           onChange={handleTransferRequestStartDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginRight: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={transferRequestEndDate}
                           onChange={handleTransferRequestEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     }
@@ -362,11 +364,13 @@ const TransferRequest = () => {
                       </Typography>
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="Start Date"
                           value={transferRequestStartDate}
                           onChange={handleTransferRequestStartDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     </Box>
@@ -389,11 +393,13 @@ const TransferRequest = () => {
                       </Typography>
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={transferRequestEndDate}
                           onChange={handleTransferRequestEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     </Box>

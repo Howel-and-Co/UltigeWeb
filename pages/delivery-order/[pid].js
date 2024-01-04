@@ -19,8 +19,7 @@ import { makeStyles } from 'tss-react/mui';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
 
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
@@ -124,8 +123,6 @@ const DeliveryOrderDetail = () => {
   const { pid } = router.query;
 
   const [dataLoading, setDataLoading] = React.useState(false);
-
-  moment.locale('id');
 
   const [fetchActive, setFetchActive] = React.useState(false);
   const [deliveryProofFetchActive, setDeliveryProofFetchActive] = React.useState(false);
