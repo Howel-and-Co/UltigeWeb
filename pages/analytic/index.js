@@ -36,8 +36,8 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useContainerDimensions from  "../../src/utils/screen.js";
 import randomColorHSL from  "../../src/utils/randomColorHSL";
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
+import { getCurrentTime } from '../../src/utils/momentSystem';
 
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../../src/utils/axios';
@@ -462,8 +462,6 @@ const Home = () => {
   const [monthlyStartDate, setMonthlyStartDate] = useState();
   const [monthlyEndDate, setMonthlyEndDate] = useState();
 
-  moment.locale('id');
-
   const handleModelCategoryDataActive = (event) => {
     setModelCategoryDataActive(event.target.value);
     setModelFetchActive(true);
@@ -599,10 +597,10 @@ const Home = () => {
   };
 
 
-  const [selectedStartDate, setSelectedStartDate] = React.useState(moment());
-  const [selectedEndDate, setSelectedEndDate] = React.useState(moment());
-  const [newStartDate, setNewStartDate] = React.useState(moment());
-  const [newEndDate, setNewEndDate] = React.useState(moment());
+  const [selectedStartDate, setSelectedStartDate] = React.useState(getCurrentTime());
+  const [selectedEndDate, setSelectedEndDate] = React.useState(getCurrentTime());
+  const [newStartDate, setNewStartDate] = React.useState(getCurrentTime());
+  const [newEndDate, setNewEndDate] = React.useState(getCurrentTime());
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
@@ -614,13 +612,13 @@ const Home = () => {
 
   const [valueStockFetchActive, setValueStockFetchActive] = React.useState(false);
 
-  const [modelCategoryEndDate, setModelCategoryEndDate] = React.useState(moment());
-  const [modelCategoryCustomStartDate, setModelCategoryCustomStartDate] = React.useState(moment());
-  const [modelCategoryCustomEndDate, setModelCategoryCustomEndDate] = React.useState(moment());
-  const [tierCategoryCustomStartDate, setTierCategoryCustomStartDate] = React.useState(moment());
-  const [tierCategoryCustomEndDate, setTierCategoryCustomEndDate] = React.useState(moment());
-  const [tierMultipleCategoryCustomStartDate, setTierMultipleCategoryCustomStartDate] = React.useState(moment());
-  const [tierMultipleCategoryCustomEndDate, setTierMultipleCategoryCustomEndDate] = React.useState(moment());
+  const [modelCategoryEndDate, setModelCategoryEndDate] = React.useState(getCurrentTime());
+  const [modelCategoryCustomStartDate, setModelCategoryCustomStartDate] = React.useState(getCurrentTime());
+  const [modelCategoryCustomEndDate, setModelCategoryCustomEndDate] = React.useState(getCurrentTime());
+  const [tierCategoryCustomStartDate, setTierCategoryCustomStartDate] = React.useState(getCurrentTime());
+  const [tierCategoryCustomEndDate, setTierCategoryCustomEndDate] = React.useState(getCurrentTime());
+  const [tierMultipleCategoryCustomStartDate, setTierMultipleCategoryCustomStartDate] = React.useState(getCurrentTime());
+  const [tierMultipleCategoryCustomEndDate, setTierMultipleCategoryCustomEndDate] = React.useState(getCurrentTime());
 
   const handleModelCategoryEndDateChange = (date) => {
     setModelCategoryEndDate(date);
@@ -667,7 +665,7 @@ const Home = () => {
       return `vs. ${dataRangeCount + 1} Hari Sebelumnya`;
     }
     else if (dataRange == 'realtime') {
-      return `vs. Kemarin pada 00:00-${moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00`;
+      return `vs. Kemarin pada 00:00-${getCurrentTime().format('LT').slice(0, -3)}:00`;
     }
     else if (dataRange == 'yesterday') {
       return "vs. Hari Sebelumnya";
@@ -1504,7 +1502,7 @@ const Home = () => {
       let momentPreviousStartDate;
       let momentPreviousEndDate;
 
-      momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+      momentEndDate = getCurrentTime().subtract(1, "days");
       momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
 
       while (momentStartDate.month() == momentEndDate.month()) {
@@ -1519,28 +1517,28 @@ const Home = () => {
       setMonthlyEndDate(momentEndDate.format('DD-MM-YYYY'));
       
       if (dataRange == 'realtime') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(0, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(0, "days");
+        momentStartDate = getCurrentTime().subtract(0, "days");
+        momentEndDate = getCurrentTime().subtract(0, "days");
 
-        momentPreviousStartDate = moment().tz("Asia/Jakarta").subtract(1, "days");
-        momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentPreviousStartDate = getCurrentTime().subtract(1, "days");
+        momentPreviousEndDate = getCurrentTime().subtract(1, "days");
       }
       else if (dataRange == 'yesterday') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(1, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
 
-        momentPreviousStartDate = moment().tz("Asia/Jakarta").subtract(2, "days");
-        momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(2, "days");
+        momentPreviousStartDate = getCurrentTime().subtract(2, "days");
+        momentPreviousEndDate = getCurrentTime().subtract(2, "days");
       }
       else if (dataRange == 'weekly') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(7, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(7, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
 
-        momentPreviousStartDate = moment().tz("Asia/Jakarta").subtract(14, "days");
-        momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(8, "days");
+        momentPreviousStartDate = getCurrentTime().subtract(14, "days");
+        momentPreviousEndDate = getCurrentTime().subtract(8, "days");
       }
       else if (dataRange == 'monthly') {
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
         momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
 
         while (momentStartDate.month() == momentEndDate.month()) {
@@ -1951,7 +1949,7 @@ const Home = () => {
       let lastHour;
 
       if (dataRange == 'realtime' && dateOption != 'custom-daily')
-        lastHour = parseInt(moment().tz("Asia/Jakarta").format('LT').slice(0, -3));
+        lastHour = parseInt(getCurrentTime().format('LT').slice(0, -3));
       else
         lastHour = 23;
 
@@ -2841,7 +2839,7 @@ const Home = () => {
       let lastHour;
 
       if (dataRange == 'realtime' && dateOption != 'custom-daily')
-        lastHour = parseInt(moment().tz("Asia/Jakarta").format('LT').slice(0, -3));
+        lastHour = parseInt(getCurrentTime().format('LT').slice(0, -3));
       else
         lastHour = 23;
 
@@ -3138,28 +3136,28 @@ const Home = () => {
       let momentPreviousEndDate;
       
       if (dataRange == 'realtime') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(0, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(0, "days");
+        momentStartDate = getCurrentTime().subtract(0, "days");
+        momentEndDate = getCurrentTime().subtract(0, "days");
 
-        momentPreviousStartDate = moment().tz("Asia/Jakarta").subtract(1, "days");
-        momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentPreviousStartDate = getCurrentTime().subtract(1, "days");
+        momentPreviousEndDate = getCurrentTime().subtract(1, "days");
       }
       else if (dataRange == 'yesterday') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(1, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
 
-        momentPreviousStartDate = moment().tz("Asia/Jakarta").subtract(2, "days");
-        momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(2, "days");
+        momentPreviousStartDate = getCurrentTime().subtract(2, "days");
+        momentPreviousEndDate = getCurrentTime().subtract(2, "days");
       }
       else if (dataRange == 'weekly') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(7, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(7, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
 
-        momentPreviousStartDate = moment().tz("Asia/Jakarta").subtract(14, "days");
-        momentPreviousEndDate = moment().tz("Asia/Jakarta").subtract(8, "days");
+        momentPreviousStartDate = getCurrentTime().subtract(14, "days");
+        momentPreviousEndDate = getCurrentTime().subtract(8, "days");
       }
       else if (dataRange == 'monthly') {
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
         momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
 
         while (momentStartDate.month() == momentEndDate.month()) {
@@ -3251,19 +3249,19 @@ const Home = () => {
       let momentEndDate;
       
       if (dataRange == 'realtime') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(0, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(0, "days");
+        momentStartDate = getCurrentTime().subtract(0, "days");
+        momentEndDate = getCurrentTime().subtract(0, "days");
       }
       else if (dataRange == 'yesterday') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(1, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
       }
       else if (dataRange == 'weekly') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(7, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(7, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
       }
       else if (dataRange == 'monthly') {
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
         momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
 
         while (momentStartDate.month() == momentEndDate.month()) {
@@ -3304,19 +3302,19 @@ const Home = () => {
       let momentEndDate;
       
       if (dataRange == 'realtime') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(0, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(0, "days");
+        momentStartDate = getCurrentTime().subtract(0, "days");
+        momentEndDate = getCurrentTime().subtract(0, "days");
       }
       else if (dataRange == 'yesterday') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(1, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
       }
       else if (dataRange == 'weekly') {
-        momentStartDate = moment().tz("Asia/Jakarta").subtract(7, "days");
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentStartDate = getCurrentTime().subtract(7, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
       }
       else if (dataRange == 'monthly') {
-        momentEndDate = moment().tz("Asia/Jakarta").subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
         momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
 
         while (momentStartDate.month() == momentEndDate.month()) {
@@ -5629,9 +5627,9 @@ const Home = () => {
                       label="Periode Data"
                       classes={{ root: classes.selectRoot }}
                     >
-                      <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
-                      <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='realtime'>Real-time: <br/>Hari ini - Pk {getCurrentTime().format('LT').slice(0, -3)}:00</MenuItem>
+                      <MenuItem disableRipple value='yesterday'>Kemarin: <br/>{getCurrentTime().subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: <br/>{getCurrentTime().subtract(7, "days").format('DD-MM-YYYY')} - {getCurrentTime().subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
                       <MenuItem disableRipple value='monthly'>Bulan sebelumnya: <br/>{monthlyStartDate} - {monthlyEndDate}</MenuItem>
                       <Divider style={{margin: 12}}/>
                       <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange != '' && <br/>}{customDayRange}</MenuItem>
@@ -5646,9 +5644,9 @@ const Home = () => {
                       style={{height: 45, width: 450}}
                       classes={{ root: classes.selectRoot }}
                     >
-                      <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {moment().tz("Asia/Jakarta").format('LT').slice(0, -3)}:00</MenuItem>
-                      <MenuItem disableRipple value='yesterday'>Kemarin: {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
-                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {moment().tz("Asia/Jakarta").subtract(7, "days").format('DD-MM-YYYY')} - {moment().tz("Asia/Jakarta").subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='realtime'>Real-time: Hari ini - Pk {getCurrentTime().format('LT').slice(0, -3)}:00</MenuItem>
+                      <MenuItem disableRipple value='yesterday'>Kemarin: {getCurrentTime().subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
+                      <MenuItem disableRipple value='weekly'>Minggu sebelumnya: {getCurrentTime().subtract(7, "days").format('DD-MM-YYYY')} - {getCurrentTime().subtract(1, "days").format('DD-MM-YYYY')}</MenuItem>
                       <MenuItem disableRipple value='monthly'>Bulan sebelumnya: {monthlyStartDate} - {monthlyEndDate}</MenuItem>
                       <Divider style={{margin: 12}}/>
                       <MenuItem disableRipple value='custom-daily'>Per Hari{customDayRange != '' && ': '}{customDayRange}</MenuItem>
@@ -5674,17 +5672,21 @@ const Home = () => {
                         value={selectedStartDate}
                         onChange={handleStartDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                     }
                     { dateOption == "custom-monthly" &&
                       <DatePicker
                         orientation="landscape"
-                        views={["month"]}
+                        views={["month", "year"]}
                         inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={selectedStartDate}
                         onChange={handleStartDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                     }
                     { dateOption == "custom-yearly" &&
@@ -5696,6 +5698,8 @@ const Home = () => {
                         value={selectedStartDate}
                         onChange={handleStartDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                     }
                     { dateOption == "custom-date" &&
@@ -5707,6 +5711,8 @@ const Home = () => {
                         style={{marginRight: 15, width: 150}}
                         onChange={handleEndDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                     }
                   </LocalizationProvider>
@@ -5739,16 +5745,20 @@ const Home = () => {
                       value={selectedStartDate}
                       onChange={handleStartDateChange}
                       renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                      minDate={moment('01-01-2016').toDate()}
+                      maxDate={getCurrentTime().toDate()}
                     />
                   }
                   { dateOption == "custom-monthly" &&
                     <DatePicker
-                      views={["month"]}
+                      views={["month", "year"]}
                       inputFormat="yyyy-MM-dd"
                       label="Start Date"
                       value={selectedStartDate}
                       onChange={handleStartDateChange}
                       renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                      minDate={moment('01-01-2016').toDate()}
+                      maxDate={getCurrentTime().toDate()}
                     />
                   }
                   { dateOption == "custom-yearly" &&
@@ -5759,6 +5769,8 @@ const Home = () => {
                       value={selectedStartDate}
                       onChange={handleStartDateChange}
                       renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                      minDate={moment('01-01-2016').toDate()}
+                      maxDate={getCurrentTime().toDate()}
                     />
                   }
                   { dateOption == "custom-date" &&
@@ -5768,6 +5780,8 @@ const Home = () => {
                       value={selectedEndDate}
                       onChange={handleEndDateChange}
                       renderInput={(props) => <TextField variant="standard" style={{marginRight: 15, width: 150}} {...props} />}
+                      minDate={moment('01-01-2016').toDate()}
+                      maxDate={getCurrentTime().toDate()}
                     />
                   }
                 </LocalizationProvider>
@@ -7252,6 +7266,8 @@ const Home = () => {
                           value={modelCategoryEndDate}
                           onChange={handleModelCategoryEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     </Box>
@@ -7472,6 +7488,8 @@ const Home = () => {
                           value={modelCategoryCustomStartDate}
                           onChange={handleModelCategoryCustomStartDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                         { !isMobile && 
                           <DatePicker
@@ -7480,6 +7498,8 @@ const Home = () => {
                             value={modelCategoryCustomEndDate}
                             onChange={handleModelCategoryCustomEndDateChange}
                             renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                            minDate={moment('01-01-2016').toDate()}
+                            maxDate={getCurrentTime().toDate()}
                           />
                         }
                       </LocalizationProvider>
@@ -7508,6 +7528,8 @@ const Home = () => {
                             value={modelCategoryCustomEndDate}
                             onChange={handleModelCategoryCustomEndDateChange}
                             renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                            minDate={moment('01-01-2016').toDate()}
+                            maxDate={getCurrentTime().toDate()}
                           />
                         </LocalizationProvider>
                       </Box>
@@ -7716,6 +7738,8 @@ const Home = () => {
                         value={tierCategoryCustomStartDate}
                         onChange={handleTierCategoryCustomStartDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                       { !isMobile && 
                         <DatePicker
@@ -7724,6 +7748,8 @@ const Home = () => {
                           value={tierCategoryCustomEndDate}
                           onChange={handleTierCategoryCustomEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       }
                     </LocalizationProvider>
@@ -7752,6 +7778,8 @@ const Home = () => {
                           value={tierCategoryCustomEndDate}
                           onChange={handleTierCategoryCustomEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     </Box>
@@ -7940,6 +7968,8 @@ const Home = () => {
                       value={tierMultipleCategoryCustomStartDate}
                       onChange={handleTierMultipleCategoryCustomStartDateChange}
                       renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
+                      minDate={moment('01-01-2016').toDate()}
+                      maxDate={getCurrentTime().toDate()}
                     />
                     { !isMobile && 
                       <DatePicker
@@ -7948,6 +7978,8 @@ const Home = () => {
                         value={tierMultipleCategoryCustomEndDate}
                         onChange={handleTierMultipleCategoryCustomEndDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                     }
                   </LocalizationProvider>
@@ -7993,6 +8025,8 @@ const Home = () => {
                         value={tierMultipleCategoryCustomEndDate}
                         onChange={handleTierMultipleCategoryCustomEndDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                     </LocalizationProvider>
                   </Box>

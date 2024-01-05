@@ -15,8 +15,8 @@ import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
+import { getCurrentTime } from '../../src/utils/momentSystem';
 
 import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
@@ -59,10 +59,8 @@ const Report = () => {
 
   const [transactionData, setTransactionData] = React.useState();
 
-  moment.locale('id');
-
-  const [transactionStartDate, setTransactionStartDate] = React.useState(moment());
-  const [transactionEndDate, setTransactionEndDate] = React.useState(moment());
+  const [transactionStartDate, setTransactionStartDate] = React.useState(getCurrentTime());
+  const [transactionEndDate, setTransactionEndDate] = React.useState(getCurrentTime());
 
   const handleTransactionStartDateChange = (date) => {
     setTransactionStartDate(date);
@@ -149,19 +147,23 @@ const Report = () => {
                     }
                     <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                       <DatePicker
-                        format="YYYY-MM-DD"
+                        inputFormat="yyyy-MM-dd"
                         label="Start Date"
                         value={transactionStartDate}
                         onChange={handleTransactionStartDateChange}
                         renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, minWidth: 150, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
                       />
                       { !isMobile && 
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={transactionEndDate}
                           onChange={handleTransactionEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       }
                     </LocalizationProvider>
@@ -185,11 +187,13 @@ const Report = () => {
                       </Typography>
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={transactionEndDate}
                           onChange={handleTransactionEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     </Box>

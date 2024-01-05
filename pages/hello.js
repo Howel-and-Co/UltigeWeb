@@ -1,12 +1,20 @@
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import React, { useState, useEffect } from 'react';
+import { getCurrentTime } from '../src/utils/momentSystem';
 
 export default function Hello() {
-  moment.locale('id');
+  const [currentTime, setCurrentTime] = useState(getCurrentTime());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(getCurrentTime());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
-      <p style={{marginLeft: 15}}>Welcome to Ultige Web! Today is {moment().format()}</p>
+      <p style={{marginLeft: 15}}>Welcome to Ultige Web! Today is {currentTime.format()}</p>
     </>
   );
 }

@@ -18,8 +18,7 @@ import Cookies from "js-cookie";
 import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
 import { useRouter } from 'next/router';
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
 
 import {
     GridComponent,
@@ -80,8 +79,6 @@ const PurchaseOrderDetail = () => {
   const { pid } = router.query;
 
   const [dataLoading, setDataLoading] = React.useState(false);
-
-  moment.locale('id');
 
   const [fetchActive, setFetchActive] = React.useState(false);
   const [approveActive, setApproveActive] = React.useState(false);

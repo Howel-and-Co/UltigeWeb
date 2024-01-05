@@ -13,8 +13,7 @@ import {
 import { makeStyles } from 'tss-react/mui';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
 
 import React, { useEffect } from 'react';
 import axios from '../../../src/utils/axios';
@@ -73,8 +72,6 @@ const StockDetail = () => {
   const { pid } = router.query;
 
   const [dataLoading, setDataLoading] = React.useState(false);
-
-  moment.locale('id');
 
   const [stockAgingDaysData, setStockAgingDaysData] = React.useState();
 

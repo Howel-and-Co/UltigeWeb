@@ -21,8 +21,8 @@ import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
+import { getCurrentTime } from '../../src/utils/momentSystem';
 
 import {
     GridComponent,
@@ -79,13 +79,11 @@ const StockCard = () => {
   const [fetchActive, setFetchActive] = React.useState(false);
   const [dataLoading, setDataLoading] = React.useState(false);
 
-  moment.locale('id');
-
   const [stockCardData, setStockCardData] = React.useState();
   const [stockID, setStockID] = React.useState();
   const [stockName, setStockName] = React.useState();
-  const [stockStartDate, setStockStartDate] = React.useState(moment());
-  const [stockEndDate, setStockEndDate] = React.useState(moment());
+  const [stockStartDate, setStockStartDate] = React.useState(getCurrentTime());
+  const [stockEndDate, setStockEndDate] = React.useState(getCurrentTime());
 
   const handleStockStartDateChange = (date) => {
     setStockStartDate(date);
@@ -218,19 +216,23 @@ const StockCard = () => {
                       }
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="Start Date"
                           value={stockStartDate}
                           onChange={handleStockStartDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                         { !isMobile && 
                           <DatePicker
-                            format="YYYY-MM-DD"
+                            inputFormat="yyyy-MM-dd"
                             label="End Date"
                             value={stockEndDate}
                             onChange={handleStockEndDateChange}
                             renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                            minDate={moment('01-01-2016').toDate()}
+                            maxDate={getCurrentTime().toDate()}
                           />
                         }
                       </LocalizationProvider>
@@ -271,11 +273,13 @@ const StockCard = () => {
                         </Typography>
                         <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                           <DatePicker
-                            format="YYYY-MM-DD"
+                            inputFormat="yyyy-MM-dd"
                             label="End Date"
                             value={stockEndDate}
                             onChange={handleStockEndDateChange}
                             renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                            minDate={moment('01-01-2016').toDate()}
+                            maxDate={getCurrentTime().toDate()}
                           />
                         </LocalizationProvider>
                       </Box>

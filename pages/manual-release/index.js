@@ -12,8 +12,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
 import Cookies from "js-cookie";
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
 
 import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
@@ -77,8 +76,6 @@ const ManualRelease = () => {
   const [paymentMethod, setPaymentMethod] = React.useState();
   const [transactionStatus, setTransactionStatus] = React.useState();
   const [releaseReason, setReleaseReason] = React.useState('');
-
-  moment.locale('id');
 
   const handleRefreshTransactionData = () => {
     setFetchTransactionData(true);

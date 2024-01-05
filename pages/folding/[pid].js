@@ -18,8 +18,7 @@ import { makeStyles } from 'tss-react/mui';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useRouter } from 'next/router';
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
 
 import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
@@ -99,8 +98,6 @@ const Folding = () => {
   const [deliverDate, setDeliverDate] = React.useState(null);
 
   const [open, setOpen] = React.useState(false);
-
-  moment.locale('id');
 
   const handleClickOpen = (url, productName, embroideryName) => {
     setLiningURL(url);

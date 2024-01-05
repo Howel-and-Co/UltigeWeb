@@ -21,8 +21,8 @@ import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import moment from 'moment-timezone';
-import 'moment/locale/id';
+import moment from '../../src/utils/moment';
+import { getCurrentTime } from '../../src/utils/momentSystem';
 
 
 import React, { useEffect, useRef } from 'react';
@@ -150,11 +150,9 @@ const PurchaseOrder = () => {
   const [gridItemInstance, setGridItemInstance] = React.useState();
   const [searchValue, setSearchValue] = React.useState('');
   const [recordClickIndex, setRecordClickIndex] = React.useState(-1);
-
-  moment.locale('id');
-
-  const [purchaseOrderStartDate, setPurchaseOrderStartDate] = React.useState(moment());
-  const [purchaseOrderEndDate, setPurchaseOrderEndDate] = React.useState(moment());
+  
+  const [purchaseOrderStartDate, setPurchaseOrderStartDate] = React.useState(getCurrentTime());
+  const [purchaseOrderEndDate, setPurchaseOrderEndDate] = React.useState(getCurrentTime());
 
   const handlePurchaseOrderStartDateChange = (date) => {
     setPurchaseOrderStartDate(date);
@@ -364,18 +362,22 @@ const PurchaseOrder = () => {
                     { !isMobile && 
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="Start Date"
                           value={purchaseOrderStartDate}
                           onChange={handlePurchaseOrderStartDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginRight: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={purchaseOrderEndDate}
                           onChange={handlePurchaseOrderEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     }
@@ -398,11 +400,13 @@ const PurchaseOrder = () => {
                       </Typography>
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="Start Date"
                           value={purchaseOrderStartDate}
                           onChange={handlePurchaseOrderStartDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     </Box>
@@ -425,11 +429,13 @@ const PurchaseOrder = () => {
                       </Typography>
                       <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
                         <DatePicker
-                          format="YYYY-MM-DD"
+                          inputFormat="yyyy-MM-dd"
                           label="End Date"
                           value={purchaseOrderEndDate}
                           onChange={handlePurchaseOrderEndDateChange}
                           renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, minWidth: 150, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
                     </Box>
