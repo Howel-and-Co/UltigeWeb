@@ -9,7 +9,7 @@ import {
 import { makeStyles } from 'tss-react/mui';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import moment from '../../src/utils/moment';
+import moment from '../../../src/utils/moment';
 
 import React, { useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../../src/utils/screen.js";

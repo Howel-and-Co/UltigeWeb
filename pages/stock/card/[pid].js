@@ -21,8 +21,8 @@ import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import moment from '../../src/utils/moment';
-import { getCurrentTime } from '../../src/utils/momentSystem';
+import moment from '../../../src/utils/moment';
+import { getCurrentTime } from '../../../src/utils/momentSystem';
 
 import {
     GridComponent,
