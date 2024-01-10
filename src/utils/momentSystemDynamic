@@ -7,6 +7,16 @@ moment.tz.setDefault("Asia/Jakarta");
 
 let serverTime, actualTime, timeOffset;
 
+const timerHandler = () => {
+    actualTime = moment();
+    
+    // Add the calculated offset
+    actualTime.add(timeOffset);
+        
+    // Re-run this next second wrap
+    setTimeout(timerHandler, (1000 - (new Date().getTime() % 1000)));
+};
+
 // Fetch the server time through a HEAD request to the current URL
 // using asynchronous request.
 const fetchServerTime = async () => {
@@ -21,11 +31,8 @@ const fetchServerTime = async () => {
         // Store the differences between device time and server time
         timeOffset = serverTime.diff(moment());
         
-        // Now when we've got all data, sync client time with system time
-        actualTime = moment();
-    
-        // Add the calculated offset
-        actualTime.add(timeOffset);
+        // Now when we've got all data, trigger the timer for the first time
+        timerHandler();
     } 
     catch (error) {
         console.error('Error fetching server time:', error.message);

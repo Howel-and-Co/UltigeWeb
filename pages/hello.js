@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentTime } from '../src/utils/momentSystem';
+import { getCurrentTime } from '../src/utils/momentSystemDynamic';
 
 export default function Hello() {
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
