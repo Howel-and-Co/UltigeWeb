@@ -368,12 +368,19 @@ const Home = () => {
   const [productSalesCountData, setProductSalesCountData] = React.useState();
   const [modelSalesData, setModelSalesData] = React.useState();
   const [modelSalesCountData, setModelSalesCountData] = React.useState();
+  const [customCategorySalesData, setCustomCategorySalesData] = React.useState();
   const [categorySalesData, setCategorySalesData] = React.useState();
   const [categorySalesCountData, setCategorySalesCountData] = React.useState();
+
+  const [customCategory, setCustomCategory] = React.useState('');
+  const [customProductCategoriesData, setCustomProductCategoriesData] = useState([""]);
+  const [customProductCategoriesFetchActive, setCustomProductCategoriesFetchActive] = React.useState(true);
+  
   const [productSalesDataLoading, setProductSalesDataLoading] = React.useState(false);
   const [productSalesCountDataLoading, setProductSalesCountDataLoading] = React.useState(false);
   const [modelSalesDataLoading, setModelSalesDataLoading] = React.useState(false);
   const [modelSalesCountDataLoading, setModelSalesCountDataLoading] = React.useState(false);
+  const [customCategorySalesDataLoading, setCustomCategorySalesDataLoading] = React.useState(false);
   const [categorySalesDataLoading, setCategorySalesDataLoading] = React.useState(false);
   const [categorySalesCountDataLoading, setCategorySalesCountDataLoading] = React.useState(false);
 
@@ -732,20 +739,27 @@ const Home = () => {
     if (newValue == 2 && !modelSalesCountData && !modelSalesCountDataLoading) {
       fetchModelSalesCountData(currentStartDate, currentEndDate);
     }
-    else if (newValue == 3 && !categorySalesData && !categorySalesDataLoading) {
+    else if (newValue == 4 && !categorySalesData && !categorySalesDataLoading) {
       fetchCategorySalesData(currentStartDate, currentEndDate);
     }
-    else if (newValue == 4 && !categorySalesCountData && !categorySalesCountDataLoading) {
+    else if (newValue == 5 && !categorySalesCountData && !categorySalesCountDataLoading) {
       fetchCategorySalesCountData(currentStartDate, currentEndDate);
     }
-    else if (newValue == 5 && !productSalesData && !productSalesDataLoading) {
+    else if (newValue == 6 && !productSalesData && !productSalesDataLoading) {
       fetchProductSalesData(currentStartDate, currentEndDate);
     }
-    else if (newValue == 6 && !productSalesCountData && !productSalesCountDataLoading) {
+    else if (newValue == 7 && !productSalesCountData && !productSalesCountDataLoading) {
       fetchProductSalesCountData(currentStartDate, currentEndDate);
     }
 
     setProductTab(newValue);
+  };
+
+  const handleCustomCategoryChange = (event, newValue) => {
+    if (newValue !== null) {
+      setCustomCategory(newValue);
+      fetchCustomCategorySalesData(currentStartDate, currentEndDate, newValue);
+    }
   };
 
   const [segmentationTab, setSegmentationTab] = React.useState('1');
@@ -1312,6 +1326,27 @@ const Home = () => {
     setModelSalesCountDataLoading(false);
   };
 
+  const fetchCustomCategorySalesData = async (startDate, endDate, category) => {
+    setCustomCategorySalesDataLoading(true);
+    const result = await axios({
+      method: 'post',
+      url: 'https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysales',
+      data: {
+        category: category,
+        startDate: startDate, 
+        endDate: endDate,
+        limit: 10,
+        page: 1
+      }
+    });
+
+    let processedData;
+    processedData = result.data;
+
+    setCustomCategorySalesData(processedData);
+    setCustomCategorySalesDataLoading(false);
+  };
+
   const fetchCategorySalesData = async (startDate, endDate) => {
     setCategorySalesDataLoading(true);
     const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
@@ -1637,6 +1672,8 @@ const Home = () => {
       setProductSalesCountData();
       setModelSalesData();
       setModelSalesCountData();
+      setCustomCategory('');
+      setCustomCategorySalesData();
       setCategorySalesData();
       setCategorySalesCountData();
       
@@ -4850,6 +4887,23 @@ const Home = () => {
     }
   }, [stock, stockCacheData]);
 
+  useEffect(() => {
+    const fetchCustomProductCategoriesData = async () => {
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductcategories1`);
+
+      let processedData;
+      processedData = result.data;
+
+      setCustomProductCategoriesData(processedData.Data);
+    };
+
+    if (customProductCategoriesFetchActive == true && checkToken()) {
+      fetchCustomProductCategoriesData();
+      
+      setCustomProductCategoriesFetchActive(false);
+    }
+  }, [customProductCategoriesFetchActive]);
+
   const CustomSalesRow = ({ row }) => {
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
@@ -6675,10 +6729,11 @@ const Home = () => {
                       <TabList onChange={handleProductTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
                         <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (model)" value="1" />
                         <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (model)" value="2" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="3" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="4" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="5" />
-                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="6" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (custom kategori)" value="3" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="4" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="5" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="6" />
+                        <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="7" />
                       </TabList>
                     </Box>
                     <TabPanel value="1">
@@ -6724,6 +6779,81 @@ const Home = () => {
                       </TableContainer>
                     </TabPanel>
                     <TabPanel value="3">
+                      <Box className={classes.inline}>
+                        { isMobile
+                          ? <Typography 
+                              style={{
+                                color: "#000", 
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                                marginTop: 9,
+                                marginBottom: 9,
+                                marginRight: 9,
+                                marginLeft: 9
+                              }}
+                            >
+                              Kategori<br/>Produk 1
+                            </Typography>
+                          : <Typography 
+                              style={{
+                                color: "#000", 
+                                fontSize: 18,
+                                fontWeight: 'bold',
+                                marginTop: 22,
+                                marginBottom: 9,
+                                marginRight: 15,
+                                marginLeft: 9
+                              }}
+                            >
+                              Kategori Produk 1
+                            </Typography>
+                        }
+                        <FormControl variant="outlined" className={classes.formControl}>
+                          <Autocomplete
+                            value={customCategory}
+                            onChange={handleCustomCategoryChange}
+                            options={customProductCategoriesData}
+                            sx={{width: 295, height: 55}}
+                            renderInput={(params) => <TextField {...params} label="Category" />}
+                          />
+                        </FormControl>
+                      </Box>
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table sx={{ minWidth: 650 }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell sx={{ width: 50 }}/>
+                              <TableCell>Peringkat</TableCell>
+                              <TableCell align="left">Informasi Produk</TableCell>
+                              <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Proporsi</TableCell>
+                              <TableCell align="right">Tingkat Perubahan</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {customCategorySalesData && customCategorySalesData.Data.map((row) => (
+                              <CustomCategorySalesRow key={row.Rank} row={row} />
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                      { (!customCategorySalesData || customCategorySalesData.Data.length == 0) &&
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 30,
+                            fontWeight: 'bold',
+                            marginTop: 5,
+                            marginBottom: 5,
+                            marginRight: 10,
+                            marginLeft: 15
+                          }}
+                        >
+                          NO DATA
+                        </Typography>
+                      }
+                    </TabPanel>
+                    <TabPanel value="4">
                       <TableContainer component={Paper} variant="outlined">
                         <Table sx={{ minWidth: 650 }}>
                           <TableHead>
@@ -6744,7 +6874,7 @@ const Home = () => {
                         </Table>
                       </TableContainer>
                     </TabPanel>
-                    <TabPanel value="4">
+                    <TabPanel value="5">
                       <TableContainer component={Paper} variant="outlined">
                         <Table sx={{ minWidth: 650 }}>
                           <TableHead>
@@ -6765,7 +6895,7 @@ const Home = () => {
                         </Table>
                       </TableContainer>
                     </TabPanel>
-                    <TabPanel value="5">
+                    <TabPanel value="6">
                       <TableContainer component={Paper} variant="outlined">
                         <Table sx={{ minWidth: 650 }}>
                           <TableHead>
@@ -6843,7 +6973,7 @@ const Home = () => {
                         </Table>
                       </TableContainer>
                     </TabPanel>
-                    <TabPanel value="6">
+                    <TabPanel value="7">
                       <TableContainer component={Paper} variant="outlined">
                         <Table sx={{ minWidth: 650 }}>
                           <TableHead>
@@ -6924,7 +7054,7 @@ const Home = () => {
                   </TabContext>
                 </Grid>
                 <Grid item xs={12}>
-                  { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || categorySalesDataLoading || categorySalesCountDataLoading)  &&
+                  { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || customCategorySalesDataLoading || categorySalesDataLoading || categorySalesCountDataLoading)  &&
                     <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                       <CircularProgress size={25} />
                       <Typography 
