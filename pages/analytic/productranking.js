@@ -47,6 +47,7 @@ import TableRow from '@mui/material/TableRow';
 import Pagination from '@mui/material/Pagination';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import { checkToken } from "../../src/utils/config";
 
@@ -85,6 +86,7 @@ const ProductRanking = () => {
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [newFetchActive, setNewFetchActive] = React.useState(false);
+  const [productCategoriesFetchActive, setProductCategoriesFetchActive] = React.useState(true);
   const [dateOption, setDateOption] = React.useState('realtime');
   const [dataRange, setDataRange] = React.useState('realtime');
   const [currentStartDate, setCurrentStartDate] = React.useState();
@@ -92,17 +94,24 @@ const ProductRanking = () => {
 
   const [modelSalesData, setModelSalesData] = React.useState();
   const [modelSalesCountData, setModelSalesCountData] = React.useState();
+  const [customCategorySalesData, setCustomCategorySalesData] = React.useState();
   const [categorySalesData, setCategorySalesData] = React.useState();
   const [categorySalesCountData, setCategorySalesCountData] = React.useState();
   const [productSalesData, setProductSalesData] = React.useState();
   const [productSalesCountData, setProductSalesCountData] = React.useState();
+
+  const [category, setCategory] = React.useState('');
+  const [categoryChange, setCategoryChange] = React.useState(false);
+  const [productCategoriesData, setProductCategoriesData] = useState([""]);
   
   const [modelSalesDataLoading, setModelSalesDataLoading] = React.useState(false);
   const [modelSalesCountDataLoading, setModelSalesCountDataLoading] = React.useState(false);
+  const [customCategorySalesDataLoading, setCustomCategorySalesDataLoading] = React.useState(false);
   const [categorySalesDataLoading, setCategorySalesDataLoading] = React.useState(false);
   const [categorySalesCountDataLoading, setCategorySalesCountDataLoading] = React.useState(false);
   const [productSalesDataLoading, setProductSalesDataLoading] = React.useState(false);
   const [productSalesCountDataLoading, setProductSalesCountDataLoading] = React.useState(false);
+  const [productCategoriesDataLoading, setProductCategoriesDataLoading] = React.useState(false);
 
   const [customDayRange, setCustomDayRange] = React.useState('');
   const [customWeekRange, setCustomWeekRange] = React.useState('');
@@ -112,6 +121,7 @@ const ProductRanking = () => {
   
   const [modelSalesPageCount, setModelSalesPageCount] = useState(1);
   const [modelSalesCountPageCount, setModelSalesCountPageCount] = useState(1);
+  const [customCategorySalesPageCount, setCustomCategorySalesPageCount] = useState(1);
   const [categorySalesPageCount, setCategorySalesPageCount] = useState(1);
   const [categorySalesCountPageCount, setCategorySalesCountPageCount] = useState(1);
   const [productSalesPageCount, setProductSalesPageCount] = useState(1);
@@ -119,6 +129,7 @@ const ProductRanking = () => {
   
   const [modelSalesPage, setModelSalesPage] = useState(1);
   const [modelSalesCountPage, setModelSalesCountPage] = useState(1);
+  const [customCategorySalesPage, setCustomCategorySalesPage] = useState(1);
   const [categorySalesPage, setCategorySalesPage] = useState(1);
   const [categorySalesCountPage, setCategorySalesCountPage] = useState(1);
   const [productSalesPage, setProductSalesPage] = useState(1);
@@ -126,6 +137,7 @@ const ProductRanking = () => {
 
   const [modelSalesCachePaginationIndex, setModelSalesCachePaginationIndex] = React.useState();
   const [modelSalesCountCachePaginationIndex, setModelSalesCountCachePaginationIndex] = React.useState();
+  const [customCategorySalesCachePaginationIndex, setCustomCategorySalesCachePaginationIndex] = React.useState();
   const [categorySalesCachePaginationIndex, setCategorySalesCachePaginationIndex] = React.useState();
   const [categorySalesCountCachePaginationIndex, setCategorySalesCountCachePaginationIndex] = React.useState();
   const [productSalesCachePaginationIndex, setProductSalesCachePaginationIndex] = React.useState();
@@ -133,6 +145,7 @@ const ProductRanking = () => {
 
   const [modelSalesCachePaginationData, setModelSalesCachePaginationData] = React.useState();
   const [modelSalesCountCachePaginationData, setModelSalesCountCachePaginationData] = React.useState();
+  const [customCategorySalesCachePaginationData, setCustomCategorySalesCachePaginationData] = React.useState();
   const [categorySalesCachePaginationData, setCategorySalesCachePaginationData] = React.useState();
   const [categorySalesCountCachePaginationData, setCategorySalesCountCachePaginationData] = React.useState();
   const [productSalesCachePaginationData, setProductSalesCachePaginationData] = React.useState();
@@ -147,50 +160,32 @@ const ProductRanking = () => {
     setProductTab(newValue);
     
     if (newValue == '1') {
-      if (modelSalesCachePaginationIndex) {
-        setNewFetchActive(true);
-      }
-      else {
+      if (!modelSalesCachePaginationIndex) {
         setFetchActive(true);
       }
     }
     else if (newValue == '2') {
-      if (modelSalesCountCachePaginationIndex) {
-        setNewFetchActive(true);
-      }
-      else {
-        setFetchActive(true);
-      }
-    }
-    else if (newValue == '3') {
-      if (categorySalesCachePaginationIndex) {
-        setNewFetchActive(true);
-      }
-      else {
+      if (!modelSalesCountCachePaginationIndex) {
         setFetchActive(true);
       }
     }
     else if (newValue == '4') {
-      if (categorySalesCountCachePaginationIndex) {
-        setNewFetchActive(true);
-      }
-      else {
+      if (!categorySalesCachePaginationIndex) {
         setFetchActive(true);
       }
     }
     else if (newValue == '5') {
-      if (productSalesCachePaginationIndex) {
-        setNewFetchActive(true);
-      }
-      else {
+      if (!categorySalesCountCachePaginationIndex) {
         setFetchActive(true);
       }
     }
     else if (newValue == '6') {
-      if (productSalesCountCachePaginationIndex) {
-        setNewFetchActive(true);
+      if (!productSalesCachePaginationIndex) {
+        setFetchActive(true);
       }
-      else {
+    }
+    else if (newValue == '7') {
+      if (!productSalesCountCachePaginationIndex) {
         setFetchActive(true);
       }
     }
@@ -199,6 +194,7 @@ const ProductRanking = () => {
   const resetData = () => {
     setModelSalesPageCount(1);
     setModelSalesCountPageCount(1);
+    setCustomCategorySalesPageCount(1);
     setCategorySalesPageCount(1);
     setCategorySalesCountPageCount(1);
     setProductSalesPageCount(1);
@@ -206,6 +202,7 @@ const ProductRanking = () => {
     
     setModelSalesPage(1);
     setModelSalesCountPage(1);
+    setCustomCategorySalesPage(1);
     setCategorySalesPage(1);
     setCategorySalesCountPage(1);
     setProductSalesPage(1);
@@ -213,10 +210,14 @@ const ProductRanking = () => {
 
     setModelSalesCachePaginationIndex(null);
     setModelSalesCountCachePaginationIndex(null);
+    setCustomCategorySalesCachePaginationIndex(null);
     setCategorySalesCachePaginationIndex(null);
     setCategorySalesCountCachePaginationIndex(null);
     setProductSalesCachePaginationIndex(null);
     setProductSalesCountCachePaginationIndex(null);
+
+    if (productTab != '3' || (productTab == '3' && category.trim().length !== 0))
+      setFetchActive(true);
   };
 
   const handlePageChange = (event, value) => {
@@ -227,15 +228,18 @@ const ProductRanking = () => {
       setModelSalesCountPage(value);
     }
     else if (productTab == '3') {
-      setCategorySalesPage(value);
+      setCustomCategorySalesPage(value);
     }
     else if (productTab == '4') {
-      setCategorySalesCountPage(value);
+      setCategorySalesPage(value);
     }
     else if (productTab == '5') {
-      setProductSalesPage(value);
+      setCategorySalesCountPage(value);
     }
     else if (productTab == '6') {
+      setProductSalesPage(value);
+    }
+    else if (productTab == '7') {
       setProductSalesCountPage(value);
     }
     
@@ -253,7 +257,20 @@ const ProductRanking = () => {
       setDataRange(event.target.value);
 
       resetData();
-      setFetchActive(true);
+    }
+  };
+
+  const handleCategoryChange = (event, newValue) => {
+    if (newValue !== null) {
+      setCategory(newValue);
+      
+      if (customCategorySalesCachePaginationIndex) {
+        setCategoryChange(true);
+        setNewFetchActive(true);
+      }
+      else {
+        setFetchActive(true);
+      }
     }
   };
 
@@ -314,7 +331,6 @@ const ProductRanking = () => {
     }
 
     resetData();
-    setFetchActive(true);
   };
 
   useEffect(() => {
@@ -335,8 +351,6 @@ const ProductRanking = () => {
 
       let processedData;
       processedData = result.data;
-
-      console.log(Math.floor(processedData.Value / 10) + 1);
 
       setModelSalesPageCount(Math.floor(processedData.Value / 10) + 1);
     };
@@ -360,6 +374,44 @@ const ProductRanking = () => {
       processedData = result.data;
 
       setModelSalesCountPageCount(Math.floor(processedData.Value / 10) + 1);
+    };
+
+    const fetchCustomCategorySalesData = async (category, startDate, endDate, dataRange) => {
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysales',
+        data: {
+          category: category,
+          startDate: startDate, 
+          endDate: endDate,
+          limit: 10,
+          page: 1
+        }
+      });
+
+      let processedData;
+      processedData = result.data;
+
+      setCustomCategorySalesData(processedData);
+      setCustomCategorySalesCachePaginationData(processedData);
+      setCustomCategorySalesDataLoading(false);
+    };
+
+    const fetchCustomCategorySalesTotalRowsData = async (category, startDate, endDate, dataRange, cacheObject) => {
+      setCustomCategorySalesDataLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysalestotalrows?category=${category}&startDate=${startDate}&endDate=${endDate}`);
+
+      let processedData;
+      processedData = result.data;
+
+      let newData = cacheObject.Data;
+      newData[0].PageCount = Math.floor(processedData.Value / 10) + 1;
+
+      let object = new Object();
+      object.Data = newData;
+      setCustomCategorySalesCachePaginationIndex(object);
+
+      setCustomCategorySalesPageCount(Math.floor(processedData.Value / 10) + 1);
     };
 
     const fetchCategorySalesData = async (startDate, endDate, dataRange) => {
@@ -533,10 +585,26 @@ const ProductRanking = () => {
       setCurrentStartDate(startDate);
       setCurrentEndDate(endDate);
 
-      let indexArray = new Array();
-      indexArray.push(1);
       let object = new Object();
-      object.Data = indexArray;
+      if (productTab == '3') {
+        let array = new Array();
+
+        let categoryObject = new Object();
+        categoryObject.Category = category;
+        categoryObject.PageCount = 1;
+        let indexArray = new Array();
+        indexArray.push(1);
+        categoryObject.Index = indexArray;
+
+        array.push(categoryObject);
+
+        object.Data = array;
+      }
+      else {
+        let indexArray = new Array();
+        indexArray.push(1);
+        object.Data = indexArray;
+      }
 
       if (productTab == '1') {
         setModelSalesCachePaginationIndex(object);
@@ -553,27 +621,34 @@ const ProductRanking = () => {
         fetchModelSalesCountData(startDate, endDate, dataRange);
       }
       else if (productTab == '3') {
+        setCustomCategorySalesCachePaginationIndex(object);
+        setCustomCategorySalesCachePaginationData(null);
+
+        fetchCustomCategorySalesTotalRowsData(category, startDate, endDate, dataRange, object);
+        fetchCustomCategorySalesData(category, startDate, endDate, dataRange);
+      }
+      else if (productTab == '4') {
         setCategorySalesCachePaginationIndex(object);
         setCategorySalesCachePaginationData(null);
 
         fetchCategorySalesTotalRowsData(startDate, endDate, dataRange);
         fetchCategorySalesData(startDate, endDate, dataRange);
       }
-      else if (productTab == '4') {
+      else if (productTab == '5') {
         setCategorySalesCountCachePaginationIndex(object);
         setCategorySalesCountCachePaginationData(null);
 
         fetchCategorySalesCountTotalRowsData(startDate, endDate, dataRange);
         fetchCategorySalesCountData(startDate, endDate, dataRange);
       }
-      else if (productTab == '5') {
+      else if (productTab == '6') {
         setProductSalesCachePaginationIndex(object);
         setProductSalesCachePaginationData(null);
 
         fetchProductSalesTotalRowsData(startDate, endDate, dataRange);
         fetchProductSalesData(startDate, endDate, dataRange);
       }
-      else if (productTab == '6') {
+      else if (productTab == '7') {
         setProductSalesCountCachePaginationIndex(object);
         setProductSalesCountCachePaginationData(null);
 
@@ -634,6 +709,59 @@ const ProductRanking = () => {
       setModelSalesCountData(object);
       setModelSalesCountCachePaginationData(processedData);
       setModelSalesCountDataLoading(false);
+    };
+
+    const fetchCustomCategorySalesData = async (category, startDate, endDate, dataRange, customCategorySalesPage) => {
+      setCustomCategorySalesDataLoading(true);
+
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysales',
+        data: {
+          category: category,
+          startDate: startDate, 
+          endDate: endDate,
+          limit: 10,
+          page: customCategorySalesPage
+        }
+      });
+
+      let processedData;
+      processedData = result.data;
+
+      let object = new Object();
+      let newData = new Array();
+
+      for (const data of customCategorySalesData.Data) {
+        newData.push(data);
+      }
+
+      for (const data of processedData.Data) {
+        newData.push(data);
+      }
+
+      object.Data = newData;
+      
+      setCustomCategorySalesData(object);
+      setCustomCategorySalesCachePaginationData(processedData);
+      setCustomCategorySalesDataLoading(false);
+    };
+
+    const fetchCustomCategorySalesTotalRowsData = async (category, startDate, endDate, dataRange, cacheObject, categoryIndex) => {
+      setCustomCategorySalesDataLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysalestotalrows?category=${category}&startDate=${startDate}&endDate=${endDate}`);
+
+      let processedData;
+      processedData = result.data;
+
+      let newData = cacheObject.Data;
+      newData[newData.length - 1].PageCount = Math.floor(processedData.Value / 10) + 1;
+
+      let object = new Object();
+      object.Data = newData;
+      setCustomCategorySalesCachePaginationIndex(object);
+
+      setCustomCategorySalesPageCount(Math.floor(processedData.Value / 10) + 1);
     };
 
     const fetchCategorySalesData = async (startDate, endDate, dataRange) => {
@@ -864,6 +992,138 @@ const ProductRanking = () => {
         }
       }
       else if (productTab == '3') {
+        let categoryIndex = customCategorySalesCachePaginationIndex.Data.findIndex(e => e.Category === category);
+        let currentPage = customCategorySalesPage
+
+        if (categoryChange == true) {
+          currentPage = 1;
+          setCustomCategorySalesPage(1);
+        }
+
+        if (categoryIndex == -1) {
+          let momentStartDate;
+          let momentEndDate;
+          
+          if (dataRange == 'realtime') {
+            momentStartDate = getCurrentTime().subtract(0, "days");
+            momentEndDate = getCurrentTime().subtract(0, "days");
+          }
+          else if (dataRange == 'yesterday') {
+            momentStartDate = getCurrentTime().subtract(1, "days");
+            momentEndDate = getCurrentTime().subtract(1, "days");
+          }
+          else if (dataRange == 'weekly') {
+            momentStartDate = getCurrentTime().subtract(7, "days");
+            momentEndDate = getCurrentTime().subtract(1, "days");
+          }
+          else if (dataRange == 'monthly') {
+            momentStartDate = getCurrentTime().subtract(30, "days");
+            momentEndDate = getCurrentTime().subtract(1, "days");
+          }
+  
+          let startDate;
+          let endDate;
+  
+          if (dateOption != 'custom-daily' 
+            && dateOption != 'custom-weekly' 
+            && dateOption != 'custom-monthly' 
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
+            startDate = momentStartDate.format("YYYY-MM-DD");
+            endDate = momentEndDate.format("YYYY-MM-DD");
+          }
+          else {
+            startDate = newStartDate;
+            endDate = newEndDate;
+          }
+
+          let newData = customCategorySalesCachePaginationIndex.Data;
+
+          let categoryObject = new Object();
+          categoryObject.Category = category;
+          categoryObject.PageCount = 1;
+          let indexArray = new Array();
+          indexArray.push(1);
+          categoryObject.Index = indexArray;
+
+          newData.push(categoryObject);
+
+          let object = new Object();
+          object.Data = newData;
+          setCustomCategorySalesCachePaginationIndex(object);
+  
+          setCustomCategorySalesPage(1);
+          setCustomCategorySalesPageCount(1);
+          fetchCustomCategorySalesData(category, startDate, endDate, dataRange, 1);
+          fetchCustomCategorySalesTotalRowsData(category, startDate, endDate, dataRange, object, categoryIndex);
+        }
+        else if (customCategorySalesCachePaginationIndex.Data[categoryIndex].Index.includes(currentPage) == false) {
+          let momentStartDate;
+          let momentEndDate;
+          
+          if (dataRange == 'realtime') {
+            momentStartDate = getCurrentTime().subtract(0, "days");
+            momentEndDate = getCurrentTime().subtract(0, "days");
+          }
+          else if (dataRange == 'yesterday') {
+            momentStartDate = getCurrentTime().subtract(1, "days");
+            momentEndDate = getCurrentTime().subtract(1, "days");
+          }
+          else if (dataRange == 'weekly') {
+            momentStartDate = getCurrentTime().subtract(7, "days");
+            momentEndDate = getCurrentTime().subtract(1, "days");
+          }
+          else if (dataRange == 'monthly') {
+            momentStartDate = getCurrentTime().subtract(30, "days");
+            momentEndDate = getCurrentTime().subtract(1, "days");
+          }
+  
+          let startDate;
+          let endDate;
+  
+          if (dateOption != 'custom-daily' 
+            && dateOption != 'custom-weekly' 
+            && dateOption != 'custom-monthly' 
+            && dateOption != 'custom-yearly'
+            && dateOption != 'custom-date') {
+            startDate = momentStartDate.format("YYYY-MM-DD");
+            endDate = momentEndDate.format("YYYY-MM-DD");
+          }
+          else {
+            startDate = newStartDate;
+            endDate = newEndDate;
+          }
+
+          let newData = customCategorySalesCachePaginationIndex.Data;
+  
+          let indexArray = customCategorySalesCachePaginationIndex.Data[categoryIndex].Index;
+          indexArray.push(currentPage);
+
+          newData[categoryIndex].Index = indexArray;
+
+          let object = new Object();
+          object.Data = newData;
+          setCustomCategorySalesCachePaginationIndex(object);
+  
+          fetchCustomCategorySalesData(category, startDate, endDate, dataRange, currentPage);
+        }
+        else {
+          let object = new Object();
+          let newData = new Array();
+
+          for (const data of customCategorySalesData.Data) {
+            if (data.Rank > ((currentPage - 1) * 10) && data.Rank <= currentPage * 10 && data.Category == category)
+              newData.push(data);
+          }
+  
+          object.Data = newData;
+          setCustomCategorySalesPageCount(customCategorySalesCachePaginationIndex.Data[categoryIndex].PageCount);
+          setCustomCategorySalesCachePaginationData(object);
+        }
+
+        setCategoryChange(false);
+      }
+      else if (productTab == '4') {
         if (categorySalesCachePaginationIndex.Data.includes(categorySalesPage) == false) {  
               
           let momentStartDate;
@@ -926,7 +1186,7 @@ const ProductRanking = () => {
           setCategorySalesCachePaginationData(object);
         }
       }
-      else if (productTab == '4') {
+      else if (productTab == '5') {
         if (categorySalesCountCachePaginationIndex.Data.includes(categorySalesCountPage) == false) {  
               
           let momentStartDate;
@@ -989,7 +1249,7 @@ const ProductRanking = () => {
           setCategorySalesCountCachePaginationData(object);
         }
       }
-      else if (productTab == '5') {
+      else if (productTab == '6') {
         if (productSalesCachePaginationIndex.Data.includes(productSalesPage) == false) {  
               
           let momentStartDate;
@@ -1052,7 +1312,7 @@ const ProductRanking = () => {
           setProductSalesCachePaginationData(object);
         }
       }
-      else if (productTab == '6') {
+      else if (productTab == '7') {
         if (productSalesCountCachePaginationIndex.Data.includes(productSalesCountPage) == false) {  
               
           let momentStartDate;
@@ -1120,6 +1380,26 @@ const ProductRanking = () => {
     
     setNewFetchActive(false);
   }, [newFetchActive]);
+
+  useEffect(() => {
+    const fetchProductCategoriesData = async () => {
+      setProductCategoriesDataLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductcategories1`);
+
+      let processedData;
+      processedData = result.data;
+
+      setProductCategoriesData(processedData.Data);
+
+      setProductCategoriesDataLoading(false);
+    };
+
+    if (productCategoriesFetchActive == true && checkToken()) {
+      fetchProductCategoriesData();
+      
+      setProductCategoriesFetchActive(false);
+    }
+  }, [productCategoriesFetchActive]);
 
   const CustomSalesRow = ({ row }) => {
     const [open, setOpen] = React.useState(false);
@@ -1516,7 +1796,7 @@ const ProductRanking = () => {
     const [loading, setLoading] = React.useState(false);
     const [empty, setEmpty] = React.useState(false);
 
-    const fetchCategorySalesDetailData = async (startDate, endDate, productCategoryName) => {
+    const fetchCategorySalesDetailData = async (productTab, startDate, endDate, productCategoryName) => {
       setLoading(true);
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcategorysalesdetail?startDate=${startDate}&endDate=${endDate}&productCategoryName=${productCategoryName}`);
   
@@ -1529,25 +1809,49 @@ const ProductRanking = () => {
         return;
       }
 
-      let tempData = categorySalesData;
-      let tempCacheData = categorySalesCachePaginationData;
+      if (productTab == 3) {
+        let tempData = customCategorySalesData;
+        let tempCacheData = customCategorySalesCachePaginationData;
 
-      for (const data of tempData.Data) {
-        if (data.ProductCategoryName == productCategoryName) {
-          data.Variant = processedData.Data;
-          break;
+        for (const data of tempData.Data) {
+          if (data.ProductCategoryName == productCategoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
         }
+  
+        for (const data of tempCacheData.Data) {
+          if (data.ProductCategoryName == productCategoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
+        }
+  
+        setCustomCategorySalesData(tempData);
+        setCustomCategorySalesCachePaginationData(tempCacheData);
+      }
+      else {
+        let tempData = categorySalesData;
+        let tempCacheData = categorySalesCachePaginationData;
+
+        for (const data of tempData.Data) {
+          if (data.ProductCategoryName == productCategoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
+        }
+  
+        for (const data of tempCacheData.Data) {
+          if (data.ProductCategoryName == productCategoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
+        }
+  
+        setCategorySalesData(tempData);
+        setCategorySalesCachePaginationData(tempCacheData);
       }
 
-      for (const data of tempCacheData.Data) {
-        if (data.ProductCategoryName == productCategoryName) {
-          data.Variant = processedData.Data;
-          break;
-        }
-      }
-
-      setCategorySalesData(tempData);
-      setCategorySalesCachePaginationData(tempCacheData);
       setOpen(true);
       setLoading(false);
     };
@@ -1563,7 +1867,7 @@ const ProductRanking = () => {
                 onClick={() => {
                   if (loading == false) {
                     if (row.Variant.length == 0)
-                      fetchCategorySalesDetailData(currentStartDate, currentEndDate, row.ProductCategoryName);
+                      fetchCategorySalesDetailData(productTab, currentStartDate, currentEndDate, row.ProductCategoryName);
                     else
                       setOpen(!open);
                   }
@@ -2153,10 +2457,11 @@ const ProductRanking = () => {
                     <TabList onChange={handleProductTabChange} variant="scrollable" scrollButtons allowScrollButtonsMobile>
                       <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (model)" value="1" />
                       <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (model)" value="2" />
-                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="3" />
-                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="4" />
-                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="5" />
-                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="6" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (custom kategori)" value="3" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual (kategori)" value="4" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual (kategori)" value="5" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Nominal Terjual" value="6" />
+                      <Tab classes={{ root: classes.tab }} wrapped disableRipple label="Berdasarkan Jumlah Terjual" value="7" />
                     </TabList>
                   </Box>
                   <TabPanel value="1">
@@ -2202,6 +2507,83 @@ const ProductRanking = () => {
                     </TableContainer>
                   </TabPanel>
                   <TabPanel value="3">
+                    <Box className={classes.inline}>
+                      { isMobile
+                        ? <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              marginTop: 9,
+                              marginBottom: 9,
+                              marginRight: 9,
+                              marginLeft: 9
+                            }}
+                          >
+                            Kategori<br/>Produk 1
+                          </Typography>
+                        : <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              fontWeight: 'bold',
+                              marginTop: 22,
+                              marginBottom: 9,
+                              marginRight: 15,
+                              marginLeft: 9
+                            }}
+                          >
+                            Kategori Produk 1
+                          </Typography>
+                      }
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <Autocomplete
+                          value={category}
+                          onChange={handleCategoryChange}
+                          options={productCategoriesData}
+                          sx={{width: 295, height: 55}}
+                          renderInput={(params) => <TextField {...params} label="Category" />}
+                        />
+                      </FormControl>
+                    </Box>
+                    <TableContainer component={Paper} variant="outlined" style={{ marginTop: 15 }}>
+                      <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ width: 50 }}/>
+                            <TableCell>Peringkat</TableCell>
+                            <TableCell align="left">Informasi Produk</TableCell>
+                            <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                            <TableCell align="right">Proporsi</TableCell>
+                            <TableCell align="right">Tingkat Perubahan</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          { customCategorySalesCachePaginationData && customCategorySalesCachePaginationData.Data.length > 0 
+                            && customCategorySalesCachePaginationData.Data.map((row) => (
+                              <CustomCategorySalesRow key={row.Rank} row={row} />
+                            ))
+                          }
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    { (!customCategorySalesCachePaginationData || customCategorySalesCachePaginationData.Data.length == 0) &&
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 30,
+                          fontWeight: 'bold',
+                          marginTop: 5,
+                          marginBottom: 5,
+                          marginRight: 10,
+                          marginLeft: 15
+                        }}
+                      >
+                        NO DATA
+                      </Typography>
+                    }
+                  </TabPanel>
+                  <TabPanel value="4">
                     <TableContainer component={Paper} variant="outlined">
                       <Table sx={{ minWidth: 650 }}>
                         <TableHead>
@@ -2222,7 +2604,7 @@ const ProductRanking = () => {
                       </Table>
                     </TableContainer>
                   </TabPanel>
-                  <TabPanel value="4">
+                  <TabPanel value="5">
                     <TableContainer component={Paper} variant="outlined">
                       <Table sx={{ minWidth: 650 }}>
                         <TableHead>
@@ -2243,7 +2625,7 @@ const ProductRanking = () => {
                       </Table>
                     </TableContainer>
                   </TabPanel>
-                  <TabPanel value="5">
+                  <TabPanel value="6">
                     <TableContainer component={Paper} variant="outlined">
                       <Table sx={{ minWidth: 650 }}>
                         <TableHead>
@@ -2321,7 +2703,7 @@ const ProductRanking = () => {
                       </Table>
                     </TableContainer>
                   </TabPanel>
-                  <TabPanel value="6">
+                  <TabPanel value="7">
                     <TableContainer component={Paper} variant="outlined">
                       <Table sx={{ minWidth: 650 }}>
                         <TableHead>
@@ -2402,7 +2784,7 @@ const ProductRanking = () => {
                 </TabContext>
               </Grid>
               <Grid item xs={4}>
-                { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || categorySalesDataLoading || categorySalesCountDataLoading) &&
+                { (productSalesDataLoading || productSalesCountDataLoading || modelSalesDataLoading || modelSalesCountDataLoading || customCategorySalesDataLoading || categorySalesDataLoading || categorySalesCountDataLoading || productCategoriesDataLoading) &&
                   <Box className={classes.inline} style={{marginTop: 20, marginLeft: 30}}>
                     <CircularProgress size={25} />
                     <Typography 
@@ -2422,15 +2804,17 @@ const ProductRanking = () => {
                   <Pagination
                     count={productTab == 1 ? modelSalesPageCount 
                       : productTab == 2 ? modelSalesCountPageCount
-                      : productTab == 3 ? categorySalesPageCount
-                      : productTab == 4 ? categorySalesCountPageCount
-                      : productTab == 5 ? productSalesPageCount
+                      : productTab == 3 ? customCategorySalesPageCount
+                      : productTab == 4 ? categorySalesPageCount
+                      : productTab == 5 ? categorySalesCountPageCount
+                      : productTab == 6 ? productSalesPageCount
                       : productSalesCountPageCount}
                     page={productTab == 1 ? modelSalesPage 
                       : productTab == 2 ? modelSalesCountPage
-                      : productTab == 3 ? categorySalesPage
-                      : productTab == 4 ? categorySalesCountPage
-                      : productTab == 5 ? productSalesPage
+                      : productTab == 3 ? customCategorySalesPage
+                      : productTab == 4 ? categorySalesPage
+                      : productTab == 5 ? categorySalesCountPage
+                      : productTab == 6 ? productSalesPage
                       : productSalesCountPage}
                     onChange={handlePageChange}
                     color='primary'
