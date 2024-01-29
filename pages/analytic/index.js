@@ -4922,16 +4922,31 @@ const Home = () => {
         return;
       }
 
-      let tempData = modelSalesData;
+      if (productTab == 3) {
+        let tempData = customCategorySalesData;
 
-      for (const data of tempData.Data) {
-        if (data.ModelName == modelName && data.CategoryName == categoryName) {
-          data.Variant = processedData.Data;
-          break;
+        for (const data of tempData.Data) {
+          if (data.ModelName == modelName && data.CategoryName == categoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
         }
+  
+        setCustomCategorySalesData(tempData);
+      }
+      else {
+        let tempData = modelSalesData;
+
+        for (const data of tempData.Data) {
+          if (data.ModelName == modelName && data.CategoryName == categoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
+        }
+
+        setModelSalesData(tempData);
       }
 
-      setModelSalesData(tempData);
       setOpen(true);
       setLoading(false);
     };
@@ -6832,7 +6847,7 @@ const Home = () => {
                           </TableHead>
                           <TableBody>
                             {customCategorySalesData && customCategorySalesData.Data.map((row) => (
-                              <CustomCategorySalesRow key={row.Rank} row={row} />
+                              <CustomSalesRow key={row.Rank} row={row} />
                             ))}
                           </TableBody>
                         </Table>

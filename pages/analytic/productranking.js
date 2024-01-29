@@ -399,7 +399,15 @@ const ProductRanking = () => {
 
     const fetchCustomCategorySalesTotalRowsData = async (category, startDate, endDate, dataRange, cacheObject) => {
       setCustomCategorySalesDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysalestotalrows?category=${category}&startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysalestotalrows',
+        data: {
+          category: category,
+          startDate: startDate, 
+          endDate: endDate
+        }
+      });
 
       let processedData;
       processedData = result.data;
@@ -749,7 +757,15 @@ const ProductRanking = () => {
 
     const fetchCustomCategorySalesTotalRowsData = async (category, startDate, endDate, dataRange, cacheObject, categoryIndex) => {
       setCustomCategorySalesDataLoading(true);
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysalestotalrows?category=${category}&startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getcustomcategorysalestotalrows',
+        data: {
+          category: category,
+          startDate: startDate, 
+          endDate: endDate
+        }
+      });
 
       let processedData;
       processedData = result.data;
@@ -1419,25 +1435,49 @@ const ProductRanking = () => {
         return;
       }
 
-      let tempData = modelSalesData;
-      let tempCacheData = modelSalesCachePaginationData;
+      if (productTab == 3) {
+        let tempData = customCategorySalesData;
+        let tempCacheData = customCategorySalesCachePaginationData;
 
-      for (const data of tempData.Data) {
-        if (data.ModelName == modelName && data.CategoryName == categoryName) {
-          data.Variant = processedData.Data;
-          break;
+        for (const data of tempData.Data) {
+          if (data.ModelName == modelName && data.CategoryName == categoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
         }
+
+        for (const data of tempCacheData.Data) {
+          if (data.ModelName == modelName && data.CategoryName == categoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
+        }
+  
+        setCustomCategorySalesData(tempData);
+        setCustomCategorySalesCachePaginationData(tempCacheData);
+      }
+      else {
+        let tempData = modelSalesData;
+        let tempCacheData = modelSalesCachePaginationData;
+
+        for (const data of tempData.Data) {
+          if (data.ModelName == modelName && data.CategoryName == categoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
+        }
+
+        for (const data of tempCacheData.Data) {
+          if (data.ModelName == modelName && data.CategoryName == categoryName) {
+            data.Variant = processedData.Data;
+            break;
+          }
+        }
+
+        setModelSalesData(tempData);
+        setModelSalesCachePaginationData(tempCacheData);
       }
 
-      for (const data of tempCacheData.Data) {
-        if (data.ModelName == modelName && data.CategoryName == categoryName) {
-          data.Variant = processedData.Data;
-          break;
-        }
-      }
-
-      setModelSalesData(tempData);
-      setModelSalesCachePaginationData(tempCacheData);
       setOpen(true);
       setLoading(false);
     };
@@ -1809,48 +1849,25 @@ const ProductRanking = () => {
         return;
       }
 
-      if (productTab == 3) {
-        let tempData = customCategorySalesData;
-        let tempCacheData = customCategorySalesCachePaginationData;
+      let tempData = categorySalesData;
+      let tempCacheData = categorySalesCachePaginationData;
 
-        for (const data of tempData.Data) {
-          if (data.ProductCategoryName == productCategoryName) {
-            data.Variant = processedData.Data;
-            break;
-          }
+      for (const data of tempData.Data) {
+        if (data.ProductCategoryName == productCategoryName) {
+          data.Variant = processedData.Data;
+          break;
         }
-  
-        for (const data of tempCacheData.Data) {
-          if (data.ProductCategoryName == productCategoryName) {
-            data.Variant = processedData.Data;
-            break;
-          }
-        }
-  
-        setCustomCategorySalesData(tempData);
-        setCustomCategorySalesCachePaginationData(tempCacheData);
       }
-      else {
-        let tempData = categorySalesData;
-        let tempCacheData = categorySalesCachePaginationData;
 
-        for (const data of tempData.Data) {
-          if (data.ProductCategoryName == productCategoryName) {
-            data.Variant = processedData.Data;
-            break;
-          }
+      for (const data of tempCacheData.Data) {
+        if (data.ProductCategoryName == productCategoryName) {
+          data.Variant = processedData.Data;
+          break;
         }
-  
-        for (const data of tempCacheData.Data) {
-          if (data.ProductCategoryName == productCategoryName) {
-            data.Variant = processedData.Data;
-            break;
-          }
-        }
-  
-        setCategorySalesData(tempData);
-        setCategorySalesCachePaginationData(tempCacheData);
       }
+
+      setCategorySalesData(tempData);
+      setCategorySalesCachePaginationData(tempCacheData);
 
       setOpen(true);
       setLoading(false);
@@ -2561,7 +2578,7 @@ const ProductRanking = () => {
                         <TableBody>
                           { customCategorySalesCachePaginationData && customCategorySalesCachePaginationData.Data.length > 0 
                             && customCategorySalesCachePaginationData.Data.map((row) => (
-                              <CustomCategorySalesRow key={row.Rank} row={row} />
+                              <CustomSalesRow key={row.Rank} row={row} />
                             ))
                           }
                         </TableBody>
