@@ -1,6 +1,6 @@
 {
   "name": "ultige-web",
-  "version": "3.1.4",
+  "version": "3.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
