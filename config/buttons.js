@@ -3,6 +3,13 @@ const navButtons = [
     label: "SOP",
     path: "/sop",
     includeRole: [],
+    excludeRole: ["TAILOR"]
+  },
+  
+  {
+    label: "Tailor Scan",
+    path: "/tailor/scan",
+    includeRole: ["TAILOR"],
     excludeRole: []
   },
   {
@@ -51,13 +58,13 @@ const navButtons = [
     label: "Product",
     path: "/product",
     includeRole: [],
-    excludeRole: []
+    excludeRole: ["TAILOR"]
   },
   {
     label: "Catalog",
     path: "/catalogs",
     includeRole: [],
-    excludeRole: []
+    excludeRole: ["TAILOR"]
   },
   {
     label: "Change Password",

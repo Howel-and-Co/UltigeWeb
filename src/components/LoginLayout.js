@@ -25,7 +25,10 @@ const LoginLayout = props => {
 
   useEffect(() => {
     if (checkToken()) {
-      if (Cookies.get("role") != "SUPER"
+      if (Cookies.get("role") == "TAILOR") {
+        Router.push("/tailor/scan");
+      }
+      else if (Cookies.get("role") != "SUPER"
         && Cookies.get("role") != "MERCHANDISE"
         && Cookies.get("role") != "ADM MERCHANDISE"
         && Cookies.get("role") != "GA MKT") {
