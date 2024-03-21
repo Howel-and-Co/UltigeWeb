@@ -1,6 +1,6 @@
 {
   "name": "ultige-web",
-  "version": "3.2.1",
+  "version": "3.3.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -38,6 +38,7 @@
     "react-dom": "latest",
     "react-intersection-observer": "^9.5.2",
     "react-pdf": "5.7.2",
+    "react-qr-reader": "^3.0.0-beta-1",
     "recharts": "^2.1.2",
     "sass": "^1.68.0",
     "sharp": "^0.33.1",

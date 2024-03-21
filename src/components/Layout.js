@@ -39,7 +39,10 @@ const Layout = props => {
           if ((dataItem.includeRole.length != 0 || dataItem.excludeRole.length != 0) && ((dataItem.excludeRole.length == 0 && dataItem.includeRole.includes(Cookies.get("role")) == false) || (dataItem.includeRole.length == 0 && dataItem.excludeRole.includes(Cookies.get("role")) == true))) {
             setAuthorized(false);
 
-            if (Cookies.get("role") != "SUPER"
+            if (Cookies.get("role") == "TAILOR") {
+              Router.push("/tailor/scan");
+            }
+            else if (Cookies.get("role") != "SUPER"
               && Cookies.get("role") != "MERCHANDISE"
               && Cookies.get("role") != "ADM MERCHANDISE"
               && Cookies.get("role") != "GA MKT") {
