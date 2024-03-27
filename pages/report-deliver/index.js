@@ -85,7 +85,7 @@ const ReportDeliver = () => {
     const fetchReportDeliverData = async (startDate, endDate) => {
       setReportDeliverDataLoading(true);
   
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getreportvaluebydeliver?startDate=${startDate}&endDate=${endDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getreportvaluebydeliver?startDate=${startDate}&endDate=${endDate}`);
   
       let processedData;
       processedData = result.data;
