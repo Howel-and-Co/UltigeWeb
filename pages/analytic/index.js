@@ -386,6 +386,11 @@ const Home = () => {
 
   const [productFetchActive, setProductFetchActive] = React.useState(false);
 
+  const [reportDeliverData, setReportDeliverData] = React.useState();
+  const [reportDeliverDataLoading, setReportDeliverDataLoading] = React.useState(false);
+
+  const [reportDeliverFetchActive, setReportDeliverFetchActive] = React.useState(false);
+
   const [segmentationSalesData, setSegmentationSalesData] = React.useState();
   const [segmentationTransactionCountData, setSegmentationTransactionCountData] = React.useState();
   const [segmentationCustomerTypeData, setSegmentationCustomerTypeData] = React.useState();
@@ -773,6 +778,14 @@ const Home = () => {
     }
 
     setSegmentationTab(newValue);
+  };
+
+  const handleReportDeliverFetchChange = (active) => {
+    //console.log("Report Deliver " + active);
+    if (!reportDeliverData && !reportDeliverDataLoading && active == true) {
+      //console.log("Fetch Report Deliver");
+      setReportDeliverFetchActive(true);
+    }
   };
 
   const handleSegmentationFetchChange = (active) => {
@@ -1268,6 +1281,18 @@ const Home = () => {
     }
   };
 
+  const fetchReportDeliverData = async (startDate, endDate) => {
+    setReportDeliverDataLoading(true);
+
+    const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getreportvaluebydeliver?startDate=${startDate}&endDate=${endDate}`);
+
+    let processedData;
+    processedData = result.data;
+
+    setReportDeliverData(processedData);
+    setReportDeliverDataLoading(false);
+  };
+
   const fetchSegmentationSalesData = async (startDate, endDate) => {
     setSegmentationSalesDataLoading(true);
 
@@ -1662,6 +1687,7 @@ const Home = () => {
       setCurrentStartDate(startDate);
       setCurrentEndDate(endDate);
 
+      setReportDeliverData();
       setSegmentationSalesData();
       setSegmentationTransactionCountData();
       setSegmentationCustomerTypeData();
@@ -3278,6 +3304,59 @@ const Home = () => {
       setDataReload(false);
     }
   }, [salesData, salesCountData, averageSalesData, marginData, previousSalesData, previousSalesCountData, previousAverageSalesData, previousMarginData, channel, toggleSales, toggleSalesCount, toggleAverageSales, toggleMarginValue, toggleMarginRate, toggleMultipleSales, dataReload]);
+
+  useEffect(() => {
+    if (reportDeliverFetchActive == true && checkToken()) {
+      
+      let momentStartDate;
+      let momentEndDate;
+      
+      if (dataRange == 'realtime') {
+        momentStartDate = getCurrentTime().subtract(0, "days");
+        momentEndDate = getCurrentTime().subtract(0, "days");
+      }
+      else if (dataRange == 'yesterday') {
+        momentStartDate = getCurrentTime().subtract(1, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
+      }
+      else if (dataRange == 'weekly') {
+        momentStartDate = getCurrentTime().subtract(7, "days");
+        momentEndDate = getCurrentTime().subtract(1, "days");
+      }
+      else if (dataRange == 'monthly') {
+        momentEndDate = getCurrentTime().subtract(1, "days");
+        momentStartDate = moment(momentEndDate).tz("Asia/Jakarta").subtract(28, "days");
+
+        while (momentStartDate.month() == momentEndDate.month()) {
+          momentStartDate = momentStartDate.subtract(1, "days");
+        }
+
+        while (momentStartDate.date() > momentEndDate.date()) {
+          momentStartDate = momentStartDate.subtract(1, "days");
+        }
+      }
+
+      let startDate;
+      let endDate;
+
+      if (dateOption != 'custom-daily' 
+        && dateOption != 'custom-weekly' 
+        && dateOption != 'custom-monthly' 
+        && dateOption != 'custom-yearly'
+        && dateOption != 'custom-date') {
+        startDate = momentStartDate.format("YYYY-MM-DD");
+        endDate = momentEndDate.format("YYYY-MM-DD");
+      }
+      else {
+        startDate = newStartDate;
+        endDate = newEndDate;
+      }
+
+      fetchReportDeliverData(startDate, endDate);
+
+      setReportDeliverFetchActive(false);
+    }
+  }, [reportDeliverFetchActive]);
 
   useEffect(() => {
     if (segmentationFetchActive == true && checkToken()) {
@@ -6487,6 +6566,80 @@ const Home = () => {
               }
             </Grid>
           </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <InView onChange={(inView, entry) => handleReportDeliverFetchChange(inView)}>
+            <Paper className={classes.paper} elevation={3}>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      margin: 9
+                    }}
+                  >
+                    Laporan Deliver
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} style={{ margin: 10 }}>
+                  <TableContainer component={Paper} variant="outlined">
+                    <Table sx={{ minWidth: 650 }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Lining Row</TableCell>
+                          <TableCell>Priority</TableCell>
+                          <TableCell align="right">Total</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {reportDeliverData && reportDeliverData.Data.map((row) => (
+                          <TableRow
+                            key={row.LiningRow}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell align="left" style={{minWidth: 150}}>
+                              <Typography>
+                                {row.LiningRow}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="left" style={{minWidth: 150}}>
+                              <Typography>
+                                {row.Priority}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography>
+                                Rp {Intl.NumberFormat('id').format(row.Total)}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+                <Grid item xs={12}>
+                  { (reportDeliverDataLoading) &&
+                    <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                      <CircularProgress size={25} />
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          marginLeft: 12
+                        }}
+                      >
+                        Loading
+                      </Typography>
+                    </Box>
+                  }
+                </Grid>
+              </Grid>
+            </Paper>
+          </InView>
         </Grid>
 
         <Grid item xs={12}>
