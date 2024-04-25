@@ -69,6 +69,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { checkToken } from "../../src/utils/config";
 import { DataGrid } from '@mui/x-data-grid';
 import { InView } from 'react-intersection-observer';
+import debounce from 'lodash/debounce';
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -139,6 +140,21 @@ const CustomMultipleTooltip = ({ active, payload, label }) => {
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
           <p key={index} style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : Rp ${Intl.NumberFormat('id').format(item.payload[item.name])} , ${Intl.NumberFormat('id').format(item.payload[item.name + " QTY"])} pcs`}</p>
+        ))}
+      </Card>
+    );
+  }
+
+  return null;
+};
+
+const CustomMultipleStockTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
+        <p>{`${payload[0].payload.dataLabel}`}</p>
+        {payload.map((item, index) => (
+          <p key={index} style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${Intl.NumberFormat('id').format(item.payload[item.name])} pcs`}</p>
         ))}
       </Card>
     );
@@ -293,6 +309,44 @@ const MultiCategoryChart = (props) => {
   );
 }
 
+const MultiStockChart = (props) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  
+  return (
+    <LineChart
+      width={props.width - 40}
+      height={320}
+      data={props.chart}
+      margin={{
+        top: 15,
+        right: 40,
+        bottom: 5,
+        left: isMobile ? 30 : 35
+      }}
+    >
+      <CartesianGrid strokeDasharray="4 4" />
+      <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
+      <YAxis hide={true}/>
+      <RechartsTooltip 
+        content={<CustomMultipleStockTooltip />}
+      />
+      {props.line && props.line.map((lineItem)=> (
+        <>
+          <Line
+            type="linear"
+            dataKey={lineItem.column}
+            stroke={randomColorHSL(lineItem.column)}
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 5 }}
+          />
+        </>
+      ))}
+    </LineChart>
+  );
+}
+
 const HtmlTooltip = withStyles(Tooltip, (theme) => ({
   tooltip: {
     backgroundColor: '#ffffff',
@@ -303,8 +357,12 @@ const HtmlTooltip = withStyles(Tooltip, (theme) => ({
   },
 }));
 
-const columns = [
+const tierCategoryColumns = [
   { field: 'tierCategory', headerName: 'Kategori Produk', flex: 1, minWidth: 200 },
+];
+
+const stockNameColumns = [
+  { field: 'stockName', headerName: 'Nama Stok', flex: 1, minWidth: 200, filterable: false },
 ];
 
 const Home = () => {
@@ -466,6 +524,29 @@ const Home = () => {
   const [modelStockFetchActive, setModelStockFetchActive] = React.useState(false);
   const [stockFetchActive, setStockFetchActive] = React.useState(false);
 
+  const [stockNameData, setStockNameData] = useState();
+  const [multipleStockCustom, setMultipleStockCustom] = React.useState([]);
+  const [multipleStockLiveCustom, setMultipleStockLiveCustom] = React.useState([]);
+  const [multipleStockCustomData, setMultipleStockCustomData] = useState();
+  const [multipleStockCustomDataLoading, setMultipleStockCustomDataLoading] = React.useState(false);
+  const [totalMultipleStockCustomData, setTotalMultipleStockCustomData] = React.useState();
+  const [stockNameFetchActive, setStockNameFetchActive] = React.useState(true);
+
+  const [stockNameSearchTemp, setStockNameSearchTemp] = React.useState('');
+  const [stockNameSearch, setStockNameSearch] = React.useState('');
+
+  const handleSearchChange = (e) => {
+    setStockNameSearchTemp(e.target.value);
+  }
+
+  const delayedQuery = React.useCallback(debounce(() => setStockNameSearch(stockNameSearchTemp), 500), [stockNameSearchTemp]);
+
+  React.useEffect(() => {
+    delayedQuery();
+
+    return delayedQuery.cancel;
+  }, [stockNameSearchTemp, delayedQuery]);
+
   const [monthlyStartDate, setMonthlyStartDate] = useState();
   const [monthlyEndDate, setMonthlyEndDate] = useState();
 
@@ -626,6 +707,8 @@ const Home = () => {
   const [tierCategoryCustomEndDate, setTierCategoryCustomEndDate] = React.useState(getCurrentTime());
   const [tierMultipleCategoryCustomStartDate, setTierMultipleCategoryCustomStartDate] = React.useState(getCurrentTime());
   const [tierMultipleCategoryCustomEndDate, setTierMultipleCategoryCustomEndDate] = React.useState(getCurrentTime());
+  const [multipleStockCustomStartDate, setMultipleStockCustomStartDate] = React.useState(getCurrentTime());
+  const [multipleStockCustomEndDate, setMultipleStockCustomEndDate] = React.useState(getCurrentTime());
 
   const handleModelCategoryEndDateChange = (date) => {
     setModelCategoryEndDate(date);
@@ -653,6 +736,14 @@ const Home = () => {
 
   const handleTierMultipleCategoryCustomEndDateChange = (date) => {
     setTierMultipleCategoryCustomEndDate(date);
+  };
+
+  const handleMultipleStockCustomStartDateChange = (date) => {
+    setMultipleStockCustomStartDate(date);
+  };
+
+  const handleMultipleStockCustomEndDateChange = (date) => {
+    setMultipleStockCustomEndDate(date);
   };
 
   const vsLabel = () => {
@@ -824,9 +915,9 @@ const Home = () => {
   };
 
 
-  const [selectionModel, setSelectionModel] = React.useState([]);
+  const [tierCategorySelectionModel, setTierCategorySelectionModel] = React.useState([]);
 
-  const handleSelection = (newSelection) => {
+  const handleTierCategorySelection = (newSelection) => {
     const selectedRowsData = newSelection.map((id) => productTierMultipleCategoriesCustomData.find((row) => row.id === id));
     let categories = [];
     for (const row of selectedRowsData)
@@ -834,8 +925,25 @@ const Home = () => {
       categories.push(row.tierCategory);
     }
 
-    setSelectionModel(newSelection);
+    setTierCategorySelectionModel(newSelection);
     setTierMultipleCategoryCustom(categories);
+  }
+
+  const [stockNameSelectionModel, setStockNameSelectionModel] = React.useState([]);
+
+  const handleStockNameSelection = (newSelection) => {
+    const selectedRowsData = newSelection.map((id) => stockNameData.find((row) => row.id === id));
+    let names = [];
+    for (const row of selectedRowsData)
+    {
+      names.push(row.stockName);
+    }
+
+    console.log(newSelection);
+    console.log(names);
+
+    setStockNameSelectionModel(newSelection);
+    setMultipleStockCustom(names);
   }
 
   const handleTierMultipleCategoryData = () => {
@@ -1265,6 +1373,422 @@ const Home = () => {
       endDate = moment(tierMultipleCategoryCustomEndDate).format("YYYY-MM-DD");
 
       fetchTierMultipleCategorySalesCustomData(startDate, endDate, tierMultipleCustom, tierMultipleCategoryCustom);
+    }
+  };
+
+  const handleMultipleStockData = () => {
+    const processMonthMultipleStockSoldCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      multipleStockCustom.forEach(function (nameItem) {
+        addLine = new Object();
+        addLine.column = nameItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+ 
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let monthCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        currentDate.startOf('month');
+        monthCounter++; 
+        let object = ``;
+
+        if (dateDifference > 1095 && monthCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 730 && dateDifference <= 1095 && monthCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 365 && dateDifference <= 730 && monthCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('MMM') == 'Jan')
+            object += `{"label": "${moment(currentDate).format('MMM YYYY')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('MMM YYYY')}"`;
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
+
+          if (moment(date).isSame(currentDate) == true) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'months');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalMultipleStock = new Object();
+      totalMultipleStock.quantity = processedData.TotalQuantity;
+
+      setTotalMultipleStockCustomData(totalMultipleStock);
+    
+      return result;
+    };
+
+    const processWeekMultipleStockSoldCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      multipleStockCustom.forEach(function (nameItem) {
+        addLine = new Object();
+        addLine.column = nameItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+ 
+      let momentStartDate = moment(startDate, "YYYY-MM-DD").startOf('isoWeek');
+      let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
+
+      let currentDate = momentStartDate;
+      let weekCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        weekCounter++;
+        let object = ``;
+
+        if (dateDifference > 140 && weekCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 100 && dateDifference <= 140 && weekCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 60 && dateDifference <= 100 && weekCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          object += `{"label": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let week = parseInt(dataItem.Date.substring(4, 6));
+
+          if (week == currentDate.isoWeek()) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'weeks');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalMultipleStock = new Object();
+      totalMultipleStock.quantity = processedData.TotalQuantity;
+
+      setTotalMultipleStockCustomData(totalMultipleStock);
+    
+      return result;
+    };
+
+    const processDayMultipleStockSoldCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      multipleStockCustom.forEach(function (nameItem) {
+        addLine = new Object();
+        addLine.column = nameItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+ 
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let dateCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        dateCounter++; 
+        let object = ``;
+
+        if (dateDifference > 45 && dateCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 30 && dateDifference <= 45 && dateCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 15 && dateDifference <= 30 && dateCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('Do') == '1')
+            object += `{"label": "${moment(currentDate).format('Do MMM')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('Do')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('Do MMM')}"`;
+
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let date = moment(dataItem.Date, "DD/MM/YYYY");
+
+          if (moment(date).isSame(currentDate) == true) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'days');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalMultipleStock = new Object();
+      totalMultipleStock.quantity = processedData.TotalQuantity;
+
+      setTotalMultipleStockCustomData(totalMultipleStock);
+    
+      return result;
+    };
+
+    const processHourMultipleStockSoldCustomData = (processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      multipleStockCustom.forEach(function (nameItem) {
+        addLine = new Object();
+        addLine.column = nameItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      let hourCounter = 0;
+      let lastHour = 23;
+
+      while (hourCounter <= 23) { 
+        let object = ``;
+
+        if (hourCounter % 6 == 0) {
+          if (parseInt(hourCounter / 10) > 0)
+            object += `{"label": "${hourCounter}:00"`;
+          else
+            object += `{"label": "0${hourCounter}:00"`;
+        }
+        else {
+          object += `{"label": ""`;
+        }
+
+        if (parseInt(hourCounter / 10) > 0)
+          object += `, "dataLabel": "${hourCounter}:00"`;
+        else
+          object += `, "dataLabel": "0${hourCounter}:00"`;
+
+        let hourExist = false;
+      
+        data.forEach(function (dataItem) {
+          let hour = parseInt(dataItem.Date);
+
+          if (hourCounter == hour) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+              }
+            });
+
+            hourExist = true;
+          }
+        });
+
+        if (hourExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+          });
+        }
+
+        object += `}`;
+            
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        hourCounter++;
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalMultipleStock = new Object();
+      totalMultipleStock.quantity = processedData.TotalQuantity;
+
+      setTotalMultipleStockCustomData(totalMultipleStock);
+
+      return result;
+    };
+
+    const fetchMultipleStockSoldCustomData = async (startDate, endDate, multipleStockCustom) => {
+      setMultipleStockCustomDataLoading(true);
+
+      const result = await axios({
+        method: 'post',
+        url: 'http://localhost:5000/ultigeapi/web/analytic/getstocksold',
+        data: {
+          startDate: startDate, 
+          endDate: endDate,
+          stockNames: multipleStockCustom
+        }
+      });
+
+      let processedData;
+      processedData = result.data;
+
+      let newData;
+
+      if (processedData.DateDifference == 0) {
+        newData = processHourMultipleStockSoldCustomData(processedData);
+      }
+      else if (processedData.DateDifference > 0 && processedData.DateDifference <= 60) {
+        newData = processDayMultipleStockSoldCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference > 60 && processedData.DateDifference < 180) {
+        newData = processWeekMultipleStockSoldCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference >= 180) {
+        newData = processMonthMultipleStockSoldCustomData(startDate, endDate, processedData);
+      }
+
+      setMultipleStockCustomData(newData);
+      setMultipleStockLiveCustom(multipleStockCustom);
+      setMultipleStockCustomDataLoading(false);
+    };
+
+    if (checkToken() && multipleStockCustom) {
+      let startDate;
+      startDate = moment(multipleStockCustomStartDate).format("YYYY-MM-DD");
+
+      let endDate;
+      endDate = moment(multipleStockCustomEndDate).format("YYYY-MM-DD");
+
+      console.log(multipleStockCustom);
+
+      if (multipleStockCustom.length > 9)
+        window.alert("Jumlah stok yang bisa dipilih maksimal 9.");
+      else
+        fetchMultipleStockSoldCustomData(startDate, endDate, multipleStockCustom);
     }
   };
 
@@ -4767,7 +5291,7 @@ const Home = () => {
     };
 
     if (tierMultipleCategoryCustomFetchActive == true && checkToken()) {
-      setSelectionModel([]);
+      setTierCategorySelectionModel([]);
       setTierMultipleCategoryCustom([]);
 
       if (productTierMultipleCategoriesCustomCacheData.Data.has(tierMultipleCustom) == false) {
@@ -4780,6 +5304,36 @@ const Home = () => {
       setTierMultipleCategoryCustomFetchActive(false);
     }
   }, [tierMultipleCategoryCustomFetchActive]);
+
+  useEffect(() => {
+    const fetchStockNameData = async () => {
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getallstocknames`);
+
+      let processedData;
+      processedData = result.data;
+      
+      let names = [];
+      for (let i = 0; i < processedData.Data.length; i++)
+      {
+        let name = {
+          "id": i,
+          "stockName": processedData.Data[i]
+        }
+        names.push(name);
+      }
+
+      setStockNameData(names);
+    };
+
+    if (stockNameFetchActive == true && checkToken()) {
+      setStockNameSelectionModel([]);
+      setMultipleStockCustom([]);
+
+      fetchStockNameData();
+      
+      setStockNameFetchActive(false);
+    }
+  }, [stockNameFetchActive]);
 
   useEffect(() => {
     const fetchModelStockData = async () => {
@@ -8057,12 +8611,16 @@ const Home = () => {
               <Grid item xs={12} style={{ marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, height: 371, maxWidth: isMobile ? 377 : 457 }}>
                 <DataGrid
                   rows={productTierMultipleCategoriesCustomData}
-                  columns={columns}
-                  pageSize={100}
-                  rowsPerPageOptions={[100]}
-                  onSelectionModelChange={handleSelection}
-                  selectionModel={selectionModel}
+                  columns={tierCategoryColumns}
+                  onSelectionModelChange={handleTierCategorySelection}
+                  selectionModel={tierCategorySelectionModel}
                   checkboxSelection
+                  slotProps={{
+                    pagination: {
+                      labelRowsPerPage: "",
+                      rowsPerPageOptions: [0]
+                    }
+                  }}
                   sx={{
                     "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
                       display: "none"
@@ -8573,6 +9131,242 @@ const Home = () => {
               </Grid>
             </Paper>
           </InView>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            <Grid item xs={12} md={8}>
+              <Box className={classes.inline}>
+                  <Typography 
+                      style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          margin: 10
+                      }}
+                  >
+                      Cari
+                  </Typography>
+                  <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 8, width: 300, marginRight: 10}} value={stockNameSearchTemp} onChange={handleSearchChange}/>
+              </Box>
+            </Grid>
+
+            { stockNameData && 
+              <Grid item xs={12} style={{ marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, height: 371 }}>
+                <DataGrid
+                  filterModel={{
+                    items: [{ field: 'stockName', operator: 'contains', value: stockNameSearch }],
+                  }}
+                  rows={stockNameData}
+                  columns={stockNameColumns}
+                  onRowSelectionModelChange={handleStockNameSelection}
+                  selectionModel={stockNameSelectionModel}
+                  checkboxSelection
+                  slotProps={{
+                    pagination: {
+                      labelRowsPerPage: "",
+                      rowsPerPageOptions: [0]
+                    }
+                  }}
+                  sx={{
+                    div: {
+                      fontWeight: 400
+                    }
+                  }}
+                />
+              </Grid>
+            }
+            
+            <Grid container>
+              <Grid item xs={12} md={8}>
+                <Box className={classes.inline}>
+                  { isMobile
+                    ? <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          marginTop: 9,
+                          marginBottom: 16,
+                          marginRight: 25,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal<br/>Awal
+                      </Typography>
+                    : <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 18,
+                          fontWeight: 'bold',
+                          marginTop: 22,
+                          marginBottom: 30,
+                          marginRight: 97,
+                          marginLeft: 9
+                        }}
+                      >
+                        Tanggal
+                      </Typography>
+                  }
+                  <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                    <DatePicker
+                      inputFormat="yyyy-MM-dd"
+                      label="Start Date"
+                      value={multipleStockCustomStartDate}
+                      onChange={handleMultipleStockCustomStartDateChange}
+                      renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
+                      minDate={moment('01-01-2016').toDate()}
+                      maxDate={getCurrentTime().toDate()}
+                    />
+                    { !isMobile && 
+                      <DatePicker
+                        inputFormat="yyyy-MM-dd"
+                        label="End Date"
+                        value={multipleStockCustomEndDate}
+                        onChange={handleMultipleStockCustomEndDateChange}
+                        renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
+                      />
+                    }
+                  </LocalizationProvider>
+                  { !isMobile && 
+                    <Button 
+                      variant="outlined"
+                      style={{
+                        borderRadius: 4,
+                        textTransform: "none",
+                        marginLeft: 10,
+                        marginTop: 10,
+                        width: 100,
+                        height: 50
+                      }}
+                      disableRipple
+                      onClick={handleMultipleStockData}
+                    >
+                      Apply
+                    </Button>
+                  }
+                </Box>
+              </Grid>
+              { isMobile && 
+                <Grid item xs={12} md={8}>
+                  <Box className={classes.inline}>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        marginTop: 9,
+                        marginBottom: 16,
+                        marginRight: 25,
+                        marginLeft: 9
+                      }}
+                    >
+                      Tanggal<br/>Akhir
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                      <DatePicker
+                        inputFormat="yyyy-MM-dd"
+                        label="End Date"
+                        value={multipleStockCustomEndDate}
+                        onChange={handleMultipleStockCustomEndDateChange}
+                        renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+                        minDate={moment('01-01-2016').toDate()}
+                        maxDate={getCurrentTime().toDate()}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                  <Button 
+                    variant="outlined"
+                    style={{
+                      borderRadius: 4,
+                      textTransform: "none",
+                      marginLeft: 10,
+                      marginBottom: 16,
+                      width: 80,
+                      height: 40
+                    }}
+                    disableRipple
+                    onClick={handleMultipleStockData}
+                  >
+                    Apply
+                  </Button>
+                </Grid>
+              }
+              { totalMultipleStockCustomData && 
+                <Grid item xs={12} md={4} container justifyContent="flex-end">
+                  <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        textAlign: 'right',
+                        marginTop: isMobile ? 24 : 30,
+                        marginBottom: 9,
+                        marginRight: 9,
+                        marginLeft: 9
+                      }}
+                    >
+                      Total Penjualan: {Intl.NumberFormat('id').format(totalMultipleStockCustomData.quantity)} pcs
+                    </Typography>
+                </Grid>
+              }
+            </Grid>
+            
+            <Grid container>
+              <Grid item xs={12} md={4}>
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Grafik Penjualan Stok
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={8} container justifyContent="flex-end">
+                { multipleStockLiveCustom && multipleStockLiveCustom.map((value)=> (
+                  <Box key={value} className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: randomColorHSL(value), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      {value}
+                    </Typography>
+                  </Box>
+                ))}
+              </Grid>
+            </Grid>
+
+            { multipleStockCustomData
+              ? <MultiStockChart line={multipleStockCustomData.line} chart={multipleStockCustomData.chart} width={width}/>
+              : <EmptyChart width={width}/>
+            }
+
+            <Grid item xs={12}>
+              { multipleStockCustomDataLoading &&
+                <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                  <CircularProgress size={25} />
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      marginLeft: 12
+                    }}
+                  >
+                    Loading
+                  </Typography>
+                </Box>
+              }
+            </Grid>
+          </Paper>
         </Grid>
       </Grid>
     </Layout>
