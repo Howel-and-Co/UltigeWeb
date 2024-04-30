@@ -25,7 +25,8 @@ import {
   Tab,
   Link,
   CircularProgress,
-  Tooltip
+  Tooltip,
+  Checkbox
 } from "@mui/material";
 import MomentUtils from '@date-io/moment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -118,13 +119,28 @@ const LineColor = (column) => {
   return color;
 }
 
+const longestStringLength = (payload) => {
+  let longestString = "";
+
+  for (let i = 0; i < payload.length; i++) {
+    if (payload[i].name > longestString.length) {
+      longestString = payload[i].name;
+    }
+  }
+
+  return longestString.length;
+}
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
-          <p key={index} style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Margin (%)' ? "%" : ""}`}</p>
+          <body key={index}>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 200}}>{`${item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Margin (%)' ? "%" : ""}`}</p>
+          </body>
         ))}
       </Card>
     );
@@ -139,7 +155,10 @@ const CustomMultipleTooltip = ({ active, payload, label }) => {
       <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
-          <p key={index} style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : Rp ${Intl.NumberFormat('id').format(item.payload[item.name])} , ${Intl.NumberFormat('id').format(item.payload[item.name + " QTY"])} pcs`}</p>
+          <body key={index}>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 400}}>{`${item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: Rp ${Intl.NumberFormat('id').format(item.payload[item.name])} , ${Intl.NumberFormat('id').format(item.payload[item.name + " QTY"])} pcs`}</p>
+          </body>
         ))}
       </Card>
     );
@@ -154,7 +173,10 @@ const CustomMultipleStockTooltip = ({ active, payload, label }) => {
       <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
-          <p key={index} style={{color: `${item.stroke}`, marginTop: -8}}>{`${item.name} : ${Intl.NumberFormat('id').format(item.payload[item.name])} pcs`}</p>
+          <body key={index}>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 430}}>{`${item.name.length > 50 ? item.name.substring(0, 50) + "..." : item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${Intl.NumberFormat('id').format(item.payload[item.name])} pcs`}</p>
+          </body>
         ))}
       </Card>
     );
@@ -362,7 +384,30 @@ const tierCategoryColumns = [
 ];
 
 const stockNameColumns = [
-  { field: 'stockName', headerName: 'Nama Stok', flex: 1, minWidth: 200, filterable: false },
+  { field: 'stockName', headerName: 'Nama Stok', flex: 1, minWidth: 200, filterable: false, renderCell: (params) => {
+      return (
+        <Box
+          sx={{
+            color: params.row.status == 'NON-AKTIF' ? 'red' : ''
+          }}
+        >
+          {params.value}
+        </Box>
+      );
+    } 
+  },
+  { field: 'status', headerName: 'Status', width: 100, filterable: false, renderCell: (params) => {
+      return (
+        <Box
+          sx={{
+            color: params.row.status == 'NON-AKTIF' ? 'red' : ''
+          }}
+        >
+          {params.value}
+        </Box>
+      );
+    } 
+  },
 ];
 
 const Home = () => {
@@ -525,6 +570,7 @@ const Home = () => {
   const [stockFetchActive, setStockFetchActive] = React.useState(false);
 
   const [stockNameData, setStockNameData] = useState();
+  const [stockNameCachedData, setStockNameCachedData] = useState();
   const [multipleStockCustom, setMultipleStockCustom] = React.useState([]);
   const [multipleStockLiveCustom, setMultipleStockLiveCustom] = React.useState([]);
   const [multipleStockCustomData, setMultipleStockCustomData] = useState();
@@ -546,6 +592,30 @@ const Home = () => {
 
     return delayedQuery.cancel;
   }, [stockNameSearchTemp, delayedQuery]);
+
+  const [stockDisplayAll, setStockDisplayAll] = React.useState(false);
+
+  const handleStockDisplayAllChange = (event) => {
+    setStockDisplayAll(event.target.checked);
+    
+    let names = [];
+    let i = 0;
+    const keys = Object.keys(stockNameCachedData);
+    keys.forEach(key => {
+      let name = {
+        "id": i++,
+        "stockName": key,
+        "status": stockNameCachedData[key]
+      }
+
+      if (stockNameCachedData[key] == "NON-AKTIF" && event.target.checked == false)
+        return;
+
+      names.push(name);
+    })
+
+    setStockNameData(names);
+  };
 
   const [monthlyStartDate, setMonthlyStartDate] = useState();
   const [monthlyEndDate, setMonthlyEndDate] = useState();
@@ -938,9 +1008,6 @@ const Home = () => {
     {
       names.push(row.stockName);
     }
-
-    console.log(newSelection);
-    console.log(names);
 
     setStockNameSelectionModel(newSelection);
     setMultipleStockCustom(names);
@@ -1745,7 +1812,7 @@ const Home = () => {
 
       const result = await axios({
         method: 'post',
-        url: 'http://localhost:5000/ultigeapi/web/analytic/getstocksold',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getstocksold',
         data: {
           startDate: startDate, 
           endDate: endDate,
@@ -1782,8 +1849,6 @@ const Home = () => {
 
       let endDate;
       endDate = moment(multipleStockCustomEndDate).format("YYYY-MM-DD");
-
-      console.log(multipleStockCustom);
 
       if (multipleStockCustom.length > 9)
         window.alert("Jumlah stok yang bisa dipilih maksimal 9.");
@@ -5307,21 +5372,26 @@ const Home = () => {
 
   useEffect(() => {
     const fetchStockNameData = async () => {
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getallstocknames`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getallstocknames`);
 
       let processedData;
       processedData = result.data;
       
       let names = [];
-      for (let i = 0; i < processedData.Data.length; i++)
-      {
+      let i = 0;
+      const keys = Object.keys(processedData.Data);
+      keys.forEach(key => {
         let name = {
-          "id": i,
-          "stockName": processedData.Data[i]
+          "id": i++,
+          "stockName": key,
+          "status": processedData.Data[key]
         }
-        names.push(name);
-      }
 
+        if (processedData.Data[key] == "AKTIF")
+          names.push(name);
+      })
+
+      setStockNameCachedData(processedData.Data);
       setStockNameData(names);
     };
 
@@ -8612,7 +8682,7 @@ const Home = () => {
                 <DataGrid
                   rows={productTierMultipleCategoriesCustomData}
                   columns={tierCategoryColumns}
-                  onSelectionModelChange={handleTierCategorySelection}
+                  onRowSelectionModelChange={handleTierCategorySelection}
                   selectionModel={tierCategorySelectionModel}
                   checkboxSelection
                   slotProps={{
@@ -9135,44 +9205,74 @@ const Home = () => {
 
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={3}>
-            <Grid item xs={12} md={8}>
-              <Box className={classes.inline}>
+            <Grid container>
+              <Grid item xs={12} md={8}>
+                <Box className={classes.inline}>
+                    <Typography 
+                        style={{
+                            color: "#000", 
+                            fontSize: 18,
+                            margin: 10
+                        }}
+                    >
+                        Cari
+                    </Typography>
+                    <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 8, width: 300, marginRight: 10}} value={stockNameSearchTemp} onChange={handleSearchChange}/>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} md={4} container justifyContent="flex-end">
+                <Box className={classes.inline}>
+                  <Checkbox
+                    checked={stockDisplayAll}
+                    onChange={handleStockDisplayAllChange}
+                    disableRipple
+                    sx={{ 
+                        '& .MuiSvgIcon-root': { fontSize: 28 },
+                    }}
+                  />
                   <Typography 
-                      style={{
-                          color: "#000", 
-                          fontSize: 18,
-                          margin: 10
-                      }}
+                    style={{
+                        color: "#000", 
+                        fontSize: 18,
+                        marginTop: 10,
+                        marginRight: 10
+                    }}
                   >
-                      Cari
+                    Tampilkan Stok Non-Aktif
                   </Typography>
-                  <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 8, width: 300, marginRight: 10}} value={stockNameSearchTemp} onChange={handleSearchChange}/>
-              </Box>
+                </Box>
+              </Grid>
             </Grid>
 
             { stockNameData && 
-              <Grid item xs={12} style={{ marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, height: 371 }}>
-                <DataGrid
-                  filterModel={{
-                    items: [{ field: 'stockName', operator: 'contains', value: stockNameSearch }],
+              <Grid item xs={12}>
+                <Box style={{ marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, height: 371 }}>
+                  <DataGrid
+                    filterModel={{
+                      items: [{ field: 'stockName', operator: 'contains', value: stockNameSearch }]
+                    }}
+                    rows={stockNameData}
+                    columns={stockNameColumns}
+                    onRowSelectionModelChange={handleStockNameSelection}
+                    selectionModel={stockNameSelectionModel}
+                    checkboxSelection
+                    slotProps={{
+                      pagination: {
+                        labelRowsPerPage: "",
+                        rowsPerPageOptions: [0]
+                      }
+                    }}
+                    sx={{
+                      div: {
+                        fontWeight: 400
+                      }
+                    }}
+                    getRowClassName={(params) => {
+                      params.row.status.includes('NON-AKTIF') ? 'nonAktifRow' : ''
                   }}
-                  rows={stockNameData}
-                  columns={stockNameColumns}
-                  onRowSelectionModelChange={handleStockNameSelection}
-                  selectionModel={stockNameSelectionModel}
-                  checkboxSelection
-                  slotProps={{
-                    pagination: {
-                      labelRowsPerPage: "",
-                      rowsPerPageOptions: [0]
-                    }
-                  }}
-                  sx={{
-                    div: {
-                      fontWeight: 400
-                    }
-                  }}
-                />
+                  />
+                </Box>
               </Grid>
             }
             
@@ -9369,6 +9469,14 @@ const Home = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      <style>
+        {`
+          .nonAktifRow {
+            background-color: #ffcccc; /* or any other color you prefer */
+          }
+        `}
+      </style>
     </Layout>
   );
 }
