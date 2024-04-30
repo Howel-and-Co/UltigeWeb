@@ -9469,14 +9469,6 @@ const Home = () => {
           </Paper>
         </Grid>
       </Grid>
-
-      <style>
-        {`
-          .nonAktifRow {
-            background-color: #ffcccc; /* or any other color you prefer */
-          }
-        `}
-      </style>
     </Layout>
   );
 }
