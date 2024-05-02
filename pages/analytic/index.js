@@ -138,7 +138,25 @@ const CustomTooltip = ({ active, payload, label }) => {
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
           <body key={index}>
-            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 200}}>{`${item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 200}}>{`${item.name.length > 22 ? item.name.substring(0, 22) + "..." : item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: Rp ${Intl.NumberFormat('id').format(item.payload[item.name])}`}</p>
+          </body>
+        ))}
+      </Card>
+    );
+  }
+
+  return null;
+};
+
+const CustomAnalyticTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
+        <p>{`${payload[0].payload.dataLabel}`}</p>
+        {payload.map((item, index) => (
+          <body key={index}>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 132}}>{`${item.name}`}</p>
             <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Margin (%)' ? "%" : ""}`}</p>
           </body>
         ))}
@@ -156,7 +174,7 @@ const CustomMultipleTooltip = ({ active, payload, label }) => {
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
           <body key={index}>
-            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 400}}>{`${item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 400}}>{`${item.name.length > 43 ? item.name.substring(0, 43) + "..." : item.name}`}</p>
             <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: Rp ${Intl.NumberFormat('id').format(item.payload[item.name])} , ${Intl.NumberFormat('id').format(item.payload[item.name + " QTY"])} pcs`}</p>
           </body>
         ))}
@@ -210,7 +228,7 @@ const MultiTypeChart = (props) => {
       <YAxis yAxisId="Margin (Rp)" hide={true}/>
       <YAxis yAxisId="Margin (%)" hide={true}/>
       <RechartsTooltip 
-        content={<CustomTooltip />}
+        content={<CustomAnalyticTooltip />}
       />
       {props.line.map((item, index) => (
         <Line

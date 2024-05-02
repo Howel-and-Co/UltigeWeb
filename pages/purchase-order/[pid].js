@@ -17,6 +17,7 @@ import Cookies from "js-cookie";
 
 import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
+import Router from "next/router";
 import { useRouter } from 'next/router';
 import moment from '../../src/utils/moment';
 
@@ -429,7 +430,7 @@ const PurchaseOrderDetail = () => {
         
         if (processedData.Status.Code == 200) {
             window.alert("PO berhasil diapprove");
-            setFetchActive(true);
+            Router.push("/purchase-order");
         }
         else {
             window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
@@ -469,7 +470,7 @@ const PurchaseOrderDetail = () => {
         
         if (processedData.Status.Code == 200) {
             window.alert("Approval PO berhasil ditolak");
-            setFetchActive(true);
+            Router.push("/purchase-order");
         }
         else {
             window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");

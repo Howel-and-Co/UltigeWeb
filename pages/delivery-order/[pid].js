@@ -24,6 +24,7 @@ import moment from '../../src/utils/moment';
 import React, { useState, useEffect, useRef } from 'react';
 import useContainerDimensions from  "../../src/utils/screen.js";
 import axios from '../../src/utils/axios';
+import Router from "next/router";
 import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -410,7 +411,7 @@ const DeliveryOrderDetail = () => {
         
         if (processedData.Status.Code == 200) {
             window.alert("DO berhasil diapprove");
-            setFetchActive(true);
+            Router.push("/delivery-order");
         }
         else {
             window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
@@ -452,7 +453,7 @@ const DeliveryOrderDetail = () => {
         
         if (processedData.Status.Code == 200) {
             window.alert("DO berhasil ditolak");
-            setFetchActive(true);
+            Router.push("/delivery-order");
         }
         else {
             window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
