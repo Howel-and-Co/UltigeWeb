@@ -17,6 +17,7 @@ import moment from '../../src/utils/moment';
 
 import React, { useEffect } from 'react';
 import axios from '../../src/utils/axios';
+import Router from "next/router";
 import { useRouter } from 'next/router';
 
 import {
@@ -271,7 +272,7 @@ const TransferRequestDetail = () => {
         
         if (processedData.Status.Code == 200) {
             window.alert("Request berhasil diapprove");
-            setFetchActive(true);
+            Router.push("/transfer-request");
         }
         else {
             window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
@@ -319,7 +320,7 @@ const TransferRequestDetail = () => {
         
         if (processedData.Status.Code == 200) {
             window.alert("Request berhasil direject");
-            setFetchActive(true);
+            Router.push("/transfer-request");
         }
         else {
             window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");

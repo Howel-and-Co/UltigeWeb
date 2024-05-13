@@ -52,6 +52,10 @@ const useStyles = makeStyles()((theme) => {
       display: "flex",
       flexDirection: "row"
     },
+    inlineReverse: {
+      display: "flex",
+      flexDirection: "row-reverse"
+    },
     formControl: {
       margin: theme.spacing(1),
       display: "flex",
@@ -266,8 +270,9 @@ const TransferRequest = () => {
                     List Transfer Request
                   </Typography>
                 </Grid>
-                <Grid item xs={12} sm={7} container justifyContent="flex-end">
-                  <Box className={classes.inline}>
+                <Grid item xs={12} sm={7}>
+                  <Box className={classes.inlineReverse} style={{marginLeft: 0}}>
+                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
                       <Typography 
                           style={{
                               color: "#000", 
@@ -277,7 +282,6 @@ const TransferRequest = () => {
                       >
                           Cari
                       </Typography>
-                      <TextField label="Search" variant="outlined" size="small" style={{marginTop: 4, marginLeft: 25, width: 283, marginRight: 10}} value={searchValue} onChange={handleChange}/>
                   </Box>
                 </Grid>
 
