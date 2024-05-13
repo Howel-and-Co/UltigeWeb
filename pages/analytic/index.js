@@ -2802,7 +2802,6 @@ const Home = () => {
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
-        let tempMarginRateCounter = 0;
 
         line.forEach(function (lineItem) {
           let dateExist = false;
@@ -2854,12 +2853,12 @@ const Home = () => {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (%)') {
-                    tempMarginRateValue += parseFloat(dataItem[legendItem]);
-                    tempMarginRateCounter++;
-                  }
                 }
               });
+
+              if (lineItem.column == 'Margin (%)') {
+                tempMarginRateValue = parseFloat(dataItem["TOTAL"]);
+              }
             }
           });
 
@@ -2868,7 +2867,6 @@ const Home = () => {
           }
 
           tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
-          tempMarginRateValue = tempMarginRateCounter == 0 ? 0 : (tempMarginRateValue / tempMarginRateCounter);
 
           if (currentChannel == 'ALL') {
             if (lineItem.column == 'Penjualan') {
@@ -3155,7 +3153,6 @@ const Home = () => {
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
-        let tempMarginRateCounter = 0;
 
         line.forEach(function (lineItem) {
           let dateExist = false;
@@ -3207,12 +3204,12 @@ const Home = () => {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (%)') {
-                    tempMarginRateValue += parseFloat(dataItem[legendItem]);
-                    tempMarginRateCounter++;
-                  }
                 }
               });
+
+              if (lineItem.column == 'Margin (%)') {
+                tempMarginRateValue = parseFloat(dataItem["TOTAL"]);
+              }
             }
           });
 
@@ -3221,7 +3218,6 @@ const Home = () => {
           }
 
           tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
-          tempMarginRateValue = tempMarginRateCounter == 0 ? 0 : (tempMarginRateValue / tempMarginRateCounter);
 
           if (currentChannel == 'ALL') {
             if (lineItem.column == 'Penjualan') {
@@ -3510,7 +3506,6 @@ const Home = () => {
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
-        let tempMarginRateCounter = 0;
 
         line.forEach(function (lineItem) {
           let hourExist = false;
@@ -3562,12 +3557,12 @@ const Home = () => {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (%)') {
-                    tempMarginRateValue += parseFloat(dataItem[legendItem]);
-                    tempMarginRateCounter++;
-                  }
                 }
               });
+
+              if (lineItem.column == 'Margin (%)') {
+                tempMarginRateValue = parseFloat(dataItem["TOTAL"]);
+              }
             } 
           });
 
@@ -3576,7 +3571,6 @@ const Home = () => {
           }
 
           tempAverageSalesValue = tempSalesCountValue == 0 ? 0 : (tempSalesValue / tempSalesCountValue);
-          tempMarginRateValue = tempMarginRateCounter == 0 ? 0 : (tempMarginRateValue / tempMarginRateCounter);
           
           if (currentChannel == 'ALL') {
             if (lineItem.column == 'Penjualan') {
