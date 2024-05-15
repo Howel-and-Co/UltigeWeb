@@ -151,6 +151,10 @@ const Stock = () => {
     setSearchValue('');
   }
 
+  const handleAdjustment = () => {
+    window.open(`/stock/adjustment`, '_blank');
+  }
+
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
   };
@@ -368,6 +372,20 @@ const Stock = () => {
                       }}
                       disableRipple
                       disableElevation
+                      onClick={() => handleAdjustment()}
+                  >
+                      Adjustment
+                  </Button>
+                  <Button 
+                      variant="outlined"
+                      style={{
+                          borderRadius: 4,
+                          textTransform: "none",
+                          margin: 10,
+                          height: 40
+                      }}
+                      disableRipple
+                      disableElevation
                       onClick={() => handleResetFilter()}
                   >
                       Reset Filter
@@ -449,7 +467,7 @@ const Stock = () => {
                           <ColumnDirective
                               field="SalesQuantity"
                               headerText="Sales Qty"
-                              width="110"
+                              width="120"
                               format="N0"
                               textAlign="Right"
                           />
