@@ -149,7 +149,7 @@ const Adjustment = () => {
     const fetchStockAdjustmentRequestData = async (requestLimit) => {
       setDataLoading(true);
 
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstocksdjustmentrequests?requestLimit=${requestLimit}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstocksdjustmentrequests?requestLimit=${requestLimit}`);
 
       let processedData;
       processedData = result.data;

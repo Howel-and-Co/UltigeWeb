@@ -144,7 +144,7 @@ const StockAdjustmentRequestDetail = () => {
     const fetchStockAdjustmentRequestDetailData = async (stockAdjustmentRequestID) => {
         setDataLoading(true);
 
-        const result = await axios.get(`http://localhost:5000/ultigeapi/web/stock/getstocksdjustmentrequestdetail?stockAdjustmentRequestID=${stockAdjustmentRequestID}`);
+        const result = await axios.get(`https://api.ultige.com/ultigeapi/web/stock/getstocksdjustmentrequestdetail?stockAdjustmentRequestID=${stockAdjustmentRequestID}`);
 
         let processedData;
         processedData = result.data;
@@ -195,7 +195,7 @@ const StockAdjustmentRequestDetail = () => {
 
         const result = await axios({
             method: 'put',
-            url: 'http://localhost:5000/ultigeapi/web/stock/approvestockadjustmentrequest',
+            url: 'https://api.ultige.com/ultigeapi/web/stock/approvestockadjustmentrequest',
             data: {
                 stockAdjustmentRequestID: stockAdjustmentRequestID,
                 statusUpdateBy: statusUpdateBy,
@@ -238,7 +238,7 @@ const StockAdjustmentRequestDetail = () => {
 
         const result = await axios({
             method: 'put',
-            url: 'http://localhost:5000/ultigeapi/web/stock/rejectstockadjustmentrequest',
+            url: 'https://api.ultige.com/ultigeapi/web/stock/rejectstockadjustmentrequest',
             data: {
                 stockAdjustmentRequestID: stockAdjustmentRequestID,
                 statusUpdateBy: statusUpdateBy,
