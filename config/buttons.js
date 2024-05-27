@@ -5,7 +5,6 @@ const navButtons = [
     includeRole: [],
     excludeRole: ["TAILOR"]
   },
-  
   {
     label: "Tailor Scan",
     path: "/tailor/scan",

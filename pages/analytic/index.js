@@ -478,12 +478,18 @@ const Home = () => {
   const [totalAverageSalesData, setTotalAverageSalesData] = React.useState();
   const [totalMarginValueData, setTotalMarginValueData] = React.useState();
   const [totalMarginRateData, setTotalMarginRateData] = React.useState();
+  const [totalGrossMarginData, setTotalGrossMarginData] = React.useState();
+  const [totalFeeMarketplaceData, setTotalFeeMarketplaceData] = React.useState();
+  const [totalDiscountData, setTotalDiscountData] = React.useState();
 
   const [salesDataDescription, setSalesDataDescription] = useState('');
   const [salesCountDataDescription, setSalesCountDataDescription] = useState('');
   const [averageSalesDataDescription, setAverageSalesDataDescription] = useState('');
   const [marginDataDescription, setMarginDataDescription] = useState('');
   const [marginRateDataDescription, setMarginRateDataDescription] = useState('');
+  const [grossMarginDataDescription, setGrossMarginDataDescription] = React.useState('');
+  const [feeMarketplaceDataDescription, setFeeMarketplaceDataDescription] = React.useState('');
+  const [discountDataDescription, setDiscountDataDescription] = React.useState('');
 
   const [productSalesData, setProductSalesData] = React.useState();
   const [productSalesCountData, setProductSalesCountData] = React.useState();
@@ -2076,6 +2082,9 @@ const Home = () => {
       setAverageSalesDataDescription(processedData.Data.AverageSalesValue);
       setMarginDataDescription(processedData.Data.MarginValue);
       setMarginRateDataDescription(processedData.Data.MarginValueRate);
+      setGrossMarginDataDescription(processedData.Data.GrossMargin);
+      setFeeMarketplaceDataDescription(processedData.Data.FeeMarketplace);
+      setDiscountDataDescription(processedData.Data.Discount);
     };
 
     const fetchPreviousSalesData = async (startDate, endDate) => {
@@ -2774,6 +2783,18 @@ const Home = () => {
       if (toggleMarginRate)
         chartLine.push(addLine);  
 
+      addLine = new Object();
+      addLine.column = 'Margin Kotor';
+      line.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Fee Marketplace';
+      line.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Diskon';
+      line.push(addLine);
+
       const chart = new Array();
       let addChart = new Object();
 
@@ -2788,6 +2809,9 @@ const Home = () => {
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
+      let totalGrossMarginValue = 0;
+      let totalFeeMarketplaceValue = 0;
+      let totalDiscountValue = 0;
 
       while (currentDate <= momentEndDate) { 
         currentDate.startOf('month');
@@ -2802,6 +2826,9 @@ const Home = () => {
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
+        let tempGrossMarginValue = 0;
+        let tempFeeMarketplaceValue = 0;
+        let tempDiscountValue = 0;
 
         line.forEach(function (lineItem) {
           let dateExist = false;
@@ -2829,6 +2856,18 @@ const Home = () => {
             legend = marginData.Legend;
             totalMarginRateValue = marginData.TotalRate;
           }
+          else if (marginData && lineItem.column == 'Margin Kotor') {
+            data = marginData.GrossData;
+            legend = marginData.Legend;
+          }
+          else if (marginData && lineItem.column == 'Fee Marketplace') {
+            data = marginData.FeeMarketplaceData;
+            legend = marginData.Legend;
+          }
+          else if (marginData && lineItem.column == 'Diskon') {
+            data = marginData.DiscountData;
+            legend = marginData.Legend;
+          }
 
           data.forEach(function (dataItem) {
             let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
@@ -2852,6 +2891,18 @@ const Home = () => {
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin Kotor') {
+                    totalGrossMarginValue += parseFloat(dataItem[legendItem]);
+                    tempGrossMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Fee Marketplace') {
+                    totalFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                    tempFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Diskon') {
+                    totalDiscountValue += parseFloat(dataItem[legendItem]);
+                    tempDiscountValue += parseFloat(dataItem[legendItem]);
                   }
                 }
               });
@@ -2884,6 +2935,15 @@ const Home = () => {
             else if (lineItem.column == 'Margin (%)') {
               object += `, "${lineItem.column}": ${tempMarginRateValue}`;
             }
+            else if (lineItem.column == 'Margin Kotor') {
+              object += `, "${lineItem.column}": ${tempGrossMarginValue}`;
+            }
+            else if (lineItem.column == 'Fee Marketplace') {
+              object += `, "${lineItem.column}": ${tempFeeMarketplaceValue}`;
+            }
+            else if (lineItem.column == 'Diskon') {
+              object += `, "${lineItem.column}": ${tempDiscountValue}`;
+            }
           }
         });
 
@@ -2909,6 +2969,9 @@ const Home = () => {
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
+      let totalPreviousGrossMarginValue = 0;
+      let totalPreviousFeeMarketplaceValue = 0;
+      let totalPreviousDiscountValue = 0;
 
       while (currentDate <= momentEndDate) { 
         currentDate.startOf('month');
@@ -2938,6 +3001,18 @@ const Home = () => {
             legend = previousMarginData.Legend;
             totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
+          else if (previousMarginData && lineItem.column == 'Margin Kotor') {
+            data = previousMarginData.GrossData;
+            legend = previousMarginData.Legend;
+          }
+          else if (previousMarginData && lineItem.column == 'Fee Marketplace') {
+            data = previousMarginData.FeeMarketplaceData;
+            legend = previousMarginData.Legend;
+          }
+          else if (previousMarginData && lineItem.column == 'Diskon') {
+            data = previousMarginData.DiscountData;
+            legend = previousMarginData.Legend;
+          }
 
           data.forEach(function (dataItem) {
             let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
@@ -2953,6 +3028,15 @@ const Home = () => {
                   }
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin Kotor') {
+                    totalPreviousGrossMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Fee Marketplace') {
+                    totalPreviousFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Diskon') {
+                    totalPreviousDiscountValue += parseFloat(dataItem[legendItem]);
                   }
                 }
               });
@@ -3033,6 +3117,45 @@ const Home = () => {
         totalMarginRate.growthTrend = 'down';
       }
       setTotalMarginRateData(totalMarginRate);
+
+      const totalGrossMargin = new Object();
+      totalGrossMargin.value = totalGrossMarginValue;
+      totalGrossMargin.range = vsLabel();
+      if (totalGrossMarginValue >= totalPreviousGrossMarginValue) {
+        totalGrossMargin.growth = ((totalGrossMarginValue / totalPreviousGrossMarginValue) - 1) * 100;
+        totalGrossMargin.growthTrend = 'up';
+      }
+      else {
+        totalGrossMargin.growth = (1 - (totalGrossMarginValue / totalPreviousGrossMarginValue)) * 100;
+        totalGrossMargin.growthTrend = 'down';
+      }
+      setTotalGrossMarginData(totalGrossMargin);
+
+      const totalFeeMarketplace = new Object();
+      totalFeeMarketplace.value = totalFeeMarketplaceValue;
+      totalFeeMarketplace.range = vsLabel();
+      if (totalFeeMarketplaceValue >= totalPreviousFeeMarketplaceValue) {
+        totalFeeMarketplace.growth = ((totalFeeMarketplaceValue / totalPreviousFeeMarketplaceValue) - 1) * 100;
+        totalFeeMarketplace.growthTrend = 'up';
+      }
+      else {
+        totalFeeMarketplace.growth = (1 - (totalFeeMarketplaceValue / totalPreviousFeeMarketplaceValue)) * 100;
+        totalFeeMarketplace.growthTrend = 'down';
+      }
+      setTotalFeeMarketplaceData(totalFeeMarketplace);
+
+      const totalDiscount = new Object();
+      totalDiscount.value = totalDiscountValue;
+      totalDiscount.range = vsLabel();
+      if (totalDiscountValue >= totalPreviousDiscountValue) {
+        totalDiscount.growth = ((totalDiscountValue / totalPreviousDiscountValue) - 1) * 100;
+        totalDiscount.growthTrend = 'up';
+      }
+      else {
+        totalDiscount.growth = (1 - (totalDiscountValue / totalPreviousDiscountValue)) * 100;
+        totalDiscount.growthTrend = 'down';
+      }
+      setTotalDiscountData(totalDiscount);
 
       /*
       console.log(totalSalesValue + " | " + totalPreviousSalesValue);
@@ -3115,6 +3238,18 @@ const Home = () => {
       line.push(addLine);
       if (toggleMarginRate)
         chartLine.push(addLine);  
+
+      addLine = new Object();
+      addLine.column = 'Margin Kotor';
+      line.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Fee Marketplace';
+      line.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Diskon';
+      line.push(addLine);
     
       const chart = new Array();
       let addChart = new Object();
@@ -3131,6 +3266,9 @@ const Home = () => {
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
+      let totalGrossMarginValue = 0;
+      let totalFeeMarketplaceValue = 0;
+      let totalDiscountValue = 0;
 
       while (currentDate <= momentEndDate) { 
         dateCounter++; 
@@ -3153,6 +3291,9 @@ const Home = () => {
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
+        let tempGrossMarginValue = 0;
+        let tempFeeMarketplaceValue = 0;
+        let tempDiscountValue = 0;
 
         line.forEach(function (lineItem) {
           let dateExist = false;
@@ -3180,6 +3321,18 @@ const Home = () => {
             legend = marginData.Legend;
             totalMarginRateValue = marginData.TotalRate;
           }
+          else if (marginData && lineItem.column == 'Margin Kotor') {
+            data = marginData.GrossData;
+            legend = marginData.Legend;
+          }
+          else if (marginData && lineItem.column == 'Fee Marketplace') {
+            data = marginData.FeeMarketplaceData;
+            legend = marginData.Legend;
+          }
+          else if (marginData && lineItem.column == 'Diskon') {
+            data = marginData.DiscountData;
+            legend = marginData.Legend;
+          }
 
           data.forEach(function (dataItem) {
             let date = moment(dataItem.Date, "DD/MM/YYYY");
@@ -3203,6 +3356,18 @@ const Home = () => {
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin Kotor') {
+                    totalGrossMarginValue += parseFloat(dataItem[legendItem]);
+                    tempGrossMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Fee Marketplace') {
+                    totalFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                    tempFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Diskon') {
+                    totalDiscountValue += parseFloat(dataItem[legendItem]);
+                    tempDiscountValue += parseFloat(dataItem[legendItem]);
                   }
                 }
               });
@@ -3235,6 +3400,15 @@ const Home = () => {
             else if (lineItem.column == 'Margin (%)') {
               object += `, "${lineItem.column}": ${tempMarginRateValue}`;
             }
+            else if (lineItem.column == 'Margin Kotor') {
+              object += `, "${lineItem.column}": ${tempGrossMarginValue}`;
+            }
+            else if (lineItem.column == 'Fee Marketplace') {
+              object += `, "${lineItem.column}": ${tempFeeMarketplaceValue}`;
+            }
+            else if (lineItem.column == 'Diskon') {
+              object += `, "${lineItem.column}": ${tempDiscountValue}`;
+            }
           }
         });
 
@@ -3260,6 +3434,9 @@ const Home = () => {
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
+      let totalPreviousGrossMarginValue = 0;
+      let totalPreviousFeeMarketplaceValue = 0;
+      let totalPreviousDiscountValue = 0;
 
       while (currentDate <= momentEndDate) { 
         line.forEach(function (lineItem) {
@@ -3287,6 +3464,19 @@ const Home = () => {
             legend = previousMarginData.Legend;
             totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
+          else if (previousMarginData && lineItem.column == 'Margin Kotor') {
+            data = previousMarginData.GrossData;
+            legend = previousMarginData.Legend;
+          }
+          else if (previousMarginData && lineItem.column == 'Fee Marketplace') {
+            data = previousMarginData.FeeMarketplaceData;
+            legend = previousMarginData.Legend;
+          }
+          else if (previousMarginData && lineItem.column == 'Diskon') {
+            data = previousMarginData.DiscountData;
+            legend = previousMarginData.Legend;
+          }
+
 
           data.forEach(function (dataItem) {
             let date = moment(dataItem.Date, "DD/MM/YYYY");
@@ -3302,6 +3492,15 @@ const Home = () => {
                   }
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin Kotor') {
+                    totalPreviousGrossMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Fee Marketplace') {
+                    totalPreviousFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Diskon') {
+                    totalPreviousDiscountValue += parseFloat(dataItem[legendItem]);
                   }
                 }
               });
@@ -3382,6 +3581,45 @@ const Home = () => {
         totalMarginRate.growthTrend = 'down';
       }
       setTotalMarginRateData(totalMarginRate);
+
+      const totalGrossMargin = new Object();
+      totalGrossMargin.value = totalGrossMarginValue;
+      totalGrossMargin.range = vsLabel();
+      if (totalGrossMarginValue >= totalPreviousGrossMarginValue) {
+        totalGrossMargin.growth = ((totalGrossMarginValue / totalPreviousGrossMarginValue) - 1) * 100;
+        totalGrossMargin.growthTrend = 'up';
+      }
+      else {
+        totalGrossMargin.growth = (1 - (totalGrossMarginValue / totalPreviousGrossMarginValue)) * 100;
+        totalGrossMargin.growthTrend = 'down';
+      }
+      setTotalGrossMarginData(totalGrossMargin);
+
+      const totalFeeMarketplace = new Object();
+      totalFeeMarketplace.value = totalFeeMarketplaceValue;
+      totalFeeMarketplace.range = vsLabel();
+      if (totalFeeMarketplaceValue >= totalPreviousFeeMarketplaceValue) {
+        totalFeeMarketplace.growth = ((totalFeeMarketplaceValue / totalPreviousFeeMarketplaceValue) - 1) * 100;
+        totalFeeMarketplace.growthTrend = 'up';
+      }
+      else {
+        totalFeeMarketplace.growth = (1 - (totalFeeMarketplaceValue / totalPreviousFeeMarketplaceValue)) * 100;
+        totalFeeMarketplace.growthTrend = 'down';
+      }
+      setTotalFeeMarketplaceData(totalFeeMarketplace);
+
+      const totalDiscount = new Object();
+      totalDiscount.value = totalDiscountValue;
+      totalDiscount.range = vsLabel();
+      if (totalDiscountValue >= totalPreviousDiscountValue) {
+        totalDiscount.growth = ((totalDiscountValue / totalPreviousDiscountValue) - 1) * 100;
+        totalDiscount.growthTrend = 'up';
+      }
+      else {
+        totalDiscount.growth = (1 - (totalDiscountValue / totalPreviousDiscountValue)) * 100;
+        totalDiscount.growthTrend = 'down';
+      }
+      setTotalDiscountData(totalDiscount);
 
       /*
       console.log(totalSalesValue + " | " + totalPreviousSalesValue);
@@ -3465,6 +3703,18 @@ const Home = () => {
       if (toggleMarginRate)
         chartLine.push(addLine);  
 
+      addLine = new Object();
+      addLine.column = 'Margin Kotor';
+      line.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Fee Marketplace';
+      line.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Diskon';
+      line.push(addLine);
+
       const chart = new Array();
       let addChart = new Object();
 
@@ -3475,6 +3725,9 @@ const Home = () => {
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
+      let totalGrossMarginValue = 0;
+      let totalFeeMarketplaceValue = 0;
+      let totalDiscountValue = 0;
 
       let lastHour;
 
@@ -3506,6 +3759,9 @@ const Home = () => {
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
+        let tempGrossMarginValue = 0;
+        let tempFeeMarketplaceValue = 0;
+        let tempDiscountValue = 0;
 
         line.forEach(function (lineItem) {
           let hourExist = false;
@@ -3533,6 +3789,18 @@ const Home = () => {
             legend = marginData.Legend;
             totalMarginRateValue = marginData.TotalRate;
           }
+          else if (marginData && lineItem.column == 'Margin Kotor') {
+            data = marginData.GrossData;
+            legend = marginData.Legend;
+          }
+          else if (marginData && lineItem.column == 'Fee Marketplace') {
+            data = marginData.FeeMarketplaceData;
+            legend = marginData.Legend;
+          }
+          else if (marginData && lineItem.column == 'Diskon') {
+            data = marginData.DiscountData;
+            legend = marginData.Legend;
+          }
 
           data.forEach(function (dataItem) {
             let hour = parseInt(dataItem.Date);
@@ -3556,6 +3824,18 @@ const Home = () => {
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin Kotor') {
+                    totalGrossMarginValue += parseFloat(dataItem[legendItem]);
+                    tempGrossMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Fee Marketplace') {
+                    totalFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                    tempFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Diskon') {
+                    totalDiscountValue += parseFloat(dataItem[legendItem]);
+                    tempDiscountValue += parseFloat(dataItem[legendItem]);
                   }
                 }
               });
@@ -3588,6 +3868,15 @@ const Home = () => {
             else if (lineItem.column == 'Margin (%)') {
               object += `, "${lineItem.column}": ${tempMarginRateValue}`;
             }
+            else if (lineItem.column == 'Margin Kotor') {
+              object += `, "${lineItem.column}": ${tempGrossMarginValue}`;
+            }
+            else if (lineItem.column == 'Fee Marketplace') {
+              object += `, "${lineItem.column}": ${tempFeeMarketplaceValue}`;
+            }
+            else if (lineItem.column == 'Diskon') {
+              object += `, "${lineItem.column}": ${tempDiscountValue}`;
+            }
           }
         });
 
@@ -3610,6 +3899,9 @@ const Home = () => {
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
+      let totalPreviousGrossMarginValue = 0;
+      let totalPreviousFeeMarketplaceValue = 0;
+      let totalPreviousDiscountValue = 0;
 
       while (hourCounter <= lastHour) { 
         line.forEach(function (lineItem) {
@@ -3637,6 +3929,18 @@ const Home = () => {
             legend = previousMarginData.Legend;
             totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
+          else if (previousMarginData && lineItem.column == 'Margin Kotor') {
+            data = previousMarginData.GrossData;
+            legend = previousMarginData.Legend;
+          }
+          else if (previousMarginData && lineItem.column == 'Fee Marketplace') {
+            data = previousMarginData.FeeMarketplaceData;
+            legend = previousMarginData.Legend;
+          }
+          else if (previousMarginData && lineItem.column == 'Diskon') {
+            data = previousMarginData.DiscountData;
+            legend = previousMarginData.Legend;
+          }
 
           data.forEach(function (dataItem) {
             let hour = parseInt(dataItem.Date);
@@ -3652,6 +3956,15 @@ const Home = () => {
                   }
                   else if (lineItem.column == 'Margin (Rp)') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Margin Kotor') {
+                    totalPreviousGrossMarginValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Fee Marketplace') {
+                    totalPreviousFeeMarketplaceValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Diskon') {
+                    totalPreviousDiscountValue += parseFloat(dataItem[legendItem]);
                   }
                 }
               });
@@ -3734,6 +4047,45 @@ const Home = () => {
         totalMarginRate.growthTrend = 'down';
       }
       setTotalMarginRateData(totalMarginRate);
+
+      const totalGrossMargin = new Object();
+      totalGrossMargin.value = totalGrossMarginValue;
+      totalGrossMargin.range = vsLabel();
+      if (totalGrossMarginValue >= totalPreviousGrossMarginValue) {
+        totalGrossMargin.growth = ((totalGrossMarginValue / totalPreviousGrossMarginValue) - 1) * 100;
+        totalGrossMargin.growthTrend = 'up';
+      }
+      else {
+        totalGrossMargin.growth = (1 - (totalGrossMarginValue / totalPreviousGrossMarginValue)) * 100;
+        totalGrossMargin.growthTrend = 'down';
+      }
+      setTotalGrossMarginData(totalGrossMargin);
+
+      const totalFeeMarketplace = new Object();
+      totalFeeMarketplace.value = totalFeeMarketplaceValue;
+      totalFeeMarketplace.range = vsLabel();
+      if (totalFeeMarketplaceValue >= totalPreviousFeeMarketplaceValue) {
+        totalFeeMarketplace.growth = ((totalFeeMarketplaceValue / totalPreviousFeeMarketplaceValue) - 1) * 100;
+        totalFeeMarketplace.growthTrend = 'up';
+      }
+      else {
+        totalFeeMarketplace.growth = (1 - (totalFeeMarketplaceValue / totalPreviousFeeMarketplaceValue)) * 100;
+        totalFeeMarketplace.growthTrend = 'down';
+      }
+      setTotalFeeMarketplaceData(totalFeeMarketplace);
+
+      const totalDiscount = new Object();
+      totalDiscount.value = totalDiscountValue;
+      totalDiscount.range = vsLabel();
+      if (totalDiscountValue >= totalPreviousDiscountValue) {
+        totalDiscount.growth = ((totalDiscountValue / totalPreviousDiscountValue) - 1) * 100;
+        totalDiscount.growthTrend = 'up';
+      }
+      else {
+        totalDiscount.growth = (1 - (totalDiscountValue / totalPreviousDiscountValue)) * 100;
+        totalDiscount.growthTrend = 'down';
+      }
+      setTotalDiscountData(totalDiscount);
       
       /*
       console.log(totalSalesValue + " | " + totalPreviousSalesValue);
@@ -6878,6 +7230,192 @@ const Home = () => {
                         </Grid>
                       </Grid>
                     </CardActionArea>
+                  </Card>
+                </HtmlTooltip>
+              }
+
+              { totalGrossMarginData &&
+                <HtmlTooltip title={<span><p>{grossMarginDataDescription.split("\n")[0]}</p><p>{grossMarginDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant="outlined" style={{width: 220, height: 128, marginRight: 12, marginBottom: 12, padding: 15}}>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Margin Kotor
+                    </Typography>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalGrossMarginData.value)}</span>
+                    </Typography>
+                    <Grid container style={{marginTop: 10}}>
+                      <Grid item xs={7}>
+                        <Typography 
+                          style={{
+                            color: "#888", 
+                            fontSize: 11,
+                            textAlign: 'left',
+                            fontWeight: 500
+                          }}
+                        >
+                          {totalGrossMarginData.range}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 13,
+                            textAlign: 'left',
+                            fontWeight: 500,
+                            display: 'inline'
+                          }}
+                        >
+                          {Intl.NumberFormat('id').format(parseFloat(totalGrossMarginData.growth).toFixed(2))}%
+                        </Typography>
+                        { totalGrossMarginData.growthTrend == 'up'
+                          ? <TrendingUpIcon
+                              style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                            />
+                          : <TrendingDownIcon
+                              style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                            />
+                        }
+                      </Grid>
+                    </Grid>
+                  </Card>
+                </HtmlTooltip>
+              }
+
+              { totalFeeMarketplaceData &&
+                <HtmlTooltip title={<span><p>{feeMarketplaceDataDescription.split("\n")[0]}</p><p>{feeMarketplaceDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant="outlined" style={{width: 220, height: 128, marginRight: 12, marginBottom: 12, padding: 15}}>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Fee Marketplace
+                    </Typography>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalFeeMarketplaceData.value)}</span>
+                    </Typography>
+                    <Grid container style={{marginTop: 10}}>
+                      <Grid item xs={7}>
+                        <Typography 
+                          style={{
+                            color: "#888", 
+                            fontSize: 11,
+                            textAlign: 'left',
+                            fontWeight: 500
+                          }}
+                        >
+                          {totalFeeMarketplaceData.range}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 13,
+                            textAlign: 'left',
+                            fontWeight: 500,
+                            display: 'inline'
+                          }}
+                        >
+                          {Intl.NumberFormat('id').format(parseFloat(totalFeeMarketplaceData.growth).toFixed(2))}%
+                        </Typography>
+                        { totalFeeMarketplaceData.growthTrend == 'up'
+                          ? <TrendingUpIcon
+                              style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                            />
+                          : <TrendingDownIcon
+                              style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                            />
+                        }
+                      </Grid>
+                    </Grid>
+                  </Card>
+                </HtmlTooltip>
+              }
+
+              { totalDiscountData &&
+                <HtmlTooltip title={<span><p>{discountDataDescription.split("\n")[0]}</p><p>{discountDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant="outlined" style={{width: 220, height: 128, marginRight: 12, marginBottom: 12, padding: 15}}>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Diskon
+                    </Typography>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalDiscountData.value)}</span>
+                    </Typography>
+                    <Grid container style={{marginTop: 10}}>
+                      <Grid item xs={7}>
+                        <Typography 
+                          style={{
+                            color: "#888", 
+                            fontSize: 11,
+                            textAlign: 'left',
+                            fontWeight: 500
+                          }}
+                        >
+                          {totalDiscountData.range}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 13,
+                            textAlign: 'left',
+                            fontWeight: 500,
+                            display: 'inline'
+                          }}
+                        >
+                          {Intl.NumberFormat('id').format(parseFloat(totalDiscountData.growth).toFixed(2))}%
+                        </Typography>
+                        { totalDiscountData.growthTrend == 'up'
+                          ? <TrendingUpIcon
+                              style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                            />
+                          : <TrendingDownIcon
+                              style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                            />
+                        }
+                      </Grid>
+                    </Grid>
                   </Card>
                 </HtmlTooltip>
               }
