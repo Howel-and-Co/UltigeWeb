@@ -111,9 +111,9 @@ const LineColor = (column) => {
     color = '#f6bd16'
   else if (column == 'Penjualan/Pesanan')
     color = '#fd5151'
-  else if (column == 'Margin (Rp)')
+  else if (column == 'Net Margin')
     color = '#aa88ff'
-  else if (column == 'Margin (%)')
+  else if (column == 'Persentase Margin')
     color = '#23aaab'
 
   return color;
@@ -157,7 +157,7 @@ const CustomAnalyticTooltip = ({ active, payload, label }) => {
         {payload.map((item, index) => (
           <body key={index}>
             <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 132}}>{`${item.name}`}</p>
-            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Margin (%)' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Margin (%)' ? "%" : ""}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Persentase Margin' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Persentase Margin' ? "%" : ""}`}</p>
           </body>
         ))}
       </Card>
@@ -225,8 +225,8 @@ const MultiTypeChart = (props) => {
       <YAxis yAxisId="Pesanan" hide={true}/>
       <YAxis yAxisId="Jumlah" hide={true}/>
       <YAxis yAxisId="Penjualan/Pesanan" hide={true}/>
-      <YAxis yAxisId="Margin (Rp)" hide={true}/>
-      <YAxis yAxisId="Margin (%)" hide={true}/>
+      <YAxis yAxisId="Net Margin" hide={true}/>
+      <YAxis yAxisId="Persentase Margin" hide={true}/>
       <RechartsTooltip 
         content={<CustomAnalyticTooltip />}
       />
@@ -2772,19 +2772,19 @@ const Home = () => {
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Margin (Rp)';
+      addLine.column = 'Net Margin';
       line.push(addLine);
       if (toggleMarginValue)
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Margin (%)';
+      addLine.column = 'Persentase Margin';
       line.push(addLine);
       if (toggleMarginRate)
         chartLine.push(addLine);  
 
       addLine = new Object();
-      addLine.column = 'Margin Kotor';
+      addLine.column = 'Gross Margin';
       line.push(addLine);
 
       addLine = new Object();
@@ -2847,16 +2847,16 @@ const Home = () => {
             data = averageSalesData.Data;
             legend = averageSalesData.Legend;
           }
-          else if (marginData && lineItem.column == 'Margin (Rp)') {
+          else if (marginData && lineItem.column == 'Net Margin') {
             data = marginData.Data;
             legend = marginData.Legend;
           }
-          else if (marginData && lineItem.column == 'Margin (%)') {
+          else if (marginData && lineItem.column == 'Persentase Margin') {
             data = marginData.RateData;
             legend = marginData.Legend;
             totalMarginRateValue = marginData.TotalRate;
           }
-          else if (marginData && lineItem.column == 'Margin Kotor') {
+          else if (marginData && lineItem.column == 'Gross Margin') {
             data = marginData.GrossData;
             legend = marginData.Legend;
           }
@@ -2888,11 +2888,11 @@ const Home = () => {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
                     tempSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (Rp)') {
+                  else if (lineItem.column == 'Net Margin') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin Kotor') {
+                  else if (lineItem.column == 'Gross Margin') {
                     totalGrossMarginValue += parseFloat(dataItem[legendItem]);
                     tempGrossMarginValue += parseFloat(dataItem[legendItem]);
                   }
@@ -2907,7 +2907,7 @@ const Home = () => {
                 }
               });
 
-              if (lineItem.column == 'Margin (%)') {
+              if (lineItem.column == 'Persentase Margin') {
                 tempMarginRateValue = parseFloat(dataItem["TOTAL"]);
               }
             }
@@ -2929,13 +2929,13 @@ const Home = () => {
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
             } 
-            else if (lineItem.column == 'Margin (Rp)') {
+            else if (lineItem.column == 'Net Margin') {
               object += `, "${lineItem.column}": ${tempMarginValue}`;
             }
-            else if (lineItem.column == 'Margin (%)') {
+            else if (lineItem.column == 'Persentase Margin') {
               object += `, "${lineItem.column}": ${tempMarginRateValue}`;
             }
-            else if (lineItem.column == 'Margin Kotor') {
+            else if (lineItem.column == 'Gross Margin') {
               object += `, "${lineItem.column}": ${tempGrossMarginValue}`;
             }
             else if (lineItem.column == 'Fee Marketplace') {
@@ -2992,16 +2992,16 @@ const Home = () => {
             data = previousAverageSalesData.Data;
             legend = previousAverageSalesData.Legend;
           }
-          else if (previousMarginData && lineItem.column == 'Margin (Rp)') {
+          else if (previousMarginData && lineItem.column == 'Net Margin') {
             data = previousMarginData.Data;
             legend = previousMarginData.Legend;
           }
-          else if (previousMarginData && lineItem.column == 'Margin (%)') {
+          else if (previousMarginData && lineItem.column == 'Persentase Margin') {
             data = previousMarginData.RateData;
             legend = previousMarginData.Legend;
             totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
-          else if (previousMarginData && lineItem.column == 'Margin Kotor') {
+          else if (previousMarginData && lineItem.column == 'Gross Margin') {
             data = previousMarginData.GrossData;
             legend = previousMarginData.Legend;
           }
@@ -3026,10 +3026,10 @@ const Home = () => {
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (Rp)') {
+                  else if (lineItem.column == 'Net Margin') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin Kotor') {
+                  else if (lineItem.column == 'Gross Margin') {
                     totalPreviousGrossMarginValue += parseFloat(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Fee Marketplace') {
@@ -3228,19 +3228,19 @@ const Home = () => {
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Margin (Rp)';
+      addLine.column = 'Net Margin';
       line.push(addLine);
       if (toggleMarginValue)
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Margin (%)';
+      addLine.column = 'Persentase Margin';
       line.push(addLine);
       if (toggleMarginRate)
         chartLine.push(addLine);  
 
       addLine = new Object();
-      addLine.column = 'Margin Kotor';
+      addLine.column = 'Gross Margin';
       line.push(addLine);
 
       addLine = new Object();
@@ -3312,16 +3312,16 @@ const Home = () => {
             data = averageSalesData.Data;
             legend = averageSalesData.Legend;
           }
-          else if (marginData && lineItem.column == 'Margin (Rp)') {
+          else if (marginData && lineItem.column == 'Net Margin') {
             data = marginData.Data;
             legend = marginData.Legend;
           }
-          else if (marginData && lineItem.column == 'Margin (%)') {
+          else if (marginData && lineItem.column == 'Persentase Margin') {
             data = marginData.RateData;
             legend = marginData.Legend;
             totalMarginRateValue = marginData.TotalRate;
           }
-          else if (marginData && lineItem.column == 'Margin Kotor') {
+          else if (marginData && lineItem.column == 'Gross Margin') {
             data = marginData.GrossData;
             legend = marginData.Legend;
           }
@@ -3353,11 +3353,11 @@ const Home = () => {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
                     tempSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (Rp)') {
+                  else if (lineItem.column == 'Net Margin') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin Kotor') {
+                  else if (lineItem.column == 'Gross Margin') {
                     totalGrossMarginValue += parseFloat(dataItem[legendItem]);
                     tempGrossMarginValue += parseFloat(dataItem[legendItem]);
                   }
@@ -3372,7 +3372,7 @@ const Home = () => {
                 }
               });
 
-              if (lineItem.column == 'Margin (%)') {
+              if (lineItem.column == 'Persentase Margin') {
                 tempMarginRateValue = parseFloat(dataItem["TOTAL"]);
               }
             }
@@ -3394,13 +3394,13 @@ const Home = () => {
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
             } 
-            else if (lineItem.column == 'Margin (Rp)') {
+            else if (lineItem.column == 'Net Margin') {
               object += `, "${lineItem.column}": ${tempMarginValue}`;
             }
-            else if (lineItem.column == 'Margin (%)') {
+            else if (lineItem.column == 'Persentase Margin') {
               object += `, "${lineItem.column}": ${tempMarginRateValue}`;
             }
-            else if (lineItem.column == 'Margin Kotor') {
+            else if (lineItem.column == 'Gross Margin') {
               object += `, "${lineItem.column}": ${tempGrossMarginValue}`;
             }
             else if (lineItem.column == 'Fee Marketplace') {
@@ -3455,16 +3455,16 @@ const Home = () => {
             data = previousAverageSalesData.Data;
             legend = previousAverageSalesData.Legend;
           }
-          else if (previousMarginData && lineItem.column == 'Margin (Rp)') {
+          else if (previousMarginData && lineItem.column == 'Net Margin') {
             data = previousMarginData.Data;
             legend = previousMarginData.Legend;
           }
-          else if (previousMarginData && lineItem.column == 'Margin (%)') {
+          else if (previousMarginData && lineItem.column == 'Persentase Margin') {
             data = previousMarginData.RateData;
             legend = previousMarginData.Legend;
             totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
-          else if (previousMarginData && lineItem.column == 'Margin Kotor') {
+          else if (previousMarginData && lineItem.column == 'Gross Margin') {
             data = previousMarginData.GrossData;
             legend = previousMarginData.Legend;
           }
@@ -3490,10 +3490,10 @@ const Home = () => {
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (Rp)') {
+                  else if (lineItem.column == 'Net Margin') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin Kotor') {
+                  else if (lineItem.column == 'Gross Margin') {
                     totalPreviousGrossMarginValue += parseFloat(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Fee Marketplace') {
@@ -3692,19 +3692,19 @@ const Home = () => {
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Margin (Rp)';
+      addLine.column = 'Net Margin';
       line.push(addLine);
       if (toggleMarginValue)
         chartLine.push(addLine);
 
       addLine = new Object();
-      addLine.column = 'Margin (%)';
+      addLine.column = 'Persentase Margin';
       line.push(addLine);
       if (toggleMarginRate)
         chartLine.push(addLine);  
 
       addLine = new Object();
-      addLine.column = 'Margin Kotor';
+      addLine.column = 'Gross Margin';
       line.push(addLine);
 
       addLine = new Object();
@@ -3780,16 +3780,16 @@ const Home = () => {
             data = averageSalesData.Data;
             legend = averageSalesData.Legend;
           }
-          else if (marginData && lineItem.column == 'Margin (Rp)') {
+          else if (marginData && lineItem.column == 'Net Margin') {
             data = marginData.Data;
             legend = marginData.Legend;
           }
-          else if (marginData && lineItem.column == 'Margin (%)') {
+          else if (marginData && lineItem.column == 'Persentase Margin') {
             data = marginData.RateData;
             legend = marginData.Legend;
             totalMarginRateValue = marginData.TotalRate;
           }
-          else if (marginData && lineItem.column == 'Margin Kotor') {
+          else if (marginData && lineItem.column == 'Gross Margin') {
             data = marginData.GrossData;
             legend = marginData.Legend;
           }
@@ -3821,11 +3821,11 @@ const Home = () => {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
                     tempSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (Rp)') {
+                  else if (lineItem.column == 'Net Margin') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin Kotor') {
+                  else if (lineItem.column == 'Gross Margin') {
                     totalGrossMarginValue += parseFloat(dataItem[legendItem]);
                     tempGrossMarginValue += parseFloat(dataItem[legendItem]);
                   }
@@ -3840,7 +3840,7 @@ const Home = () => {
                 }
               });
 
-              if (lineItem.column == 'Margin (%)') {
+              if (lineItem.column == 'Persentase Margin') {
                 tempMarginRateValue = parseFloat(dataItem["TOTAL"]);
               }
             } 
@@ -3862,13 +3862,13 @@ const Home = () => {
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
             } 
-            else if (lineItem.column == 'Margin (Rp)') {
+            else if (lineItem.column == 'Net Margin') {
               object += `, "${lineItem.column}": ${tempMarginValue}`;
             }
-            else if (lineItem.column == 'Margin (%)') {
+            else if (lineItem.column == 'Persentase Margin') {
               object += `, "${lineItem.column}": ${tempMarginRateValue}`;
             }
-            else if (lineItem.column == 'Margin Kotor') {
+            else if (lineItem.column == 'Gross Margin') {
               object += `, "${lineItem.column}": ${tempGrossMarginValue}`;
             }
             else if (lineItem.column == 'Fee Marketplace') {
@@ -3920,16 +3920,16 @@ const Home = () => {
             data = previousAverageSalesData.Data;
             legend = previousAverageSalesData.Legend;
           }
-          else if (previousMarginData && lineItem.column == 'Margin (Rp)') {
+          else if (previousMarginData && lineItem.column == 'Net Margin') {
             data = previousMarginData.Data;
             legend = previousMarginData.Legend;
           }
-          else if (previousMarginData && lineItem.column == 'Margin (%)') {
+          else if (previousMarginData && lineItem.column == 'Persentase Margin') {
             data = previousMarginData.RateData;
             legend = previousMarginData.Legend;
             totalPreviousMarginRateValue = previousMarginData.TotalRate;
           }
-          else if (previousMarginData && lineItem.column == 'Margin Kotor') {
+          else if (previousMarginData && lineItem.column == 'Gross Margin') {
             data = previousMarginData.GrossData;
             legend = previousMarginData.Legend;
           }
@@ -3954,10 +3954,10 @@ const Home = () => {
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin (Rp)') {
+                  else if (lineItem.column == 'Net Margin') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
-                  else if (lineItem.column == 'Margin Kotor') {
+                  else if (lineItem.column == 'Gross Margin') {
                     totalPreviousGrossMarginValue += parseFloat(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Fee Marketplace') {
@@ -7117,7 +7117,7 @@ const Home = () => {
                           fontWeight: 'bold'
                         }}
                       >
-                        Margin (Rp)
+                        Net Margin
                       </Typography>
                       <Typography 
                         style={{
@@ -7182,7 +7182,7 @@ const Home = () => {
                           fontWeight: 'bold'
                         }}
                       >
-                        Margin (%)
+                        Persentase Margin
                       </Typography>
                       <Typography 
                         style={{
@@ -7245,7 +7245,7 @@ const Home = () => {
                         fontWeight: 'bold'
                       }}
                     >
-                      Margin Kotor
+                      Gross Margin
                     </Typography>
                     <Typography 
                       style={{
@@ -7492,7 +7492,7 @@ const Home = () => {
                         marginTop: 3,
                       }}
                     >
-                      Margin (Rp)
+                      Net Margin
                     </Typography>
                   </Box>
                 }
@@ -7507,7 +7507,7 @@ const Home = () => {
                         marginTop: 3,
                       }}
                     >
-                      Margin (%)
+                      Persentase Margin
                     </Typography>
                   </Box>
                 }
