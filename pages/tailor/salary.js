@@ -274,7 +274,7 @@ const TailorSalary = () => {
 
       let username = Cookies.get("username");
 
-      fetchTailorSalaryData(startDate, endDate, "BENI");
+      fetchTailorSalaryData(startDate, endDate, username);
       setFetchActive(false);
     }
   }, [fetchActive]);
