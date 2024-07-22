@@ -98,7 +98,6 @@ const ManualRelease = () => {
       setDataLoading(true);
 
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/order/gettransactiondetail?transactionID=${transactionID}`);
-      //const result = await axios.get(`http://localhost:5000/ultigeapi/web/order/gettransactiondetail?transactionID=${transactionID}`);
     
       let processedData;
       processedData = result.data;
@@ -132,7 +131,6 @@ const ManualRelease = () => {
       const result = await axios({
         method: 'put',
         url: 'https://api.ultige.com/ultigeapi/web/order/releaseorder',
-        // url: 'http://localhost:5000/ultigeapi/web/order/releaseorder',
         data: {
           transactionID: transactionID,
           releaseReason: releaseReason,
