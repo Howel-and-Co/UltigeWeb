@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 const token = Cookies.get("token");
 
 axios.defaults.headers.common = {
-    "Client-ID": 'bc1bc16f819a0b9574b20a6512028710',
+    "Client-ID": 'db3b00c9066d8fc6d9b97a97bb7018d74e448871',
     'Authorization': token ? `${token}` : ""
 }
 
