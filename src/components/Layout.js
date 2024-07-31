@@ -44,8 +44,7 @@ const Layout = props => {
             }
             else if (Cookies.get("role") != "SUPER"
               && Cookies.get("role") != "MERCHANDISE"
-              && Cookies.get("role") != "ADM MERCHANDISE"
-              && Cookies.get("role") != "GA MKT") {
+              && Cookies.get("role") != "ADM MERCHANDISE") {
               Router.push("/sop");
             }
             else {

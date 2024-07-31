@@ -20,7 +20,7 @@ const navButtons = [
   {
     label: "Analytic",
     path: "/analytic",
-    includeRole: ["SUPER", "MERCHANDISE", "ADM MERCHANDISE", "GA MKT"],
+    includeRole: ["SUPER", "MERCHANDISE", "ADM MERCHANDISE", "GA MKT", "ACCOUNTING"],
     excludeRole: []
   },
   {

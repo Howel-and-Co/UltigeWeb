@@ -16,8 +16,7 @@ export const setToken = async (token, userid, role, username, password) => {
     }
     else if (role != "SUPER"
       && role != "MERCHANDISE"
-      && role != "ADM MERCHANDISE"
-      && role != "GA MKT") {
+      && role != "ADM MERCHANDISE") {
         window.location.href ="/sop";
     }
     else {
