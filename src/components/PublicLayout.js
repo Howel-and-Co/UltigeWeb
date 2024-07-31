@@ -37,7 +37,8 @@ const PublicLayout = props => {
             }
             else if (Cookies.get("role") != "SUPER"
               && Cookies.get("role") != "MERCHANDISE"
-              && Cookies.get("role") != "ADM MERCHANDISE") {
+              && Cookies.get("role") != "ADM MERCHANDISE"
+              && Cookies.get("role") != "ACCOUNTING") {
               Router.push("/sop");
             }
             else {
