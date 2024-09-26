@@ -109,6 +109,8 @@ const LineColor = (column) => {
     color = '#f6bd16'
   else if (column == 'Jumlah')
     color = '#f6bd16'
+  else if (column == 'Qty Bordir')
+    color = '#f6bd16'
   else if (column == 'Penjualan/Pesanan')
     color = '#fd5151'
   else if (column == 'Net Margin')
@@ -223,6 +225,7 @@ const MultiTypeChart = (props) => {
       <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
       <YAxis yAxisId="Penjualan" hide={true}/>
       <YAxis yAxisId="Pesanan" hide={true}/>
+      <YAxis yAxisId="Qty Bordir" hide={true}/>
       <YAxis yAxisId="Jumlah" hide={true}/>
       <YAxis yAxisId="Penjualan/Pesanan" hide={true}/>
       <YAxis yAxisId="Net Margin" hide={true}/>
@@ -435,14 +438,17 @@ const Home = () => {
 
   const [salesData, setSalesData] = useState();
   const [salesCountData, setSalesCountData] = useState();
+  const [embroideryQuantityData, setEmbroideryQuantityData] = useState();
   const [averageSalesData, setAverageSalesData] = useState();
   const [marginData, setMarginData] = useState();
   const [previousSalesData, setPreviousSalesData] = useState();
   const [previousSalesCountData, setPreviousSalesCountData] = useState();
+  const [previousEmbroideryCountData, setPreviousEmbroideryCountData] = useState();
   const [previousAverageSalesData, setPreviousAverageSalesData] = useState();
   const [previousMarginData, setPreviousMarginData] = useState();
   const [salesDataLoading, setSalesDataLoading] = useState(false);
   const [salesCountDataLoading, setSalesCountDataLoading] = useState(false);
+  const [embroideryCountDataLoading, setEmbroideryCountDataLoading] = useState(false);
   const [averageSalesDataLoading, setAverageSalesDataLoading] = useState(false);
   const [marginDataLoading, setMarginDataLoading] = useState(false);
   const [previousSalesDataLoading, setPreviousSalesDataLoading] = useState(false);
@@ -466,6 +472,7 @@ const Home = () => {
 
   const [toggleSales, setToggleSales] = React.useState(true);
   const [toggleSalesCount, setToggleSalesCount] = React.useState(true);
+  const [toggleEmbroideryQuantity, setToggleEmbroideryQuantity] = React.useState(true);
   const [toggleAverageSales, setToggleAverageSales] = React.useState(true);
   const [toggleMarginValue, setToggleMarginValue] = React.useState(true);
   const [toggleMarginRate, setToggleMarginRate] = React.useState(true);
@@ -476,6 +483,7 @@ const Home = () => {
   const [totalSalesData, setTotalSalesData] = React.useState();
   const [totalSalesCountData, setTotalSalesCountData] = React.useState();
   const [totalAverageSalesData, setTotalAverageSalesData] = React.useState();
+  const [totalEmbroideryQuantityData, setTotalEmbroideryQuantityData] = React.useState();
   const [totalMarginValueData, setTotalMarginValueData] = React.useState();
   const [totalMarginRateData, setTotalMarginRateData] = React.useState();
   const [totalGrossMarginData, setTotalGrossMarginData] = React.useState();
@@ -484,6 +492,7 @@ const Home = () => {
 
   const [salesDataDescription, setSalesDataDescription] = useState('');
   const [salesCountDataDescription, setSalesCountDataDescription] = useState('');
+  const [totalEmbroideryQuantityDataDescription, setEmbroideryQuantityDataDescription] = useState('');
   const [averageSalesDataDescription, setAverageSalesDataDescription] = useState('');
   const [marginDataDescription, setMarginDataDescription] = useState('');
   const [marginRateDataDescription, setMarginRateDataDescription] = useState('');
@@ -727,35 +736,42 @@ const Home = () => {
   };
 
   const handleToggleSalesChange = () => {
-    if (toggleSales && !(!toggleSalesCount && !toggleAverageSales && !toggleMarginValue && !toggleMarginRate))
+    if (toggleSales && !(!toggleSalesCount && !toggleAverageSales && !toggleMarginValue && !toggleMarginRate && !toggleEmbroideryQuantity))
       setToggleSales(false);
     else
       setToggleSales(true);
   };
 
   const handleToggleSalesCountChange = () => {
-    if (toggleSalesCount && !(!toggleSales && !toggleAverageSales && !toggleMarginValue && !toggleMarginRate))
+    if (toggleSalesCount && !(!toggleSales && !toggleAverageSales && !toggleMarginValue && !toggleMarginRate && !toggleEmbroideryQuantity))
       setToggleSalesCount(false);
     else
       setToggleSalesCount(true);
   };
 
+  const handleToggleEmbroideryQuantityChange = () => {
+    if (toggleEmbroideryQuantity && !(!toggleSalesCount && !toggleSales && !toggleMarginValue && !toggleMarginRate && !setToggleAverageSales))
+      setToggleEmbroideryQuantity(false);
+    else
+      setToggleEmbroideryQuantity(true);
+  };
+
   const handleToggleAverageSalesChange = () => {
-    if (toggleAverageSales && !(!toggleSalesCount && !toggleSales && !toggleMarginValue && !toggleMarginRate))
+    if (toggleAverageSales && !(!toggleSalesCount && !toggleSales && !toggleMarginValue && !toggleMarginRate && !toggleEmbroideryQuantity))
       setToggleAverageSales(false);
     else
       setToggleAverageSales(true);
   };
 
   const handleToggleMarginValueChange = () => {
-    if (toggleMarginValue && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleMarginRate))
+    if (toggleMarginValue && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleMarginRate && !toggleEmbroideryQuantity))
       setToggleMarginValue(false);
     else
       setToggleMarginValue(true);
   };
 
   const handleToggleMarginRateChange = () => {
-    if (toggleMarginRate && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleMarginValue))
+    if (toggleMarginRate && !(!toggleSalesCount && !toggleSales && !toggleAverageSales && !toggleMarginValue && !toggleEmbroideryQuantity))
       setToggleMarginRate(false);
     else
       setToggleMarginRate(true);
@@ -2034,6 +2050,18 @@ const Home = () => {
       setNewDataLoad(true);
     };
 
+    const fetchEmbroideryCountData = async (startDate, endDate) => {
+      setEmbroideryCountDataLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getembroideryquantity?startDate=${startDate}&endDate=${endDate}`);
+
+      let processedData;
+      processedData = result.data;
+
+      setEmbroideryQuantityData(processedData);
+      setEmbroideryCountDataLoading(false);
+      setNewDataLoad(true);
+    };
+
     const fetchSalesCountData = async (startDate, endDate) => {
       setSalesCountDataLoading(true);
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getsalescount?startDate=${startDate}&endDate=${endDate}`);
@@ -2078,6 +2106,7 @@ const Home = () => {
       processedData = result.data;
 
       setSalesDataDescription(processedData.Data.Sales);
+      setEmbroideryQuantityDataDescription(processedData.Data.EmbroideryQuantityValue);
       setSalesCountDataDescription(processedData.Data.SalesCount);
       setAverageSalesDataDescription(processedData.Data.AverageSalesValue);
       setMarginDataDescription(processedData.Data.MarginValue);
@@ -2296,6 +2325,7 @@ const Home = () => {
       setProductTab('1');
 
       fetchSalesData(startDate, endDate);
+      fetchEmbroideryCountData(startDate, endDate);
       fetchSalesCountData(startDate, endDate);
       fetchAverageSalesData(startDate, endDate);
       fetchMarginData(startDate, endDate);
@@ -2764,6 +2794,12 @@ const Home = () => {
       line.push(addLine);
       if (toggleSalesCount)
         chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Qty Bordir';
+      line.push(addLine);
+      if (toggleEmbroideryQuantity)
+        chartLine.push(addLine);
       
       addLine = new Object();
       addLine.column = 'Penjualan/Pesanan';
@@ -2823,6 +2859,7 @@ const Home = () => {
 
         let tempSalesValue = 0;
         let tempSalesCountValue = 0;
+        let tempEmbroideryQuantityValue = 0;
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
@@ -2842,6 +2879,10 @@ const Home = () => {
           else if (salesCountData && lineItem.column == 'Pesanan') {
             data = salesCountData.Data;
             legend = salesCountData.Legend;
+          }
+          else if (embroideryQuantityData && lineItem.column == 'Qty Bordir') {
+            data = embroideryQuantityData.Data;
+            legend = embroideryQuantityData.Legend;
           }
           else if (averageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = averageSalesData.Data;
@@ -2883,6 +2924,10 @@ const Home = () => {
                   if (lineItem.column == 'Penjualan') {
                     totalSalesValue += parseFloat(dataItem[legendItem]);
                     tempSalesValue += parseFloat(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Qty Bordir') {
+                    totalEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
+                    tempEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Pesanan') {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
@@ -2926,6 +2971,9 @@ const Home = () => {
             else if (lineItem.column == 'Pesanan') {
               object += `, "${lineItem.column}": ${tempSalesCountValue}`;
             }
+            else if (lineItem.column == 'Qty Bordir') {
+              object += `, "${lineItem.column}": ${tempEmbroideryQuantityValue}`;
+            }
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
             } 
@@ -2966,6 +3014,7 @@ const Home = () => {
 
       let totalPreviousSalesValue = 0;
       let totalPreviousSalesCountValue = 0;
+      let totalPreviousEmbroideryQuantityValue = 0;
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
@@ -2987,6 +3036,10 @@ const Home = () => {
           else if (previousSalesCountData && lineItem.column == 'Pesanan') {
             data = previousSalesCountData.Data;
             legend = previousSalesCountData.Legend;
+          }
+          else if (previousEmbroideryCountData && lineItem.column == 'Qty Bordir') {
+            data = embroideryQuantityData.Data;
+            legend = previousEmbroideryCountData.Legend;
           }
           else if (previousAverageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = previousAverageSalesData.Data;
@@ -3078,6 +3131,19 @@ const Home = () => {
         totalSalesCount.growthTrend = 'down';
       }
       setTotalSalesCountData(totalSalesCount);
+
+      const totalEmbroideryQuantity = new Object();
+      totalEmbroideryQuantity.value = totalEmbroideryQuantityValue;
+      totalEmbroideryQuantity.range = vsLabel();
+      if (totalEmbroideryQuantityValue >= totalPreviousEmbroideryQuantityValue) {
+        totalEmbroideryQuantity.growth = ((totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue) - 1) * 100;
+        totalEmbroideryQuantity.growthTrend = 'up';
+      }
+      else {
+        totalEmbroideryQuantity.growth = (1 - (totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue)) * 100;
+        totalEmbroideryQuantity.growthTrend = 'down';
+      }
+      setTotalEmbroideryQuantityData(totalEmbroideryQuantity);
 
       const totalAverageSales = new Object();
       totalAverageSales.value = totalAverageSalesValue;
@@ -3220,6 +3286,12 @@ const Home = () => {
       line.push(addLine);
       if (toggleSalesCount)
         chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Qty Bordir';
+      line.push(addLine);
+      if (toggleEmbroideryQuantity)
+        chartLine.push(addLine);
       
       addLine = new Object();
       addLine.column = 'Penjualan/Pesanan';
@@ -3308,6 +3380,10 @@ const Home = () => {
             data = salesCountData.Data;
             legend = salesCountData.Legend;
           }
+          else if (embroideryQuantityData && lineItem.column == 'Qty Bordir') {
+            data = embroideryQuantityData.Data;
+            legend = embroideryQuantityData.Legend;
+          }
           else if (averageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = averageSalesData.Data;
             legend = averageSalesData.Legend;
@@ -3391,6 +3467,9 @@ const Home = () => {
             else if (lineItem.column == 'Pesanan') {
               object += `, "${lineItem.column}": ${tempSalesCountValue}`;
             }
+            else if (lineItem.column == 'Qty Bordir') {
+              object += `, "${lineItem.column}": ${totalEmbroideryQuantityValue}`;
+            }
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
             } 
@@ -3431,6 +3510,7 @@ const Home = () => {
 
       let totalPreviousSalesValue = 0;
       let totalPreviousSalesCountValue = 0;
+      let totalPreviousEmbroideryQuantityValue = 0;
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
@@ -3450,6 +3530,10 @@ const Home = () => {
           else if (previousSalesCountData && lineItem.column == 'Pesanan') {
             data = previousSalesCountData.Data;
             legend = previousSalesCountData.Legend;
+          }
+          else if (embroideryQuantityData && lineItem.column == 'Qty Bordir') {
+            data = embroideryQuantityData.Data;
+            legend = embroideryQuantityData.Legend;
           }
           else if (previousAverageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = previousAverageSalesData.Data;
@@ -3489,6 +3573,9 @@ const Home = () => {
                   }
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
+                  }
+                  else if (lineItem.column == 'Qty Bordir') {
+                    totalPreviousEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
                   }
                   else if (lineItem.column == 'Net Margin') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
@@ -3542,6 +3629,19 @@ const Home = () => {
         totalSalesCount.growthTrend = 'down';
       }
       setTotalSalesCountData(totalSalesCount);
+
+      const totalEmbroideryQuantity = new Object();
+      totalEmbroideryQuantity.value = totalEmbroideryQuantityValue;
+      totalEmbroideryQuantity.range = vsLabel();
+      if (totalEmbroideryQuantityValue >= totalPreviousEmbroideryQuantityValue) {
+        totalEmbroideryQuantity.growth = ((totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue) - 1) * 100;
+        totalEmbroideryQuantity.growthTrend = 'up';
+      }
+      else {
+        totalEmbroideryQuantity.growth = (1 - (totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue)) * 100;
+        totalEmbroideryQuantity.growthTrend = 'down';
+      }
+      setTotalEmbroideryQuantityData(totalEmbroideryQuantity);
 
       const totalAverageSales = new Object();
       totalAverageSales.value = totalAverageSalesValue;
@@ -3684,6 +3784,12 @@ const Home = () => {
       line.push(addLine);
       if (toggleSalesCount)
         chartLine.push(addLine);
+
+      addLine = new Object();
+      addLine.column = 'Qty Bordir';
+      line.push(addLine);
+      if (toggleEmbroideryQuantity)
+        chartLine.push(addLine);
       
       addLine = new Object();
       addLine.column = 'Penjualan/Pesanan';
@@ -3722,6 +3828,7 @@ const Home = () => {
 
       let totalSalesValue = 0;
       let totalSalesCountValue = 0;
+      let totalEmbroideryQuantityValue = 0;
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
@@ -3756,6 +3863,7 @@ const Home = () => {
 
         let tempSalesValue = 0;
         let tempSalesCountValue = 0;
+        let tempEmbroideryQuantityValue = 0;
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
@@ -3775,6 +3883,10 @@ const Home = () => {
           else if (salesCountData && lineItem.column == 'Pesanan') {
             data = salesCountData.Data;
             legend = salesCountData.Legend;
+          }
+          else if (embroideryQuantityData && lineItem.column == 'Qty Bordir') {
+            data = embroideryQuantityData.Data;
+            legend = embroideryQuantityData.Legend;
           }
           else if (averageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = averageSalesData.Data;
@@ -3821,6 +3933,10 @@ const Home = () => {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
                     tempSalesCountValue += parseInt(dataItem[legendItem]);
                   }
+                  else if (lineItem.column == 'Qty Bordir') {
+                    totalEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
+                    tempEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
+                  }
                   else if (lineItem.column == 'Net Margin') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
@@ -3859,6 +3975,9 @@ const Home = () => {
             else if (lineItem.column == 'Pesanan') {
               object += `, "${lineItem.column}": ${tempSalesCountValue}`;
             }
+            else if (lineItem.column == 'Qty Bordir') {
+              object += `, "${lineItem.column}": ${tempEmbroideryQuantityValue}`;
+            }
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
             } 
@@ -3896,6 +4015,7 @@ const Home = () => {
 
       let totalPreviousSalesValue = 0;
       let totalPreviousSalesCountValue = 0;
+      let totalPreviousEmbroideryQuantityValue = 0;
       let totalPreviousAverageSalesValue = 0;
       let totalPreviousMarginValue = 0;
       let totalPreviousMarginRateValue = 0;
@@ -3915,6 +4035,10 @@ const Home = () => {
           else if (previousSalesCountData && lineItem.column == 'Pesanan') {
             data = previousSalesCountData.Data;
             legend = previousSalesCountData.Legend;
+          }
+          else if (previousEmbroideryCountData && lineItem.column == 'Qty Bordir') {
+            data = previousEmbroideryCountData.Data;
+            legend = previousEmbroideryCountData.Legend;
           }
           else if (previousAverageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = previousAverageSalesData.Data;
@@ -4007,6 +4131,20 @@ const Home = () => {
         totalSalesCount.growthTrend = 'down';
       }
       setTotalSalesCountData(totalSalesCount);
+
+      const totalEmbroideryQuantity = new Object();
+      totalEmbroideryQuantity.value = totalEmbroideryQuantityValue;
+      totalEmbroideryQuantity.range = vsLabel();
+      totalEmbroideryQuantity.growth = (1 - (totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue)) * 100;
+      if (totalEmbroideryQuantityValue >= totalPreviousEmbroideryQuantityValue) {
+        totalEmbroideryQuantity.growth = ((totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue) - 1) * 100;
+        totalEmbroideryQuantity.growthTrend = 'up';
+      }
+      else {
+        totalEmbroideryQuantity.growth = (1 - (totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue)) * 100;
+        totalEmbroideryQuantity.growthTrend = 'down';
+      }
+      setTotalEmbroideryQuantityData(totalEmbroideryQuantity);
 
       const totalAverageSales = new Object();
       totalAverageSales.value = totalAverageSalesValue;
@@ -6987,7 +7125,7 @@ const Home = () => {
                           fontWeight: 'bold'
                         }}
                       >
-                        Pesanan
+                        APA AJA
                       </Typography>
                       <Typography 
                         style={{
@@ -7025,6 +7163,71 @@ const Home = () => {
                             {Intl.NumberFormat('id').format(parseFloat(totalSalesCountData.growth).toFixed(2))}%
                           </Typography>
                           { totalSalesCountData.growthTrend == 'up'
+                            ? <TrendingUpIcon
+                                style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                              />
+                            : <TrendingDownIcon
+                                style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                              />
+                          }
+                        </Grid>
+                      </Grid>
+                    </CardActionArea>
+                  </Card>
+                </HtmlTooltip>
+              }
+
+              { totalEmbroideryQuantityData &&
+                <HtmlTooltip title={<span><p>{totalEmbroideryQuantityDataDescription.split("\n")[0]}</p><p>{totalEmbroideryQuantityDataDescription.split("\n")[1]}</p></span>}>
+                  <Card variant={toggleEmbroideryQuantity ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                    <div style={{backgroundColor: toggleEmbroideryQuantity ? '#fd5151' : 'transparent', height: 5, width: '100%'}}/>
+                    <CardActionArea style={{padding: 15}} onClick={handleToggleEmbroideryQuantityChange} disableRipple>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Qty Bordir
+                      </Typography>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 14,
+                          textAlign: 'left',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalEmbroideryQuantityData.value)}</span>
+                      </Typography>
+                      <Grid container style={{marginTop: 10}}>
+                        <Grid item xs={7}>
+                          <Typography 
+                            style={{
+                              color: "#888", 
+                              fontSize: 11,
+                              textAlign: 'left',
+                              fontWeight: 500
+                            }}
+                          >
+                            {totalEmbroideryQuantityData.range}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                          <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 13,
+                              textAlign: 'left',
+                              fontWeight: 500,
+                              display: 'inline'
+                            }}
+                          >
+                            {Intl.NumberFormat('id').format(parseFloat(totalEmbroideryQuantityData.growth).toFixed(2))}%
+                          </Typography>
+                          { totalEmbroideryQuantityData.growthTrend == 'up'
                             ? <TrendingUpIcon
                                 style={{ color: 'green', fontSize: 20, marginLeft: 3}}
                               />
@@ -7466,6 +7669,21 @@ const Home = () => {
                     </Typography>
                   </Box>
                 }
+                { toggleEmbroideryQuantity && 
+                  <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                    <FiberManualRecordIcon style={{ color: '#f6bd16', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 16,
+                        marginRight: 8,
+                        marginTop: 3,
+                      }}
+                    >
+                      Qty Bordir
+                    </Typography>
+                  </Box>
+                }
                 { toggleAverageSales && 
                   <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
                     <FiberManualRecordIcon style={{ color: '#fd5151', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
@@ -7519,7 +7737,7 @@ const Home = () => {
             }
 
             <Grid item xs={12}>
-              { (salesDataLoading || salesCountDataLoading || averageSalesDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousAverageSalesDataLoading || previousMarginDataLoading) &&
+              { (salesDataLoading || salesCountDataLoading || embroideryCountDataLoading || averageSalesDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousAverageSalesDataLoading || previousMarginDataLoading) &&
                 <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                   <CircularProgress size={25} />
                   <Typography 
