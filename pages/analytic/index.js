@@ -110,7 +110,7 @@ const LineColor = (column) => {
   else if (column == 'Jumlah')
     color = '#f6bd16'
   else if (column == 'Qty Bordir')
-    color = '#f6bd16'
+    color = '#42f548'
   else if (column == 'Penjualan/Pesanan')
     color = '#fd5151'
   else if (column == 'Net Margin')
@@ -159,7 +159,7 @@ const CustomAnalyticTooltip = ({ active, payload, label }) => {
         {payload.map((item, index) => (
           <body key={index}>
             <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 132}}>{`${item.name}`}</p>
-            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${item.name != 'Pesanan' && item.name != 'Jumlah' && item.name != 'Persentase Margin' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Persentase Margin' ? "%" : ""}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${item.name != 'Pesanan' && item.name != 'Qty Bordir' && item.name != 'Jumlah' && item.name != 'Persentase Margin' ? "Rp " : ""}${Intl.NumberFormat('id').format(item.payload[item.name])}${item.name == 'Persentase Margin' ? "%" : ""}`}</p>
           </body>
         ))}
       </Card>
@@ -750,7 +750,7 @@ const Home = () => {
   };
 
   const handleToggleEmbroideryQuantityChange = () => {
-    if (toggleEmbroideryQuantity && !(!toggleSalesCount && !toggleSales && !toggleMarginValue && !toggleMarginRate && !setToggleAverageSales))
+    if (toggleEmbroideryQuantity && !(!toggleSalesCount && !toggleSales && !toggleMarginValue && !toggleMarginRate && !toggleAverageSales))
       setToggleEmbroideryQuantity(false);
     else
       setToggleEmbroideryQuantity(true);
@@ -3079,6 +3079,9 @@ const Home = () => {
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
                   }
+                  else if (lineItem.column == 'Qty Bordir') {
+                    totalPreviousEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
+                  }
                   else if (lineItem.column == 'Net Margin') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
@@ -4368,7 +4371,7 @@ const Home = () => {
 
       setDataReload(false);
     }
-  }, [salesData, salesCountData, averageSalesData, marginData, previousSalesData, previousSalesCountData, previousAverageSalesData, previousMarginData, channel, toggleSales, toggleSalesCount, toggleAverageSales, toggleMarginValue, toggleMarginRate, toggleMultipleSales, dataReload]);
+  }, [salesData, salesCountData, averageSalesData, marginData, previousSalesData, previousSalesCountData, previousAverageSalesData, previousMarginData, channel, toggleSales, toggleSalesCount, toggleAverageSales, toggleMarginValue, toggleMarginRate, toggleMultipleSales, toggleEmbroideryQuantity, dataReload]);
 
   useEffect(() => {
     if (segmentationFetchActive == true && checkToken()) {
@@ -7180,7 +7183,7 @@ const Home = () => {
               { totalEmbroideryQuantityData &&
                 <HtmlTooltip title={<span><p>{totalEmbroideryQuantityDataDescription.split("\n")[0]}</p><p>{totalEmbroideryQuantityDataDescription.split("\n")[1]}</p></span>}>
                   <Card variant={toggleEmbroideryQuantity ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
-                    <div style={{backgroundColor: toggleEmbroideryQuantity ? '#fd5151' : 'transparent', height: 5, width: '100%'}}/>
+                    <div style={{backgroundColor: toggleEmbroideryQuantity ? '#39fc03' : 'transparent', height: 5, width: '100%'}}/>
                     <CardActionArea style={{padding: 15}} onClick={handleToggleEmbroideryQuantityChange} disableRipple>
                       <Typography 
                         style={{
@@ -7200,7 +7203,7 @@ const Home = () => {
                           fontWeight: 'bold'
                         }}
                       >
-                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(totalEmbroideryQuantityData.value)}</span>
+                        <span style={{fontSize: 20, fontWeight: 'bold'}}>{totalEmbroideryQuantityData.value}</span>
                       </Typography>
                       <Grid container style={{marginTop: 10}}>
                         <Grid item xs={7}>
@@ -7671,7 +7674,7 @@ const Home = () => {
                 }
                 { toggleEmbroideryQuantity && 
                   <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                    <FiberManualRecordIcon style={{ color: '#f6bd16', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                    <FiberManualRecordIcon style={{ color: '#39fc03', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                     <Typography 
                       style={{
                         color: "#000", 
