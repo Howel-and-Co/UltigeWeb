@@ -1,6 +1,6 @@
 import FullScreenLayout from "../../src/components/FullScreenLayout";
 import {
-  Grid, 
+  Grid,
   Typography,
   Paper,
   Box,
