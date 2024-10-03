@@ -297,7 +297,7 @@ const Product = () => {
                             <ColumnDirective
                                 field="ProductImage"
                                 headerText="Foto"
-                                width="75"
+                                width="76"
                                 template={ProductImageTemplate}
                                 allowFiltering={false}
                             ></ColumnDirective> 
