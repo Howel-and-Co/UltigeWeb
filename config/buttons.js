@@ -62,7 +62,7 @@ const navButtons = [
   {
     label: "Delivery Order",
     path: "/delivery-order",
-    includeRole: ["SUPER"],
+    includeRole: ["SUPER", "MERCHANDISE"],
     excludeRole: []
   },
   {
