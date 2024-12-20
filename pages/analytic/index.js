@@ -452,6 +452,7 @@ const Home = () => {
   const [averageSalesDataLoading, setAverageSalesDataLoading] = useState(false);
   const [marginDataLoading, setMarginDataLoading] = useState(false);
   const [previousSalesDataLoading, setPreviousSalesDataLoading] = useState(false);
+  const [previousEmbroideryCountDataLoading, setPreviousEmbroideryCountDataLoading] = useState();
   const [previousSalesCountDataLoading, setPreviousSalesCountDataLoading] = useState(false);
   const [previousAverageSalesDataLoading, setPreviousAverageSalesDataLoading] = useState(false);
   const [previousMarginDataLoading, setPreviousMarginDataLoading] = useState(false);
@@ -2128,6 +2129,18 @@ const Home = () => {
       setNewDataLoad(true);
     };
 
+    const fetchPreviousEmbroideryCountData = async (startDate, endDate) => {
+      setPreviousEmbroideryCountDataLoading(true);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getembroideryquantity?startDate=${startDate}&endDate=${endDate}`);
+
+      let processedData;
+      processedData = result.data;
+
+      setPreviousEmbroideryCountData(processedData);
+      setPreviousEmbroideryCountDataLoading(false);
+      setNewDataLoad(true);
+    };
+
     const fetchPreviousSalesCountData = async (startDate, endDate) => {
       setPreviousSalesCountDataLoading(true);
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getsalescount?startDate=${startDate}&endDate=${endDate}`);
@@ -2333,6 +2346,7 @@ const Home = () => {
 
       fetchPreviousSalesData(previousStartDate, previousEndDate);
       fetchPreviousSalesCountData(previousStartDate, previousEndDate);
+      fetchPreviousEmbroideryCountData(previousStartDate, previousEndDate);
       fetchPreviousAverageSalesData(previousStartDate, previousEndDate);
       fetchPreviousMarginData(previousStartDate, previousEndDate);
 
@@ -2842,6 +2856,7 @@ const Home = () => {
 
       let totalSalesValue = 0;
       let totalSalesCountValue = 0;
+      let totalEmbroideryQuantityValue = 0;
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
@@ -3038,7 +3053,7 @@ const Home = () => {
             legend = previousSalesCountData.Legend;
           }
           else if (previousEmbroideryCountData && lineItem.column == 'Qty Bordir') {
-            data = embroideryQuantityData.Data;
+            data = previousEmbroideryCountData.Data;
             legend = previousEmbroideryCountData.Legend;
           }
           else if (previousAverageSalesData && lineItem.column == 'Penjualan/Pesanan') {
@@ -3338,6 +3353,7 @@ const Home = () => {
 
       let totalSalesValue = 0;
       let totalSalesCountValue = 0;
+      let totalEmbroideryQuantityValue = 0;
       let totalAverageSalesValue = 0;
       let totalMarginValue = 0;
       let totalMarginRateValue = 0;
@@ -3363,6 +3379,7 @@ const Home = () => {
 
         let tempSalesValue = 0;
         let tempSalesCountValue = 0;
+        let tempEmbroideryQuantityValue = 0;
         let tempAverageSalesValue = 0;
         let tempMarginValue = 0;
         let tempMarginRateValue = 0;
@@ -3432,6 +3449,10 @@ const Home = () => {
                     totalSalesCountValue += parseInt(dataItem[legendItem]);
                     tempSalesCountValue += parseInt(dataItem[legendItem]);
                   }
+                  else if (lineItem.column == 'Qty Bordir') {
+                    totalEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
+                    tempEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
+                  }
                   else if (lineItem.column == 'Net Margin') {
                     totalMarginValue += parseFloat(dataItem[legendItem]);
                     tempMarginValue += parseFloat(dataItem[legendItem]);
@@ -3471,7 +3492,7 @@ const Home = () => {
               object += `, "${lineItem.column}": ${tempSalesCountValue}`;
             }
             else if (lineItem.column == 'Qty Bordir') {
-              object += `, "${lineItem.column}": ${totalEmbroideryQuantityValue}`;
+              object += `, "${lineItem.column}": ${tempEmbroideryQuantityValue}`;
             }
             else if (lineItem.column == 'Penjualan/Pesanan') {
               object += `, "${lineItem.column}": ${tempAverageSalesValue}`;
@@ -3535,8 +3556,8 @@ const Home = () => {
             legend = previousSalesCountData.Legend;
           }
           else if (embroideryQuantityData && lineItem.column == 'Qty Bordir') {
-            data = embroideryQuantityData.Data;
-            legend = embroideryQuantityData.Legend;
+            data = previousEmbroideryCountData.Data;
+            legend = previousEmbroideryCountData.Legend;
           }
           else if (previousAverageSalesData && lineItem.column == 'Penjualan/Pesanan') {
             data = previousAverageSalesData.Data;
@@ -4081,6 +4102,9 @@ const Home = () => {
                   else if (lineItem.column == 'Pesanan') {
                     totalPreviousSalesCountValue += parseInt(dataItem[legendItem]);
                   }
+                  else if (lineItem.column == 'Qty Bordir') {
+                    totalPreviousEmbroideryQuantityValue += parseInt(dataItem[legendItem]);
+                  }
                   else if (lineItem.column == 'Net Margin') {
                     totalPreviousMarginValue += parseFloat(dataItem[legendItem]);
                   }
@@ -4138,7 +4162,6 @@ const Home = () => {
       const totalEmbroideryQuantity = new Object();
       totalEmbroideryQuantity.value = totalEmbroideryQuantityValue;
       totalEmbroideryQuantity.range = vsLabel();
-      totalEmbroideryQuantity.growth = (1 - (totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue)) * 100;
       if (totalEmbroideryQuantityValue >= totalPreviousEmbroideryQuantityValue) {
         totalEmbroideryQuantity.growth = ((totalEmbroideryQuantityValue / totalPreviousEmbroideryQuantityValue) - 1) * 100;
         totalEmbroideryQuantity.growthTrend = 'up';
@@ -7740,7 +7763,7 @@ const Home = () => {
             }
 
             <Grid item xs={12}>
-              { (salesDataLoading || salesCountDataLoading || embroideryCountDataLoading || averageSalesDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousAverageSalesDataLoading || previousMarginDataLoading) &&
+              { (salesDataLoading || salesCountDataLoading || embroideryCountDataLoading || averageSalesDataLoading || marginDataLoading || previousSalesDataLoading || previousSalesCountDataLoading || previousEmbroideryCountDataLoading || previousAverageSalesDataLoading || previousMarginDataLoading) &&
                 <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
                   <CircularProgress size={25} />
                   <Typography 
