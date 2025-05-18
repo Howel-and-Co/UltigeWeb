@@ -1936,8 +1936,8 @@ const Home = () => {
 
   const fetchModelSalesData = async (startDate, endDate) => {
     setModelSalesDataLoading(true);
-    //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
-    const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
+    const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
+    //const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
     let processedData;
     processedData = result.data;
 
