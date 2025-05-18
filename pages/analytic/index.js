@@ -1936,8 +1936,8 @@ const Home = () => {
 
   const fetchModelSalesData = async (startDate, endDate) => {
     setModelSalesDataLoading(true);
-    const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
-
+    //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
+    const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getmodelsales?startDate=${startDate}&endDate=${endDate}&limit=10&page=1`);
     let processedData;
     processedData = result.data;
 
@@ -6158,6 +6158,11 @@ const Home = () => {
               Rp {Intl.NumberFormat('id').format(row.Value)}
             </Typography>
           </TableCell>
+          <TableCell align="right" style={{width: 225}}>
+            <Typography>
+              Rp {Intl.NumberFormat('id').format(row.GrossValue)}
+            </Typography>
+          </TableCell>
           <TableCell align="right" style={{width: 150}}>
             <Typography>
               {Intl.NumberFormat('id').format(row.Proportion)}%
@@ -8178,6 +8183,7 @@ const Home = () => {
                               <TableCell>Peringkat</TableCell>
                               <TableCell align="left">Informasi Produk</TableCell>
                               <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Gross Margin</TableCell>
                               <TableCell align="right">Proporsi</TableCell>
                               <TableCell align="right">Tingkat Perubahan</TableCell>
                             </TableRow>
