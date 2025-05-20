@@ -699,6 +699,7 @@ const Home = () => {
       setCategoryCustomFetchActive(true);
     }
   };
+
   const handleCategoryCustomChange = (event, newValue) => {
     if (newValue !== null) {
       setCategoryCustom(newValue);
@@ -820,6 +821,12 @@ const Home = () => {
   const [tierMultipleCategoryCustomEndDate, setTierMultipleCategoryCustomEndDate] = React.useState(getCurrentTime());
   const [multipleStockCustomStartDate, setMultipleStockCustomStartDate] = React.useState(getCurrentTime());
   const [multipleStockCustomEndDate, setMultipleStockCustomEndDate] = React.useState(getCurrentTime());
+  const [appliedModelCategoryCustom, setAppliedModelCategoryCustom] = useState(false);
+
+  const handleModelCategoryCustomApply = (e) =>{
+	console.log('Tombol Apply ditekan!', e);
+	setAppliedModelCategoryCustom(e);
+  };
 
   const handleModelCategoryEndDateChange = (date) => {
     setModelCategoryEndDate(date);
@@ -1055,6 +1062,436 @@ const Home = () => {
   }
 
   const handleTierMultipleCategoryData = () => {
+    const processMonthTierMultipleCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+ 
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let monthCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        currentDate.startOf('month');
+        monthCounter++; 
+        let object = ``;
+
+        if (dateDifference > 1095 && monthCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 730 && dateDifference <= 1095 && monthCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 365 && dateDifference <= 730 && monthCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('MMM') == 'Jan')
+            object += `{"label": "${moment(currentDate).format('MMM YYYY')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('MMM YYYY')}"`;
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
+
+          if (moment(date).isSame(currentDate) == true) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'months');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+    
+      return result;
+    };
+
+    const processWeekTierMultipleCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+ 
+      let momentStartDate = moment(startDate, "YYYY-MM-DD").startOf('isoWeek');
+      let momentEndDate = moment(endDate, "YYYY-MM-DD").startOf('isoWeek');
+
+      let currentDate = momentStartDate;
+      let weekCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        weekCounter++;
+        let object = ``;
+
+        if (dateDifference > 140 && weekCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 100 && dateDifference <= 140 && weekCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 60 && dateDifference <= 100 && weekCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          object += `{"label": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+        }
+
+        object += `, "dataLabel": "Week ${currentDate.isoWeek()} ${moment(currentDate).format('MMM')}"`;
+
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let week = parseInt(dataItem.Date.substring(4, 6));
+
+          if (week == currentDate.isoWeek()) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'weeks');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+    
+      return result;
+    };
+
+    const processDayTierMultipleCategorySaleCustomData = (startDate, endDate, processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      const dateDifference = processedData.DateDifference;
+
+ 
+      let momentStartDate = moment(startDate, "YYYY-MM-DD");
+      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+
+      let currentDate = momentStartDate;
+      let dateCounter = 0;
+
+      while (currentDate <= momentEndDate) { 
+        dateCounter++; 
+        let object = ``;
+
+        if (dateDifference > 45 && dateCounter % 4 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 30 && dateDifference <= 45 && dateCounter % 3 != 1) {
+          object += `{"label": ""`;
+        }
+        else if (dateDifference > 15 && dateDifference <= 30 && dateCounter % 2 != 1) {
+          object += `{"label": ""`;
+        }
+        else {
+          if (moment(currentDate).format('Do') == '1')
+            object += `{"label": "${moment(currentDate).format('Do MMM')}"`;
+          else
+            object += `{"label": "${moment(currentDate).format('Do')}"`;
+        }
+
+        object += `, "dataLabel": "${moment(currentDate).format('Do MMM')}"`;
+
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let date = moment(dataItem.Date, "DD/MM/YYYY");
+
+          if (moment(date).isSame(currentDate) == true) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
+          });
+        }
+
+        object += `}`;
+
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'days');
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+    
+      return result;
+    };
+
+    const processHourTierMultipleCategorySaleCustomData = (processedData) => {
+      const line = new Array();
+      const chartLine = new Array();
+      let addLine;
+
+      tierMultipleCategoryCustom.forEach(function (categoryItem) {
+        addLine = new Object();
+        addLine.column = categoryItem;
+        line.push(addLine);
+        chartLine.push(addLine);
+      });
+    
+      const chart = new Array();
+      let addChart = new Object();
+
+      let data = new Array();
+      data = processedData.Data;
+
+      let hourCounter = 0;
+      let lastHour = 23;
+
+      while (hourCounter <= 23) { 
+        let object = ``;
+
+        if (hourCounter % 6 == 0) {
+          if (parseInt(hourCounter / 10) > 0)
+            object += `{"label": "${hourCounter}:00"`;
+          else
+            object += `{"label": "0${hourCounter}:00"`;
+        }
+        else {
+          object += `{"label": ""`;
+        }
+
+        if (parseInt(hourCounter / 10) > 0)
+          object += `, "dataLabel": "${hourCounter}:00"`;
+        else
+          object += `, "dataLabel": "0${hourCounter}:00"`;
+
+        let hourExist = false;
+      
+        data.forEach(function (dataItem) {
+          let hour = parseInt(dataItem.Date);
+
+          if (hourCounter == hour) {
+            line.forEach(function (lineItem) {
+              if (lineItem.column in dataItem) {
+                object += `, "${lineItem.column}": ${dataItem[lineItem.column]}`;
+                object += `, "${lineItem.column + " QTY"}": ${dataItem[lineItem.column + " QTY"]}`;
+              }
+              else {
+                object += `, "${lineItem.column}": 0`;
+                object += `, "${lineItem.column + " QTY"}": 0`;
+              }
+            });
+
+            hourExist = true;
+          }
+        });
+
+        if (hourExist == false) {
+          line.forEach(function (lineItem) {
+            object += `, "${lineItem.column}": 0`;
+            object += `, "${lineItem.column + " QTY"}": 0`;
+          });
+        }
+
+        object += `}`;
+            
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        hourCounter++;
+      }
+
+      const result = new Object();
+      result.line = chartLine;
+      result.chart = chart;
+
+      const totalTierMultipleCategory = new Object();
+      totalTierMultipleCategory.value = processedData.TotalValue;
+      totalTierMultipleCategory.quantity = processedData.TotalQuantity;
+
+      setTotalTierMultipleCategoryCustomData(totalTierMultipleCategory);
+
+      return result;
+    };
+
+    const fetchTierMultipleCategorySalesCustomData = async (startDate, endDate, tierMultipleCustom, tierMultipleCategoryCustom) => {
+      setTierMultipleCategoryCustomDataLoading(true);
+
+      const result = await axios({
+        method: 'post',
+        url: 'https://api.ultige.com/ultigeapi/web/analytic/getproductmultiplecategorysales',
+        data: {
+          startDate: startDate, 
+          endDate: endDate,
+          tier: tierMultipleCustom, 
+          categories: tierMultipleCategoryCustom
+        }
+      });
+
+      let processedData;
+      processedData = result.data;
+
+
+      let newData;
+
+      if (processedData.DateDifference == 0) {
+        newData = processHourTierMultipleCategorySaleCustomData(processedData);
+      }
+      else if (processedData.DateDifference > 0 && processedData.DateDifference <= 60) {
+        newData = processDayTierMultipleCategorySaleCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference > 60 && processedData.DateDifference < 180) {
+        newData = processWeekTierMultipleCategorySaleCustomData(startDate, endDate, processedData);
+      }
+      else if (processedData.DateDifference >= 180) {
+        newData = processMonthTierMultipleCategorySaleCustomData(startDate, endDate, processedData);
+      }
+
+      setTierMultipleCategoryCustomData(newData);
+      setTierMultipleCategoryLiveCustom(tierMultipleCategoryCustom);
+      setTierMultipleCategoryCustomDataLoading(false);
+    };
+
+    if (checkToken() && tierMultipleCategoryCustom) {
+
+      let startDate;
+      startDate = moment(tierMultipleCategoryCustomStartDate).format("YYYY-MM-DD");
+
+      let endDate;
+      endDate = moment(tierMultipleCategoryCustomEndDate).format("YYYY-MM-DD");
+
+      fetchTierMultipleCategorySalesCustomData(startDate, endDate, tierMultipleCustom, tierMultipleCategoryCustom);
+    }
+  };
+
+  const handleTierMultipleCategoryData2 = () => {
     const processMonthTierMultipleCategorySaleCustomData = (startDate, endDate, processedData) => {
       const line = new Array();
       const chartLine = new Array();
@@ -5312,44 +5749,44 @@ const Home = () => {
       return result;
     };
 
-    const fetchModelCategorySalesCustomData = async (startDate, endDate, modelCustom, categoryCustom) => {
-      setModelCategoryCustomDataLoading(true);
+	const fetchModelCategorySalesCustomData = async (startDate, endDate, modelCustom, categoryCustom, appliedModelCategoryCustom) => {
+		setModelCategoryCustomDataLoading(true);
 
-      const result = await axios({
-        method: 'post',
-        url: 'https://api.ultige.com/ultigeapi/web/analytic/getmodelcategorysales2_v2',
-        data: {
-          startDate: startDate, 
-          endDate: endDate,
-          model: modelCustom, 
-          category: categoryCustom
-        }
-      });
+		const result = await axios({
+			method: 'post',
+			url: 'https://api.ultige.com/ultigeapi/web/analytic/getmodelcategorysales2_v2',
+			data: {
+				startDate: startDate, 
+				endDate: endDate,
+				model: modelCustom, 
+				category: categoryCustom
+			}
+		});
+		
+		let processedData;
+		processedData = result.data;
 
-      let processedData;
-      processedData = result.data;
+		let newData;
 
-      let newData;
+		if (processedData.DateDifference <= 60) {
+			newData = processDayModelCategorySaleCustomData(startDate, endDate, processedData);
+		}
+		else if (processedData.DateDifference > 60 && processedData.DateDifference < 180) {
+			newData = processWeekModelCategorySaleCustomData(startDate, endDate, processedData);
+		}
+		else if (processedData.DateDifference >= 180) {
+			newData = processMonthModelCategorySaleCustomData(startDate, endDate, processedData);
+		}
 
-      if (processedData.DateDifference <= 60) {
-        newData = processDayModelCategorySaleCustomData(startDate, endDate, processedData);
-      }
-      else if (processedData.DateDifference > 60 && processedData.DateDifference < 180) {
-        newData = processWeekModelCategorySaleCustomData(startDate, endDate, processedData);
-      }
-      else if (processedData.DateDifference >= 180) {
-        newData = processMonthModelCategorySaleCustomData(startDate, endDate, processedData);
-      }
+		if (categoryCustom == 'TIDAK ADA KATEGORI') {
+			newData = null;
+		}
 
-      if (categoryCustom == 'TIDAK ADA KATEGORI') {
-        newData = null;
-      }
+		setModelCategoryCustomData(newData);
+		setModelCategoryCustomDataLoading(false);
+	};
 
-      setModelCategoryCustomData(newData);
-      setModelCategoryCustomDataLoading(false);
-    };
-
-    const fetchModelCategorySalesCustomAllData = async (startDate, endDate, modelCustom, categoryCustom) => {
+   const fetchModelCategorySalesCustomAllData = async (startDate, endDate, modelCustom, categoryCustom) => {
       setModelCategoryCustomDataLoading(true);
 
       let totalValue = 0;
@@ -5414,6 +5851,14 @@ const Home = () => {
       fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
     }
   }, [categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
+
+  useEffect(() => {
+		if (appliedModelCategoryCustom) {
+			fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
+		}
+
+		setAppliedModelCategoryCustom(false);
+	}, [appliedModelCategoryCustom]);
 
   useEffect(() => {
     const fetchProductTiersCustomData = async () => {
@@ -8921,7 +9366,7 @@ const Home = () => {
             </Paper>
           </InView>
         </Grid>
-
+        {
         <Grid item xs={12}>
           <InView onChange={(inView, entry) => handleModelCustomFetchChange(inView)}>
             <Paper className={classes.paper} elevation={3}>
@@ -8951,7 +9396,7 @@ const Home = () => {
                         marginLeft: 9
                       }}
                     >
-                      Model Produk
+                      Model Produk  YG ATAS
                     </Typography>
                 }
                 <FormControl variant="outlined" className={classes.formControl}>
@@ -9018,7 +9463,7 @@ const Home = () => {
                 </RadioGroup>
               </FormControl>
               
-              { modelCategoryCustomData &&
+              { 
                 <Grid container>
                   <Grid item xs={12} md={8}>
                     <Box className={classes.inline}>
@@ -9072,6 +9517,24 @@ const Home = () => {
                           />
                         }
                       </LocalizationProvider>
+
+							 	{ !isMobile && 
+									<Button 
+										variant="outlined"
+										style={{
+											borderRadius: 4,
+											textTransform: "none",
+											marginLeft: 10,
+											marginTop: 10,
+											width: 100,
+											height: 50
+										}}
+										disableRipple
+										onClick={() => handleModelCategoryCustomApply(true)}
+									>
+										Apply
+									</Button>
+								}
                     </Box>
                   </Grid>
                   { isMobile && 
@@ -9101,9 +9564,28 @@ const Home = () => {
                             maxDate={getCurrentTime().toDate()}
                           />
                         </LocalizationProvider>
-                      </Box>
-                    </Grid>
+
+									{
+									<Button 
+										variant="outlined"
+										style={{
+											borderRadius: 4,
+											textTransform: "none",
+											marginLeft: 10,
+											marginTop: 10,
+											width: 80,
+											height: 50
+										}}
+										disableRipple
+										onClick={() => handleModelCategoryCustomApply(true)}
+									>
+										Apply
+									</Button>
+									}
+                     	</Box>
+                    	</Grid>
                   }
+
                   { totalModelCategoryCustomData && 
                     <Grid item xs={12} md={4} container justifyContent="flex-end">
                       <Typography 
@@ -9134,15 +9616,15 @@ const Home = () => {
                       color: "#000", 
                       fontSize: 18,
                       fontWeight: 'bold',
-                      margin: 9
+                      margin: 9	
                     }}
                   >
-                    Grafik Penjualan Custom (Model & Kategori)
+                    Grafik Penjualan Custom (Model & Kategori ATAS)
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={8} container justifyContent="flex-end">
-                  { modelCategoryCustomData
-                    ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                  { 
+                    	<Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
                         <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                         <Typography 
                           style={{
@@ -9154,8 +9636,7 @@ const Home = () => {
                         >
                           Penjualan
                         </Typography>
-                      </Box>
-                    : <Box className={classes.inline} style={{height: 27}}/>
+                     </Box>
                   }
                 </Grid>
               </Grid>
@@ -9184,256 +9665,299 @@ const Home = () => {
             </Paper>
           </InView>
         </Grid>
-            
-        {/*
+        }
+
+{/* INI UDAH BEDA BAGIAN, INI YG CUSTOME
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/}
+        {
         <Grid item xs={12}>
-          <Paper className={classes.paper} elevation={3}>
-            <Box className={classes.inline}>
-              { isMobile
-                ? <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      marginTop: 9,
-                      marginBottom: 9,
-                      marginRight: 10,
-                      marginLeft: 9
-                    }}
-                  >
-                    Tier<br/>Kategori
-                  </Typography>
-                : <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 18,
-                      fontWeight: 'bold',
-                      marginTop: 22,
-                      marginBottom: 9,
-                      marginRight: 42,
-                      marginLeft: 9
-                    }}
-                  >
-                    Tier Kategori
-                  </Typography>
-              }
-              <FormControl variant="outlined" className={classes.formControl}>
-                <Autocomplete
-                  value={tierCustom}
-                  onChange={handleTierCustomChange}
-                  options={productTiersCustomData}
-                  sx={{width: 295, height: 55}}
-                  renderInput={(params) => <TextField {...params} label="Tier" />}
-                />
-              </FormControl>
-            </Box>
+          <InView onChange={(inView, entry) => handleModelCustomFetchChange(inView)}>
+				<Paper className={classes.paper} elevation={3}>
+					<Box className={classes.inline}>
+						{ isMobile
+							? <Typography 
+								style={{
+									color: "#000", 
+									fontSize: 16,
+									fontWeight: 'bold',
+									marginTop: 9,
+									marginBottom: 9,
+									marginRight: 21,
+									marginLeft: 9
+								}}
+							>
+								Model<br/>Produk
+							</Typography>
+							: <Typography 
+								style={{
+									color: "#000", 
+									fontSize: 18,
+									fontWeight: 'bold',
+									marginTop: 22,
+									marginBottom: 9,
+									marginRight: 36,
+									marginLeft: 9
+								}}
+							>
+								Model Produk
+							</Typography>
+						}
+						<FormControl variant="outlined" className={classes.formControl}>
+							<Autocomplete
+							value={modelCustom}
+							onChange={handleModelCustomChange}
+							options={productModelsCustomData}
+							sx={{width: 295, height: 55}}
+							renderInput={(params) => <TextField {...params} label="Model" />}
+							/>
+						</FormControl>
+					</Box>
 
-            <Box className={classes.inline}>
-              { isMobile
-                ? <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      marginTop: 9,
-                      marginBottom: 9,
-                      marginRight: 9,
-                      marginLeft: 9
-                    }}
-                  >
-                    Kategori<br/>Produk
-                  </Typography>
-                : <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 18,
-                      fontWeight: 'bold',
-                      marginTop: 22,
-                      marginBottom: 9,
-                      marginRight: 15,
-                      marginLeft: 9
-                    }}
-                  >
-                    Kategori Produk
-                  </Typography>
-              }
-              <FormControl variant="outlined" className={classes.formControl}>
-                <Autocomplete
-                  value={tierCategoryCustom}
-                  onChange={handleTierCategoryCustomChange}
-                  options={productTierCategoriesCustomData}
-                  sx={{width: 295, height: 55}}
-                  renderInput={(params) => <TextField {...params} label="Category" />}
-                />
-              </FormControl>
-            </Box>
-            
-            { tierCategoryCustomData &&
-              <Grid container>
-                <Grid item xs={12} md={8}>
-                  <Box className={classes.inline}>
-                    { isMobile
-                      ? <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            marginTop: 9,
-                            marginBottom: 16,
-                            marginRight: 25,
-                            marginLeft: 9
-                          }}
-                        >
-                          Tanggal<br/>Awal
-                        </Typography>
-                      : <Typography 
-                          style={{
-                            color: "#000", 
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            marginTop: 22,
-                            marginBottom: 30,
-                            marginRight: 97,
-                            marginLeft: 9
-                          }}
-                        >
-                          Tanggal
-                        </Typography>
-                    }
-                    <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
-                      <DatePicker
-                        inputFormat="yyyy-MM-dd"
-                        label="Start Date"
-                        value={tierCategoryCustomStartDate}
-                        onChange={handleTierCategoryCustomStartDateChange}
-                        renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
-                        minDate={moment('01-01-2016').toDate()}
-                        maxDate={getCurrentTime().toDate()}
-                      />
-                      { !isMobile && 
-                        <DatePicker
-                          inputFormat="yyyy-MM-dd"
-                          label="End Date"
-                          value={tierCategoryCustomEndDate}
-                          onChange={handleTierCategoryCustomEndDateChange}
-                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
-                          minDate={moment('01-01-2016').toDate()}
-                          maxDate={getCurrentTime().toDate()}
-                        />
-                      }
-                    </LocalizationProvider>
-                  </Box>
-                </Grid>
-                { isMobile && 
-                  <Grid item xs={12} md={8}>
-                    <Box className={classes.inline}>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          marginTop: 9,
-                          marginBottom: 16,
-                          marginRight: 25,
-                          marginLeft: 9
-                        }}
-                      >
-                        Tanggal<br/>Akhir
-                      </Typography>
-                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
-                        <DatePicker
-                          inputFormat="yyyy-MM-dd"
-                          label="End Date"
-                          value={tierCategoryCustomEndDate}
-                          onChange={handleTierCategoryCustomEndDateChange}
-                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
-                          minDate={moment('01-01-2016').toDate()}
-                          maxDate={getCurrentTime().toDate()}
-                        />
-                      </LocalizationProvider>
-                    </Box>
-                  </Grid>
-                }
-                { totalTierCategoryCustomData && 
-                  <Grid item xs={12} md={4} container justifyContent="flex-end">
-                    <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 14,
-                          fontWeight: 'bold',
-                          textAlign: 'right',
-                          marginTop: isMobile ? 9 : 15,
-                          marginBottom: 9,
-                          marginRight: 9,
-                          marginLeft: 9
-                        }}
-                      >
-                        Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierCategoryCustomData.value)}
-                        <br/>
-                        Total Jumlah: {Intl.NumberFormat('id').format(totalTierCategoryCustomData.quantity)}
-                      </Typography>
-                  </Grid>
-                }
-              </Grid>
-            }
-            
-            <Grid container>
-              <Grid item xs={12} md={4}>
-                <Typography 
-                  style={{
-                    color: "#000", 
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    margin: 9
-                  }}
-                >
-                  Grafik Penjualan Custom (Tier & Kategori)
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={8} container justifyContent="flex-end">
-                { tierCategoryCustomData
-                  ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
-                      <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
-                      <Typography 
-                        style={{
-                          color: "#000", 
-                          fontSize: 16,
-                          marginRight: 8,
-                          marginTop: 3,
-                        }}
-                      >
-                        Penjualan
-                      </Typography>
-                    </Box>
-                  : <Box className={classes.inline} style={{height: 27}}/>
-                }
-              </Grid>
-            </Grid>
+					<Box className={classes.inline}>
+					{ isMobile
+						? <Typography 
+							style={{
+								color: "#000", 
+								fontSize: 16,
+								fontWeight: 'bold',
+								marginTop: 9,
+								marginBottom: 9,
+								marginRight: 9,
+								marginLeft: 9
+							}}
+							>
+							Kategori<br/>Produk
+							</Typography>
+						: <Typography 
+							style={{
+								color: "#000", 
+								fontSize: 18,
+								fontWeight: 'bold',
+								marginTop: 22,
+								marginBottom: 9,
+								marginRight: 15,
+								marginLeft: 9
+							}}
+							>
+							Kategori Produk
+							</Typography>
+					}
+					<FormControl variant="outlined" className={classes.formControl}>
+						<Autocomplete
+							value={tierCategoryCustom}
+							onChange={handleTierCategoryCustomChange}
+							options={productTierCategoriesCustomData}
+							sx={{width: 295, height: 55}}
+							renderInput={(params) => <TextField {...params} label="Category" />}
+						/>
+					</FormControl>
+					</Box>
+					
+					{ tierCategoryCustomData &&
+					<Grid container>
+						<Grid item xs={12} md={8}>
+							<Box className={classes.inline}>
+							{ isMobile
+								? <Typography 
+									style={{
+										color: "#000", 
+										fontSize: 16,
+										fontWeight: 'bold',
+										marginTop: 9,
+										marginBottom: 16,
+										marginRight: 25,
+										marginLeft: 9
+									}}
+									>
+									Tanggal<br/>Awal
+									</Typography>
+								: <Typography 
+									style={{
+										color: "#000", 
+										fontSize: 18,
+										fontWeight: 'bold',
+										marginTop: 22,
+										marginBottom: 30,
+										marginRight: 97,
+										marginLeft: 9
+									}}
+									>
+									Tanggal
+									</Typography>
+							}
+							<LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+								<DatePicker
+									inputFormat="yyyy-MM-dd"
+									label="Start Date"
+									value={tierCategoryCustomStartDate}
+									onChange={handleTierCategoryCustomStartDateChange}
+									renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
+									minDate={moment('01-01-2016').toDate()}
+									maxDate={getCurrentTime().toDate()}
+								/>
+								{ !isMobile && 
+									<DatePicker
+									inputFormat="yyyy-MM-dd"
+									label="End Date"
+									value={tierCategoryCustomEndDate}
+									onChange={handleTierCategoryCustomEndDateChange}
+									renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+									minDate={moment('01-01-2016').toDate()}
+									maxDate={getCurrentTime().toDate()}
+									/>
+								}
+							</LocalizationProvider>
 
-            { tierCategoryCustomData
-              ? <MultiTypeChart line={tierCategoryCustomData.line} chart={tierCategoryCustomData.chart} width={width}/>
-              : <EmptyChart width={width}/>
-            }
+							{ !isMobile && 
+								<Button 
+									variant="outlined"
+									style={{
+										borderRadius: 4,
+										textTransform: "none",
+										marginLeft: 10,
+										marginTop: 10,
+										width: 100,
+										height: 50
+									}}
+									disableRipple
+									onClick={handleTierCategoryCustomEndDateChange}
+								>
+									Apply
+								</Button>
+							}
 
-            <Grid item xs={12}>
-              { tierCategoryCustomDataLoading &&
-                <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
-                  <CircularProgress size={25} />
-                  <Typography 
-                    style={{
-                      color: "#000", 
-                      fontSize: 18,
-                      marginLeft: 12
-                    }}
-                  >
-                    Loading
-                  </Typography>
-                </Box>
-              }
-            </Grid>
-          </Paper>
+							</Box>
+						</Grid>
+						{ isMobile && 
+							<Grid item xs={12} md={8}>
+							<Box className={classes.inline}>
+								<Typography 
+									style={{
+									color: "#000", 
+									fontSize: 16,
+									fontWeight: 'bold',
+									marginTop: 9,
+									marginBottom: 16,
+									marginRight: 25,
+									marginLeft: 9
+									}}
+								>
+									Tanggal<br/>Akhir
+								</Typography>
+								<LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+									<DatePicker
+									inputFormat="yyyy-MM-dd"
+									label="End Date"
+									value={tierCategoryCustomEndDate}
+									onChange={handleTierCategoryCustomEndDateChange}
+									renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, width: 150}} {...props} />}
+									minDate={moment('01-01-2016').toDate()}
+									maxDate={getCurrentTime().toDate()}
+									/>
+								</LocalizationProvider>
+							</Box>
+							</Grid>
+						}
+						{ totalTierCategoryCustomData && 
+							<Grid item xs={12} md={4} container justifyContent="flex-end">
+							<Typography 
+									style={{
+									color: "#000", 
+									fontSize: 14,
+									fontWeight: 'bold',
+									textAlign: 'right',
+									marginTop: isMobile ? 9 : 15,
+									marginBottom: 9,
+									marginRight: 9,
+									marginLeft: 9
+									}}
+								>
+									Total Penjualan: Rp. {Intl.NumberFormat('id').format(totalTierCategoryCustomData.value)}
+									<br/>
+									Total Jumlah: {Intl.NumberFormat('id').format(totalTierCategoryCustomData.quantity)}
+								</Typography>
+							</Grid>
+						}
+					</Grid>
+					}
+					
+					<Grid container>
+					<Grid item xs={12} md={4}>
+						<Typography 
+							style={{
+							color: "#000", 
+							fontSize: 18,
+							fontWeight: 'bold',
+							margin: 9
+							}}
+						>
+							Grafik Penjualan Custom (Model & Kategori)
+						</Typography>
+					</Grid>
+					<Grid item xs={12} md={8} container justifyContent="flex-end">
+						{ tierCategoryCustomData
+							? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+								<FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+								<Typography 
+									style={{
+									color: "#000", 
+									fontSize: 16,
+									marginRight: 8,
+									marginTop: 3,
+									}}
+								>
+									Penjualan
+								</Typography>
+							</Box>
+							: <Box className={classes.inline} style={{height: 27}}/>
+						}
+					</Grid>
+					</Grid>
+
+					{ tierCategoryCustomData
+					? <MultiTypeChart line={tierCategoryCustomData.line} chart={tierCategoryCustomData.chart} width={width}/>
+					: <EmptyChart width={width}/>
+					}
+
+					<Grid item xs={12}>
+					{ tierCategoryCustomDataLoading &&
+						<Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+							<CircularProgress size={25} />
+							<Typography 
+							style={{
+								color: "#000", 
+								fontSize: 18,
+								marginLeft: 12
+							}}
+							>
+							Loading
+							</Typography>
+						</Box>
+					}
+					</Grid>
+				</Paper>
+          </InView>
         </Grid>
-        */}
+        }
 
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={3}>
@@ -9570,7 +10094,7 @@ const Home = () => {
                       disableRipple
                       onClick={handleTierMultipleCategoryData}
                     >
-                      Apply
+                      Apply mULTI TIER
                     </Button>
                   }
                 </Box>
