@@ -8279,6 +8279,7 @@ const Home = () => {
                               <TableCell>Peringkat</TableCell>
                               <TableCell align="left">Informasi Produk</TableCell>
                               <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Gross Margin</TableCell>
                               <TableCell align="right">Proporsi</TableCell>
                               <TableCell align="right">Tingkat Perubahan</TableCell>
                             </TableRow>
@@ -8315,6 +8316,7 @@ const Home = () => {
                               <TableCell>Peringkat</TableCell>
                               <TableCell align="left">Informasi Produk</TableCell>
                               <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Gross Margin</TableCell>
                               <TableCell align="right">Proporsi</TableCell>
                               <TableCell align="right">Tingkat Perubahan</TableCell>
                             </TableRow>
@@ -8356,6 +8358,7 @@ const Home = () => {
                               <TableCell>Peringkat</TableCell>
                               <TableCell align="left">Informasi Produk</TableCell>
                               <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Gross Margin</TableCell>
                               <TableCell align="right">Proporsi</TableCell>
                               <TableCell align="right">Tingkat Perubahan</TableCell>
                             </TableRow>
