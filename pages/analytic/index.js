@@ -539,17 +539,19 @@ const Home = () => {
   const [customDateRange, setCustomDateRange] = React.useState('');
 
   const [model, setModel] = React.useState('');
-  const [category, setCategory] = React.useState('');
+  const [categoryAAAA, setCategory] = React.useState('');
   const [productModelsData, setProductModelsData] = useState([""]);
   const [productCategoriesData, setProductCategoriesData] = useState([""]);
   const [productCategoriesCacheData, setProductCategoriesCacheData] = useState();
-  const [modelCategoryData, setModelCategoryData] = useState();
+  const [modelCategoryDataAAA, setModelCategoryDataAAA] = useState();
   const [modelCategoryDataLoading, setModelCategoryDataLoading] = React.useState(false);
   const [totalModelCategoryData, setTotalModelCategoryData] = React.useState();
   const [modelCategoryDataActive, setModelCategoryDataActive] = useState(true);
   
   const [modelFetchActive, setModelFetchActive] = React.useState(false);
   const [categoryFetchActive, setCategoryFetchActive] = React.useState(false);
+  const [btnGrafikPenjualanModelKategoriApplied, setBtnGrafikPenjualanModelKategoriApplied] = React.useState(false);
+  const [btnGrafikPenjualanModelKategoriCustomApplied, setBtnGrafikPenjualanModelKategoriCustomApplied] = React.useState(false);
 
   const [modelCustom, setModelCustom] = React.useState('');
   const [categoryCustom, setCategoryCustom] = React.useState('');
@@ -675,6 +677,14 @@ const Home = () => {
       setDataRange(event.target.value);
       setFetchActive(true);
     }
+  };
+
+  const handleBtnGrafikPenjualanModelKategoriApplied = () => {
+    setBtnGrafikPenjualanModelKategoriApplied(true);
+  };
+
+  const handleBtnGrafikPenjualanModelKategoriCustomApplied = () => {
+    setBtnGrafikPenjualanModelKategoriCustomApplied(true);
   };
 
   const handleChannelChange = (event) => {
@@ -1024,6 +1034,7 @@ const Home = () => {
       setModelStockFetchActive(true);
     }
   };
+  
 
 
   const [tierCategorySelectionModel, setTierCategorySelectionModel] = React.useState([]);
@@ -4909,17 +4920,19 @@ const Home = () => {
         newData = null;
       }
 
-      setModelCategoryData(newData);
+      setModelCategoryDataAAA(newData);
       setModelCategoryDataLoading(false);
     };
 
-    if (checkToken() && category) {
+    if (checkToken() && categoryAAAA) {
       let endDate;
       endDate = moment(modelCategoryEndDate).format("YYYY-MM-DD");
       
-      fetchModelCategorySalesData(endDate, model, category)
+      fetchModelCategorySalesData(endDate, model, categoryAAAA)
     }
-  }, [category, modelCategoryEndDate]);
+
+    setBtnGrafikPenjualanModelKategoriApplied(false);
+  }, [btnGrafikPenjualanModelKategoriApplied]);
 
   useEffect(() => {
     const fetchValueStockData = async () => {
@@ -5413,7 +5426,8 @@ const Home = () => {
 
       fetchModelCategorySalesCustomData(startDate, endDate, modelCustom, categoryCustom);
     }
-  }, [categoryCustom, modelCategoryCustomStartDate, modelCategoryCustomEndDate]);
+    setBtnGrafikPenjualanModelKategoriCustomApplied(false);
+  }, [btnGrafikPenjualanModelKategoriCustomApplied]);
 
   useEffect(() => {
     const fetchProductTiersCustomData = async () => {
@@ -8265,6 +8279,7 @@ const Home = () => {
                               <TableCell>Peringkat</TableCell>
                               <TableCell align="left">Informasi Produk</TableCell>
                               <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Gross Margin</TableCell>
                               <TableCell align="right">Proporsi</TableCell>
                               <TableCell align="right">Tingkat Perubahan</TableCell>
                             </TableRow>
@@ -8301,6 +8316,7 @@ const Home = () => {
                               <TableCell>Peringkat</TableCell>
                               <TableCell align="left">Informasi Produk</TableCell>
                               <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Gross Margin</TableCell>
                               <TableCell align="right">Proporsi</TableCell>
                               <TableCell align="right">Tingkat Perubahan</TableCell>
                             </TableRow>
@@ -8342,6 +8358,7 @@ const Home = () => {
                               <TableCell>Peringkat</TableCell>
                               <TableCell align="left">Informasi Produk</TableCell>
                               <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                              <TableCell align="right">Gross Margin</TableCell>
                               <TableCell align="right">Proporsi</TableCell>
                               <TableCell align="right">Tingkat Perubahan</TableCell>
                             </TableRow>
@@ -8774,7 +8791,7 @@ const Home = () => {
                 }
                 <FormControl variant="outlined" className={classes.formControl}>
                   <Autocomplete
-                    value={category}
+                    value={categoryAAAA}
                     onChange={handleCategoryChange}
                     options={productCategoriesData}
                     sx={{width: 295, height: 55}}
@@ -8796,7 +8813,7 @@ const Home = () => {
                 </RadioGroup>
               </FormControl>
                           
-              { modelCategoryData &&
+              {
                 <Grid container>
                   <Grid item xs={12} md={8}>
                     <Box className={classes.inline}>
@@ -8839,6 +8856,23 @@ const Home = () => {
                           maxDate={getCurrentTime().toDate()}
                         />
                       </LocalizationProvider>
+                      { 
+                        <Button 
+                          variant="outlined"
+                          style={{
+                            borderRadius: 4,
+                            textTransform: "none",
+                            marginLeft: 10,
+                            marginTop: 10,
+                            width: 100,
+                            height: 50
+                          }}
+                          disableRipple
+                          onClick={handleBtnGrafikPenjualanModelKategoriApplied}
+                        >
+                          Apply
+                        </Button>
+                      }
                     </Box>
                   </Grid>
                   { totalModelCategoryData && 
@@ -8878,7 +8912,7 @@ const Home = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={8} container justifyContent="flex-end">
-                  { modelCategoryData
+                  { modelCategoryDataAAA
                     ? <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
                         <FiberManualRecordIcon style={{ color: '#367fe3', fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
                         <Typography 
@@ -8897,8 +8931,8 @@ const Home = () => {
                 </Grid>
               </Grid>
 
-              { modelCategoryData
-                ? <MultiTypeChart line={modelCategoryData.line} chart={modelCategoryData.chart} width={width}/>
+              { modelCategoryDataAAA
+                ? <MultiTypeChart line={modelCategoryDataAAA.line} chart={modelCategoryDataAAA.chart} width={width}/>
                 : <EmptyChart width={width}/>
               }
 
@@ -9018,7 +9052,7 @@ const Home = () => {
                 </RadioGroup>
               </FormControl>
               
-              { modelCategoryCustomData &&
+              {
                 <Grid container>
                   <Grid item xs={12} md={8}>
                     <Box className={classes.inline}>
@@ -9072,6 +9106,24 @@ const Home = () => {
                           />
                         }
                       </LocalizationProvider>
+                      {
+                        !isMobile&&
+                        <Button 
+                          variant="outlined"
+                          style={{
+                            borderRadius: 4,
+                            textTransform: "none",
+                            marginLeft: 10,
+                            marginTop: 10,
+                            width: 100,
+                            height: 50
+                          }}
+                          disableRipple
+                          onClick={handleBtnGrafikPenjualanModelKategoriCustomApplied}
+                        >
+                          Apply
+                        </Button>
+                      }
                     </Box>
                   </Grid>
                   { isMobile && 
@@ -9101,12 +9153,30 @@ const Home = () => {
                             maxDate={getCurrentTime().toDate()}
                           />
                         </LocalizationProvider>
+                        <Button 
+                          variant="outlined"
+                          style={{
+                            borderRadius: 4,
+                            textTransform: "none",
+                            marginLeft: 10,
+                            marginTop: 10,
+                            width: 100,
+                            height: 50
+                          }}
+                          disableRipple
+                          onClick={handleBtnGrafikPenjualanModelKategoriCustomApplied}
+                        >
+                          Apply
+                        </Button>
                       </Box>
                     </Grid>
                   }
-                  { totalModelCategoryCustomData && 
+                  
+                  {
                     <Grid item xs={12} md={4} container justifyContent="flex-end">
-                      <Typography 
+                      {
+                        totalModelCategoryCustomData && 
+                        <Typography 
                           style={{
                             color: "#000", 
                             fontSize: 14,
@@ -9122,6 +9192,8 @@ const Home = () => {
                           <br/>
                           Total Jumlah: {Intl.NumberFormat('id').format(totalModelCategoryCustomData.quantity)}
                         </Typography>
+                      }
+                      
                     </Grid>
                   }
                 </Grid>
