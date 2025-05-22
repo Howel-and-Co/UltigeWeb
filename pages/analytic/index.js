@@ -6199,7 +6199,7 @@ const Home = () => {
           </TableCell>
         </TableRow>
         <TableRow style={{ backgroundColor: '#fcfcfc' }}>
-          <TableCell style={{ padding: 0 }} colSpan={6}>
+          <TableCell style={{ padding: 0 }} colSpan={7}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 0 }}>
                 <Table sx={{ minWidth: 650 }}>
@@ -6208,6 +6208,7 @@ const Home = () => {
                       <TableCell>Peringkat</TableCell>
                       <TableCell align="left">Informasi Varian</TableCell>
                       <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                      <TableCell align="right">Gross Margin</TableCell>
                       <TableCell align="right">Proporsi</TableCell>
                       <TableCell align="right">Tingkat Perubahan</TableCell>
                     </TableRow>
@@ -6242,6 +6243,11 @@ const Home = () => {
                         <TableCell align="right" style={{width: 225}}>
                           <Typography>
                             Rp {Intl.NumberFormat('id').format(row2.Value)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 225}}>
+                          <Typography>
+                            Rp {Intl.NumberFormat('id').format(row2.GrossValue)}
                           </Typography>
                         </TableCell>
                         <TableCell align="right" style={{width: 150}}>
@@ -6549,6 +6555,11 @@ const Home = () => {
               Rp {Intl.NumberFormat('id').format(row.Value)}
             </Typography>
           </TableCell>
+          <TableCell align="right" style={{width: 225}}>
+            <Typography>
+              Rp {Intl.NumberFormat('id').format(row.GrossValue)}
+            </Typography>
+          </TableCell>
           <TableCell align="right" style={{width: 150}}>
             <Typography>
               {Intl.NumberFormat('id').format(row.Proportion)}%
@@ -6571,7 +6582,7 @@ const Home = () => {
           </TableCell>
         </TableRow>
         <TableRow style={{ backgroundColor: '#fcfcfc' }}>
-          <TableCell style={{ padding: 0 }} colSpan={6}>
+          <TableCell style={{ padding: 0 }} colSpan={7}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 0 }}>
                 <Table sx={{ minWidth: 650 }}>
@@ -6580,6 +6591,7 @@ const Home = () => {
                       <TableCell>Peringkat</TableCell>
                       <TableCell align="left">Informasi Varian</TableCell>
                       <TableCell align="right">Penjualan (Pesanan Dibayar)</TableCell>
+                      <TableCell align="right">Gross Margin</TableCell>
                       <TableCell align="right">Proporsi</TableCell>
                       <TableCell align="right">Tingkat Perubahan</TableCell>
                     </TableRow>
@@ -6614,6 +6626,11 @@ const Home = () => {
                         <TableCell align="right" style={{width: 225}}>
                           <Typography>
                             Rp {Intl.NumberFormat('id').format(row2.Value)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right" style={{width: 225}}>
+                          <Typography>
+                            Rp {Intl.NumberFormat('id').format(row2.GrossValue)}
                           </Typography>
                         </TableCell>
                         <TableCell align="right" style={{width: 150}}>
@@ -8401,6 +8418,11 @@ const Home = () => {
                                 <TableCell align="right" style={{width: 225}}>
                                   <Typography>
                                     Rp {Intl.NumberFormat('id').format(row.Value)}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right" style={{width: 225}}>
+                                  <Typography>
+                                    Rp {Intl.NumberFormat('id').format(row.GrossValue)}
                                   </Typography>
                                 </TableCell>
                                 <TableCell align="right" style={{width: 150}}>
