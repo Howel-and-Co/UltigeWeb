@@ -151,6 +151,24 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+const CustomTooltipComplaint = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
+        <p>{`${payload[0].payload.dataLabel}`}</p>
+        {payload.map((item, index) => (
+          <body key={index}>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 200}}>{`${item.name.length > 22 ? item.name.substring(0, 22) + "..." : item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${Intl.NumberFormat('id').format(item.payload[item.name])}`}</p>
+          </body>
+        ))}
+      </Card>
+    );
+  }
+
+  return null;
+};
+
 const CustomAnalyticTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -334,7 +352,7 @@ const MultiComplaintCategoryChart = (props) => {
       <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
       <YAxis hide={true}/>
       <RechartsTooltip 
-        content={<CustomTooltip />}
+        content={<CustomTooltipComplaint />}
       />
       {props.line && Object.entries(props.line).map(([key,value])=> (
         <>
@@ -499,6 +517,7 @@ const Home = () => {
 
   const [masterSalesData, setMasterSalesData] = useState();
   const [masterMultipleSalesData, setMasterMultipleSalesData] = useState();
+  const [masterComplaintCategoryData, setMasterComplaintCategoryData] = useState();
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [dateOption, setDateOption] = React.useState('realtime');
@@ -6114,8 +6133,8 @@ const Home = () => {
       setComplaintCategoryDataLoading(true);
       let startDate;
       startDate = moment(complaintYear).format("YYYY");
-      //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+      //const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
 
       let processedData;
       processedData = result.data;
@@ -6137,12 +6156,23 @@ const Home = () => {
         resultObject[item] = newObject;
       });
 
-      setComplaintCategoryData(processedData.Data);
+      setComplaintCategoryData(processedData);
       setToggleComplaintCategory(resultObject);
       setComplaintCategoryDataLoading(false);
     };
 
-    const processMonthComplaintCategoryData = (startDate, endDate, previousStartDate, previousEndDate) => {
+    if (complaintCategoryFetchActive == true && checkToken()) {
+      fetchComplaintCategoryData(complaintCategoryYear);
+      setComplaintCategoryFetchActive(false);
+    }
+  }, [complaintCategoryFetchActive]);
+
+  const applyComplaintData = () =>{
+    setComplaintCategoryFetchActive(true);
+  }
+
+  useEffect(() => {
+    const processMonthComplaintCategoryData = (complaintYear) => {
       let legend = new Array();
       if (complaintCategoryData)
         legend = complaintCategoryData.Legend;
@@ -6164,9 +6194,8 @@ const Home = () => {
       if (complaintCategoryData)
         data = complaintCategoryData.Data;
 
- 
-      let momentStartDate = moment(startDate, "YYYY-MM-DD");
-      let momentEndDate = moment(endDate, "YYYY-MM-DD");
+      let momentStartDate = moment(`${complaintYear}-01-01`);
+      let momentEndDate = moment(`${complaintYear}-12-31`);
 
       let currentDate = momentStartDate;
 
@@ -6187,7 +6216,7 @@ const Home = () => {
             legend.forEach(function (legendItem) {
               if (legendItem in dataItem) {
                 object += `, "${legendItem}": ${dataItem[legendItem]}`;
-                totalSalesObject[legendItem].value += parseFloat(dataItem[legendItem]);
+                totalComplaintCategoryObject[legendItem].value += parseFloat(dataItem[legendItem]);
               }
               else {
                 object += `, "${legendItem}": 0`;
@@ -6213,74 +6242,28 @@ const Home = () => {
       }
 
 
-      if (previousSalesData)
-        data = previousSalesData.Data;
-
-      momentStartDate = moment(previousStartDate, "YYYY-MM-DD");
-      momentEndDate = moment(previousEndDate, "YYYY-MM-DD");
-
-      currentDate = momentStartDate;
-
-      let totalPreviousSalesObject = new Object();
-
-      legend.forEach(function (item) {
-        let newObject = new Object();
-
-        newObject.value = 0;
-
-        totalPreviousSalesObject[item] = newObject;
-      });
-
-
-      while (currentDate <= momentEndDate) { 
-        currentDate.startOf('month');
-
-        data.forEach(function (dataItem) {
-          let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
-
-          if (moment(date).isSame(currentDate) == true) {
-            legend.forEach(function (legendItem) {
-              if (legendItem in dataItem) {
-                totalPreviousSalesObject[legendItem].value += parseFloat(dataItem[legendItem]);
-              }
-            });
-          }
-        });
-
-        currentDate.add(1, 'months');
-      }
 
       const result = new Object();
       result.chart = chart;
       
       legend.forEach(function (item) {
-        if (toggleMultipleSales && toggleMultipleSales[item] != null) {
-          toggleMultipleSales[item].value = totalSalesObject[item].value;
-          toggleMultipleSales[item].range = vsLabel();
-          if (totalSalesObject[item].value >= totalPreviousSalesObject[item].value) {
-            toggleMultipleSales[item].growth = ((totalSalesObject[item].value / totalPreviousSalesObject[item].value) - 1) * 100;
-            toggleMultipleSales[item].growthTrend = 'up';
-          }
-          else {
-            toggleMultipleSales[item].growth = (1 - (totalSalesObject[item].value / totalPreviousSalesObject[item].value)) * 100;
-            toggleMultipleSales[item].growthTrend = 'down';
-          }
+        if (toggleComplaintCategory && toggleComplaintCategory[item] != null) {
+          toggleComplaintCategory[item].value = totalComplaintCategoryObject[item].value;
+          toggleComplaintCategory[item].range = vsLabel();
         }
       });
     
       return result;
     };
 
-    if (complaintCategoryFetchActive == true && checkToken()) {
-      fetchComplaintCategoryData(complaintCategoryYear);
-      
-      setComplaintCategoryFetchActive(false);
-    }
-  }, [complaintCategoryFetchActive]);
+    if (complaintCategoryData) {
+      let startDate;
+      startDate = moment(complaintCategoryYear).format("YYYY");
 
-  const applyComplaintData = () =>{
-    setComplaintCategoryFetchActive(true);
-  }
+      const a = processMonthComplaintCategoryData(startDate);
+      setMasterComplaintCategoryData(a);
+    }
+  }, [complaintCategoryData]);
 
   useEffect(() => {
     const fetchCustomProductCategoriesData = async () => {
@@ -8335,8 +8318,8 @@ const Home = () => {
               </Grid>
             </Grid>
 
-            { complaintCategoryData && 
-              <MultiComplaintCategoryChart line={toggleComplaintCategory} chart={complaintCategoryData.chart} width={width}/>
+            { masterComplaintCategoryData && 
+              <MultiComplaintCategoryChart line={toggleComplaintCategory} chart={masterComplaintCategoryData.chart} width={width}/>
             }
 
             <Grid item xs={12}>
