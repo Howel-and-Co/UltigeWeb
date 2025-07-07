@@ -158,8 +158,9 @@ const CustomTooltipComplaint = ({ active, payload, label }) => {
         <p>{`${payload[0].payload.dataLabel}`}</p>
         {payload.map((item, index) => (
           <body key={index}>
-            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 200}}>{`${item.name.length > 22 ? item.name.substring(0, 22) + "..." : item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 280}}>{`${item.name.length > 27 ? item.name.substring(0, 27) + "..." : item.name}`}</p>
             <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${Intl.NumberFormat('id').format(item.payload[item.name])}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: (${item.payload[`${item.name}Percentage`] === undefined ? "0%" : item.payload[`${item.name}Percentage`]})`}</p>
           </body>
         ))}
       </Card>
@@ -608,6 +609,7 @@ const Home = () => {
   const [totalModelCategoryData, setTotalModelCategoryData] = React.useState();
   const [modelCategoryDataActive, setModelCategoryDataActive] = useState(true);
   const [complaintCategoryData, setComplaintCategoryData] = useState();
+  const [complaintCategoryPercentageData, setComplaintCategoryPercentageData] = useState();
   const [complaintCategoryDataLoading, setComplaintCategoryDataLoading] = React.useState(false);
   
   const [modelFetchActive, setModelFetchActive] = React.useState(false);
@@ -6133,11 +6135,14 @@ const Home = () => {
       setComplaintCategoryDataLoading(true);
       let startDate;
       startDate = moment(complaintYear).format("YYYY");
-      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
-      //const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+      //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
 
       let processedData;
       processedData = result.data;
+
+      let percentageData;
+      percentageData = result.data.PercentageData;
 
       let resultObject = new Object();
 
@@ -6157,6 +6162,7 @@ const Home = () => {
       });
 
       setComplaintCategoryData(processedData);
+      setComplaintCategoryPercentageData(percentageData);
       setToggleComplaintCategory(resultObject);
       setComplaintCategoryDataLoading(false);
     };
@@ -6183,6 +6189,7 @@ const Home = () => {
         let newObject = new Object();
 
         newObject.value = 0;
+        newObject.percentage = "";
 
         totalComplaintCategoryObject[item] = newObject;
       });
@@ -6193,6 +6200,12 @@ const Home = () => {
       let data = new Array();
       if (complaintCategoryData)
         data = complaintCategoryData.Data;
+
+      let percentageData = new Array();
+      if (complaintCategoryPercentageData)
+        percentageData = complaintCategoryPercentageData;
+
+      console.log("ISI DARI PERCENTAGE YG BENER: ",percentageData);
 
       let momentStartDate = moment(`${complaintYear}-01-01`);
       let momentEndDate = moment(`${complaintYear}-12-31`);
@@ -6211,15 +6224,24 @@ const Home = () => {
         
         data.forEach(function (dataItem) {
           let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
-
+          
           if (moment(date).isSame(currentDate) == true) {
             legend.forEach(function (legendItem) {
               if (legendItem in dataItem) {
                 object += `, "${legendItem}": ${dataItem[legendItem]}`;
                 totalComplaintCategoryObject[legendItem].value += parseFloat(dataItem[legendItem]);
+
+                const find = percentageData.find((percentItem) => {
+                  let percentDate = moment(percentItem.Date, "MM/YYYY").startOf('month');
+                  return moment(percentDate, "MM/YYYY").isSame(currentDate);
+                });
+                const value = find ? find[legendItem] : "0%";
+                totalComplaintCategoryObject[legendItem].percentage = value;
+                object += `, "${legendItem}Percentage": "${value}"`;
               }
               else {
                 object += `, "${legendItem}": 0`;
+                object += `, "${legendItem}Percentage": 0`;
               }
             });
 
