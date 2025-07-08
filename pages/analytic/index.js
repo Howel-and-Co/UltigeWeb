@@ -151,6 +151,25 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+const CustomTooltipComplaint = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <Card variant="outlined" style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 3}}>
+        <p>{`${payload[0].payload.dataLabel}`}</p>
+        {payload.map((item, index) => (
+          <body key={index}>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block', width: 280}}>{`${item.name.length > 27 ? item.name.substring(0, 27) + "..." : item.name}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: ${Intl.NumberFormat('id').format(item.payload[item.name])}`}</p>
+            <p style={{color: `${item.stroke}`, marginTop: -8, whiteSpace: 'pre', display: 'inline-block'}}>{`: (${item.payload[`${item.name}Percentage`] === undefined ? "0%" : item.payload[`${item.name}Percentage`]})`}</p>
+          </body>
+        ))}
+      </Card>
+    );
+  }
+
+  return null;
+};
+
 const CustomAnalyticTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -295,6 +314,46 @@ const MultiChannelChart = (props) => {
       <YAxis hide={true}/>
       <RechartsTooltip 
         content={<CustomTooltip />}
+      />
+      {props.line && Object.entries(props.line).map(([key,value])=> (
+        <>
+          { value.toggle == true &&
+            <Line
+              type="linear"
+              dataKey={value.toggle ? key : null}
+              stroke={randomColorHSL(key)}
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 5 }}
+            />
+          }
+        </>
+      ))}
+    </LineChart>
+  );
+}
+
+const MultiComplaintCategoryChart = (props) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  
+  return (
+    <LineChart
+      width={props.width - 40}
+      height={320}
+      data={props.chart}
+      margin={{
+        top: 15,
+        right: 40,
+        bottom: 5,
+        left: isMobile ? 30 : 35
+      }}
+    >
+      <CartesianGrid strokeDasharray="4 4" />
+      <XAxis interval="preserveStartEnd" dataKey="label" angle={0} dx={0}/>
+      <YAxis hide={true}/>
+      <RechartsTooltip 
+        content={<CustomTooltipComplaint />}
       />
       {props.line && Object.entries(props.line).map(([key,value])=> (
         <>
@@ -459,6 +518,7 @@ const Home = () => {
 
   const [masterSalesData, setMasterSalesData] = useState();
   const [masterMultipleSalesData, setMasterMultipleSalesData] = useState();
+  const [masterComplaintCategoryData, setMasterComplaintCategoryData] = useState();
 
   const [fetchActive, setFetchActive] = React.useState(true);
   const [dateOption, setDateOption] = React.useState('realtime');
@@ -478,6 +538,7 @@ const Home = () => {
   const [toggleMarginValue, setToggleMarginValue] = React.useState(true);
   const [toggleMarginRate, setToggleMarginRate] = React.useState(true);
   const [toggleMultipleSales, setToggleMultipleSales] = React.useState();
+  const [toggleComplaintCategory, setToggleComplaintCategory] = React.useState();
 
   const [dataReload, setDataReload] = React.useState(true);
 
@@ -547,6 +608,9 @@ const Home = () => {
   const [modelCategoryDataLoading, setModelCategoryDataLoading] = React.useState(false);
   const [totalModelCategoryData, setTotalModelCategoryData] = React.useState();
   const [modelCategoryDataActive, setModelCategoryDataActive] = useState(true);
+  const [complaintCategoryData, setComplaintCategoryData] = useState();
+  const [complaintCategoryPercentageData, setComplaintCategoryPercentageData] = useState();
+  const [complaintCategoryDataLoading, setComplaintCategoryDataLoading] = React.useState(false);
   
   const [modelFetchActive, setModelFetchActive] = React.useState(false);
   const [categoryFetchActive, setCategoryFetchActive] = React.useState(false);
@@ -604,6 +668,7 @@ const Home = () => {
   
   const [modelStockFetchActive, setModelStockFetchActive] = React.useState(false);
   const [stockFetchActive, setStockFetchActive] = React.useState(false);
+  const [complaintCategoryFetchActive, setComplaintCategoryFetchActive] = React.useState(true);
 
   const [stockNameData, setStockNameData] = useState();
   const [stockNameCachedData, setStockNameCachedData] = useState();
@@ -740,6 +805,7 @@ const Home = () => {
       setStockFetchActive(true);
     }
   };
+
   const handleStockChange = (event, newValue) => {
     if (newValue !== null) {
       setStock(newValue);
@@ -831,12 +897,21 @@ const Home = () => {
   const [multipleStockCustomStartDate, setMultipleStockCustomStartDate] = React.useState(getCurrentTime());
   const [multipleStockCustomEndDate, setMultipleStockCustomEndDate] = React.useState(getCurrentTime());
 
+  const [complaintCategoryYear, setComplaintCategoryYear] = React.useState(getCurrentTime());
+
   const handleModelCategoryEndDateChange = (date) => {
     setModelCategoryEndDate(date);
   };
 
   const handleModelCategoryCustomStartDateChange = (date) => {
     setModelCategoryCustomStartDate(date);
+  };
+
+  const handleComplaintCategoryYearChange = (date) => {
+    if(date !== null){
+      setComplaintCategoryYear(date);
+      //setComplaintCategoryFetchActive(true);
+    }
   };
 
   const handleModelCategoryCustomEndDateChange = (date) => {
@@ -944,6 +1019,8 @@ const Home = () => {
 
     setFetchActive(true);
   };
+
+  
 
   const [productTab, setProductTab] = React.useState('1');
 
@@ -2045,7 +2122,7 @@ const Home = () => {
       let resultObject = new Object();
 
       processedLegend.forEach(function (item) {
-        let newObject = new Object();
+        let newObject = {};
 
         newObject.toggle = true;
         newObject.value = 0;
@@ -6054,6 +6131,163 @@ const Home = () => {
   }, [stock, stockCacheData]);
 
   useEffect(() => {
+    const fetchComplaintCategoryData = async (complaintYear) => {
+      setComplaintCategoryDataLoading(true);
+      let startDate;
+      startDate = moment(complaintYear).format("YYYY");
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+      //const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+
+      let processedData;
+      processedData = result.data;
+
+      let percentageData;
+      percentageData = result.data.PercentageData;
+
+      let resultObject = new Object();
+
+      let processedComplaintLegend;
+      processedComplaintLegend = result.data.Legend;
+
+      processedComplaintLegend.forEach(function (item) {
+        let newObject = new Object();
+
+        newObject.toggle = true;
+        newObject.value = 0;
+        newObject.range = vsLabel();
+        newObject.growth = 0 / 0;
+        newObject.growthTrend = 'down';
+
+        resultObject[item] = newObject;
+      });
+
+      setComplaintCategoryData(processedData);
+      setComplaintCategoryPercentageData(percentageData);
+      setToggleComplaintCategory(resultObject);
+      setComplaintCategoryDataLoading(false);
+    };
+
+    if (complaintCategoryFetchActive == true && checkToken()) {
+      fetchComplaintCategoryData(complaintCategoryYear);
+      setComplaintCategoryFetchActive(false);
+    }
+  }, [complaintCategoryFetchActive]);
+
+  const applyComplaintData = () =>{
+    setComplaintCategoryFetchActive(true);
+  }
+
+  useEffect(() => {
+    const processMonthComplaintCategoryData = (complaintYear) => {
+      let legend = new Array();
+      if (complaintCategoryData)
+        legend = complaintCategoryData.Legend;
+
+      let totalComplaintCategoryObject = new Object();
+
+      legend.forEach(function (item) {
+        let newObject = new Object();
+
+        newObject.value = 0;
+        newObject.percentage = "";
+
+        totalComplaintCategoryObject[item] = newObject;
+      });
+
+      const chart = new Array();
+      let addChart = new Object();
+    
+      let data = new Array();
+      if (complaintCategoryData)
+        data = complaintCategoryData.Data;
+
+      let percentageData = new Array();
+      if (complaintCategoryPercentageData)
+        percentageData = complaintCategoryPercentageData;
+
+      console.log("ISI DARI PERCENTAGE YG BENER: ",percentageData);
+
+      let momentStartDate = moment(`${complaintYear}-01-01`);
+      let momentEndDate = moment(`${complaintYear}-12-31`);
+
+      let currentDate = momentStartDate;
+
+      while (currentDate <= momentEndDate) { 
+        currentDate.startOf('month');
+
+        let object = ``;
+
+        object += `{"label": "${moment(currentDate).format('MMM')}"`;
+        object += `, "dataLabel": "${moment(currentDate).format('MMM')}"`;
+
+        let dateExist = false;
+        
+        data.forEach(function (dataItem) {
+          let date = moment(dataItem.Date, "MM/YYYY").startOf('month');
+          
+          if (moment(date).isSame(currentDate) == true) {
+            legend.forEach(function (legendItem) {
+              if (legendItem in dataItem) {
+                object += `, "${legendItem}": ${dataItem[legendItem]}`;
+                totalComplaintCategoryObject[legendItem].value += parseFloat(dataItem[legendItem]);
+
+                const find = percentageData.find((percentItem) => {
+                  let percentDate = moment(percentItem.Date, "MM/YYYY").startOf('month');
+                  return moment(percentDate, "MM/YYYY").isSame(currentDate);
+                });
+                const value = find ? find[legendItem] : "0%";
+                totalComplaintCategoryObject[legendItem].percentage = value;
+                object += `, "${legendItem}Percentage": "${value}"`;
+              }
+              else {
+                object += `, "${legendItem}": 0`;
+                object += `, "${legendItem}Percentage": 0`;
+              }
+            });
+
+            dateExist = true;
+          }
+        });
+
+        if (dateExist == false) {
+          legend.forEach(function (legendItem) {
+            object += `, "${legendItem}": 0`;
+          });
+        }
+
+        object += `}`;
+            
+        addChart = JSON.parse(object);
+        chart.push(addChart);
+
+        currentDate.add(1, 'months');
+      }
+
+
+
+      const result = new Object();
+      result.chart = chart;
+      
+      legend.forEach(function (item) {
+        if (toggleComplaintCategory && toggleComplaintCategory[item] != null) {
+          toggleComplaintCategory[item].value = totalComplaintCategoryObject[item].value;
+          toggleComplaintCategory[item].range = vsLabel();
+        }
+      });
+    
+      return result;
+    };
+
+    if (complaintCategoryData) {
+      let startDate;
+      startDate = moment(complaintCategoryYear).format("YYYY");
+
+      const a = processMonthComplaintCategoryData(startDate);
+      setMasterComplaintCategoryData(a);
+    }
+  }, [complaintCategoryData]);
+
+  useEffect(() => {
     const fetchCustomProductCategoriesData = async () => {
       const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getproductcategories1`);
 
@@ -7942,6 +8176,205 @@ const Home = () => {
             </Grid>
           </Paper>
         </Grid>
+
+
+
+        <Grid item xs={12}>
+          <Paper className={classes.paper} elevation={3}>
+            {/* <Box style={{ display: 'flex', flexWrap: 'wrap', marginLeft: isMobile ? 9 : 33, marginRight: isMobile ? 9 : 33, marginTop: 15 }}>
+              { toggleMultipleSales && Object.entries(toggleMultipleSales).map(([key,value])=> (
+                <Card key={key} variant={value.toggle ? "elevation" : "outlined"} style={{width: 220, height: 128, marginRight: 12, marginBottom: 12}}>
+                  <div style={{backgroundColor: value.toggle ? randomColorHSL(key) : 'transparent', height: 5, width: '100%'}}/>
+                  <CardActionArea style={{padding: 15}} onClick={() => handleToggleMultipleSalesChange(key)} disableRipple>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {key}
+                    </Typography>
+                    <Typography 
+                      style={{
+                        color: "#000", 
+                        fontSize: 14,
+                        textAlign: 'left',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Rp <span style={{fontSize: 20, fontWeight: 'bold'}}>{Intl.NumberFormat('id').format(value.value)}</span>
+                    </Typography>
+                    <Grid container style={{marginTop: 10}}>
+                      <Grid item xs={7}>
+                        <Typography 
+                          style={{
+                            color: "#888", 
+                            fontSize: 11,
+                            textAlign: 'left',
+                            fontWeight: 500
+                          }}
+                        >
+                          {value.range}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={5} style={{marginTop: 5}} container justifyContent="flex-end">
+                        <Typography 
+                          style={{
+                            color: "#000", 
+                            fontSize: 13,
+                            textAlign: 'left',
+                            fontWeight: 500,
+                            display: 'inline'
+                          }}
+                        >
+                          {Intl.NumberFormat('id').format(parseFloat(value.growth).toFixed(2))}%
+                        </Typography>
+                        { value.growthTrend == 'up'
+                          ? <TrendingUpIcon
+                              style={{ color: 'green', fontSize: 20, marginLeft: 3}}
+                            />
+                          : <TrendingDownIcon
+                              style={{ color: 'red', fontSize: 20, marginLeft: 3}}
+                            />
+                        }
+                      </Grid>
+                    </Grid>
+                  </CardActionArea>
+                </Card>
+              ))}
+            </Box> */}
+
+            <Grid container className={classes.inline}>
+              <Grid item xs={12} md={12} >
+                <Typography 
+                  style={{
+                    color: "#000", 
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    margin: 9
+                  }}
+                >
+                  Grafik Jumlah Complaint<br></br>
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={8} container leftContent="flex-end">
+                    <Box className={classes.inline}>
+                      { isMobile
+                        ? <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              marginTop: 9,
+                              marginBottom: 16,
+                              marginRight: 25,
+                              marginLeft: 9
+                            }}
+                          >
+                            Periode
+                          </Typography>
+                        : <Typography 
+                            style={{
+                              color: "#000", 
+                              fontSize: 18,
+                              fontWeight: 'bold',
+                              marginTop: 22,
+                              marginBottom: 30,
+                              marginRight: 97,
+                              marginLeft: 9
+                            }}
+                          >
+                            Periode
+                          </Typography>
+                      }
+                      <LocalizationProvider dateAdapter={AdapterDateFns} utils={MomentUtils}>
+                        <DatePicker
+                          format = "yyyy"
+                          inputFormat="yyyy"
+                          label="Tahun Complaint"
+                          views={['year']}
+                          value={complaintCategoryYear}
+                          onChange={handleComplaintCategoryYearChange}
+                          renderInput={(props) => <TextField variant="standard" style={{marginTop: 10, marginRight: 10, width: 150}} {...props} />}
+                          minDate={moment('01-01-2016').toDate()}
+                          maxDate={getCurrentTime().toDate()}
+                        />
+                      </LocalizationProvider>
+                      <Button 
+                        variant="outlined"
+                        style={{
+                          borderRadius: 4,
+                          textTransform: "none",
+                          marginTop: 8
+                        }}
+                        disableRipple
+                        onClick={applyComplaintData}
+                      >
+                        Apply
+                      </Button>
+                    </Box>
+              </Grid>
+              
+              <Grid item xs={12} md={12} container justifyContent="flex-end">
+                { toggleComplaintCategory && Object.entries(toggleComplaintCategory).map(([key,value])=> (
+                  <>
+                  { value.toggle == true && 
+                    <Box className={classes.inline} style={{marginTop: isMobile ? 0 : 7}}>
+                      <FiberManualRecordIcon style={{ color: randomColorHSL(key), fontSize: 14, marginLeft: 9, marginRight: 9, marginTop: 7}}/>
+                      <Typography 
+                        style={{
+                          color: "#000", 
+                          fontSize: 16,
+                          marginRight: 8,
+                          marginTop: 3,
+                        }}
+                      >
+                        {key}
+                      </Typography>
+                    </Box>
+                  }
+                  </>
+                ))}
+              </Grid>
+            </Grid>
+
+            { masterComplaintCategoryData && 
+              <MultiComplaintCategoryChart line={toggleComplaintCategory} chart={masterComplaintCategoryData.chart} width={width}/>
+            }
+
+            <Grid item xs={12}>
+              { (complaintCategoryDataLoading) &&
+                <Box className={classes.inline} style={{marginTop: 10, marginLeft: 20, marginBottom: 20}}>
+                  <CircularProgress size={25} />
+                  <Typography 
+                    style={{
+                      color: "#000", 
+                      fontSize: 18,
+                      marginLeft: 12
+                    }}
+                  >
+                    Loading
+                  </Typography>
+                </Box>
+              }
+            </Grid>
+          </Paper>
+        </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <Grid item xs={12}>
           <InView onChange={(inView, entry) => handleSegmentationFetchChange(inView)}>
