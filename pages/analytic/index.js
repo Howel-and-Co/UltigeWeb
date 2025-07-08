@@ -6135,8 +6135,8 @@ const Home = () => {
       setComplaintCategoryDataLoading(true);
       let startDate;
       startDate = moment(complaintYear).format("YYYY");
-      //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
+      //const result = await axios.get(`http://localhost:5000/ultigeapi/web/analytic/getcomplaintcategorylist?year=${startDate}`);
 
       let processedData;
       processedData = result.data;
