@@ -40,7 +40,7 @@ const Layout = props => {
             setAuthorized(false);
 
             if (Cookies.get("role") == "TAILOR") {
-              Router.push("/tailor/scan");
+              Router.push("/tailor/scan/home");
             }
             else if (Cookies.get("role") != "SUPER"
               && Cookies.get("role") != "MERCHANDISE"
