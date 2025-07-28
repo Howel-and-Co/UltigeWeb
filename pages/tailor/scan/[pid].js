@@ -115,9 +115,10 @@ const TailorScan = () => {
             const result = await axios({
                 method: 'post',
                 url: 'https://api.ultige.com/ultigeapi/web/tailor/scan',
+                // url: 'http://localhost:5000/ultigeapi/web/tailor/scan',
                 data: {
                     barcode: barcode,
-                    tailorScanBy: userID
+                    tailorScanUserID: userID
                 }
             });
     
@@ -130,6 +131,8 @@ const TailorScan = () => {
             else {
                 setStatus(processedData.Status.Message);
             }
+
+            setIsProcessAllowed(false);
         };
 
         if (pid != undefined && processActive == true) {
