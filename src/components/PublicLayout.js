@@ -33,7 +33,7 @@ const PublicLayout = props => {
         if (router.pathname == dataItem.path) {
           if ((dataItem.includeRole.length != 0 || dataItem.excludeRole.length != 0) && ((dataItem.excludeRole.length == 0 && dataItem.includeRole.includes(Cookies.get("role")) == false) || (dataItem.includeRole.length == 0 && dataItem.excludeRole.includes(Cookies.get("role")) == true))) {
             if (Cookies.get("role") == "TAILOR") {
-              Router.push("/tailor/scan");
+              Router.push("/tailor/scan/home");
             }
             else if (Cookies.get("role") != "SUPER"
               && Cookies.get("role") != "MERCHANDISE"
