@@ -12,7 +12,7 @@ export const setToken = async (token, userid, role, username, password) => {
     Cookies.set("password", password, { expires: 1 / 8 });
 
     if (Cookies.get("role") == "TAILOR") {
-      window.location.href ="/tailor/scan";
+      window.location.href = "/tailor/scan/home";
     }
     else if (role != "SUPER"
       && role != "MERCHANDISE"
