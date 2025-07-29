@@ -67,8 +67,9 @@ const TailorScan = () => {
                 return;
 
             let userID = Cookies.get("userid");  
-            const result = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettransactiontailorprintitems?barcode=${barcode}&userid=${userID}`);
-            //const result = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettransactiontailorprintitems?barcode=${barcode}&userid=${userID}`);
+            const encodedBarcode = encodeURIComponent(barcode);
+            const result = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettransactiontailorprintitems?barcode=${encodedBarcode}&userid=${userID}`);
+            //const result = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettransactiontailorprintitems?barcode=${encodedBarcode}&userid=${userID}`);
             
             let processedData;
             processedData = result.data;
