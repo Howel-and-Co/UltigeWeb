@@ -7,7 +7,7 @@ const navButtons = [
   },
   {
     label: "Tailor Salary",
-    path: "/tailor/salary",
+    path: "/tailor/salarylist",
     includeRole: ["TAILOR"],
     excludeRole: []
   },
