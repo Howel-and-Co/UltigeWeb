@@ -29,7 +29,12 @@ import {
     Sort,
     Filter,
     Inject,
-    VirtualScroll
+    VirtualScroll,
+    AggregatesDirective,
+    AggregateDirective,
+    AggregateColumnsDirective,
+    AggregateColumnDirective,
+    Aggregate
 } from '@syncfusion/ej2-react-grids';
 
 const useStyles = makeStyles()((theme) => {
@@ -122,6 +127,7 @@ const PurchaseOrderDetail = () => {
   const [purchaseOrderItemsData, setPurchaseOrderItemsData] = React.useState();
 
   const [tailorSalaryItemsData, setTailorSalaryItemsData] = React.useState();
+  const [tailorSalaryFineData, setTailorSalaryFineData] = React.useState();
 
   const [purchaseOrderValue, setPurchaseOrderValue] = React.useState(0);
   const [valueReceived, setValueReceived] = React.useState(0);
@@ -256,7 +262,7 @@ const PurchaseOrderDetail = () => {
 
         const result = await axios.get(`https://api.ultige.com/ultigeapi/web/purchaseorder/getpurchaseorderdetail?purchaseOrderID=${purchaseOrderID}`);
         //const resultTailorSalary = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${purchaseOrderID}`);
-        const resultTailorSalary = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=40923`);
+        const resultTailorSalary = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=40533`);
 
         let processedData;
         processedData = result.data;
@@ -320,6 +326,20 @@ const PurchaseOrderDetail = () => {
             newData.push(object);
         });
         setTailorSalaryItemsData(newData);
+
+        // Untuk denda
+        newData = new Array();
+        tailorSalaryProcessedData.Data.TailorSalaryFine.forEach(function (dataItem) {
+            let object = new Object();
+
+            object.Notes = dataItem.Notes;
+            object.EventDate = dataItem.EventDate;
+            object.Fine = dataItem.Fine;
+            object.ItemName = dataItem.ItemName;
+
+            newData.push(object);
+        });
+        setTailorSalaryFineData(newData);
 
 
         /////
@@ -530,17 +550,19 @@ const PurchaseOrderDetail = () => {
             
             <Grid item xs={12} md={12} lg={12}>
                 <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 300}}>
+                    <Grid container style={{height: 350}}>
                     <Grid item xs={12}>
                             <Typography 
                                 style={{
                                     color: "#000", 
                                     fontSize: 18,
-                                    marginLeft: 5
+                                    marginLeft: 5,
+                                    fontWeight: "bold"
                                 }}
                             >
                                 JASA BORDIR
                             </Typography>
+                            {tailorSalaryItemsData && tailorSalaryItemsData.length > 0 ? (
                             <GridComponent
                                 dataSource={tailorSalaryItemsData}
                                 allowSorting={true}
@@ -556,20 +578,6 @@ const PurchaseOrderDetail = () => {
                                 allowTextWrap={true}
                             >
                                 <ColumnsDirective>
-                                    <ColumnDirective
-                                        headerText="No."
-                                        width="60"
-                                        textAlign="Center"
-                                        template={(props) => {
-                                            if (gridInstance) {
-                                                const currentPage = gridInstance.pageSettings.currentPage || 1;
-                                                const pageSize = gridInstance.pageSettings.pageSize || 50;
-                                                const globalIndex = (currentPage - 1) * pageSize + props.index + 1;
-                                                return <span>{globalIndex}</span>;
-                                            }
-                                            return <span>{props.index + 1}</span>;
-                                        }}
-                                    />
                                     <ColumnDirective
                                         field="EmbroideryName"
                                         headerText="Bordir"
@@ -607,12 +615,144 @@ const PurchaseOrderDetail = () => {
                                         textAlign="Right"
                                     />
                                 </ColumnsDirective>
-                                <Inject services={[Filter, Page, Sort, VirtualScroll]} />
+
+                                <AggregatesDirective>
+                                    <AggregateDirective>
+                                        <AggregateColumnsDirective>
+                                            <AggregateColumnDirective
+                                            field="EmbroideryFeeTotal"
+                                            type="Sum"
+                                            format="N0"
+                                             footerTemplate={(props) => (
+                                                <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "flex-end",
+                                                    fontWeight: "bold",
+                                                    fontSize: "15px",
+                                                }}
+                                                >
+                                                <span style={{ marginRight: "40px", letterSpacing: "1px" }}>
+                                                    SUBTOTAL
+                                                </span>
+                                                <span style={{ minWidth: "120px", textAlign: "right" }}>
+                                                    Rp {props.Sum.toLocaleString("id-ID")}
+                                                </span>
+                                                </div>
+                                            )}
+                                            />
+                                        </AggregateColumnsDirective>
+                                    </AggregateDirective>
+                                </AggregatesDirective>
+
+                                <Inject services={[Filter, Page, Sort, VirtualScroll, Aggregate]} />
                             </GridComponent>
+                            ) : (
+                                <p>No records to display</p>
+                            )}
                         </Grid>
                     </Grid>
                 </Paper>
             </Grid>
+
+            <Grid item xs={12} md={12} lg={12}>
+                <Paper className={classes.paper} elevation={3}>
+                    <Grid container style={{height: 350}}>
+                    <Grid item xs={12}>
+                            <Typography 
+                                style={{
+                                    color: "#000", 
+                                    fontSize: 18,
+                                    marginLeft: 5,
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                DENDA
+                            </Typography>
+                            {tailorSalaryFineData && tailorSalaryFineData.length > 0 ? (
+                            <GridComponent
+                                dataSource={tailorSalaryFineData}
+                                allowSorting={true}
+                                allowPaging={false}
+                                pageSettings={{ pageSize: 50 }}
+                                ref={(grid) => setGridInstance(grid)}
+                                allowFiltering={true}
+                                filterSettings={filterSettings}
+                                height={220}
+                                enableVirtualization={true}
+                                resizeSettings={{mode: 'Normal'}} 
+                                style={{margin: 5}}
+                                allowTextWrap={true}
+                            >
+                                <ColumnsDirective>
+                                    <ColumnDirective
+                                        field="EventDate"
+                                        headerText="Tgl"
+                                        width="150"
+                                    />
+                                    <ColumnDirective
+                                        field="Notes"
+                                        headerText="Keterangan"
+                                        width="150"
+                                    />
+                                    <ColumnDirective
+                                        field="ItemName"
+                                        headerText="Barang"
+                                        width="250"
+                                    />
+                                    <ColumnDirective
+                                        field="Fine"
+                                        headerText="Denda"
+                                        width="170"
+                                        format="#,##0.##"
+                                        template={(props2) => (
+                                            <span>Rp {props2.Fine.toLocaleString('id-ID')}</span>
+                                        )}
+                                        textAlign="Right"
+                                    />
+                                </ColumnsDirective>
+
+                                <AggregatesDirective>
+                                    <AggregateDirective>
+                                        <AggregateColumnsDirective>
+                                            <AggregateColumnDirective
+                                            field="Fine"
+                                            type="Sum"
+                                            format="N0"
+                                             footerTemplate={(props) => (
+                                                <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "flex-end",
+                                                    fontWeight: "bold",
+                                                    fontSize: "15px",
+                                                }}
+                                                >
+                                                <span style={{ marginRight: "40px", letterSpacing: "1px" }}>
+                                                    SUBTOTAL
+                                                </span>
+                                                <span style={{ minWidth: "120px", textAlign: "right" }}>
+                                                    Rp {props.Sum.toLocaleString("id-ID")}
+                                                </span>
+                                                </div>
+                                            )}
+                                            />
+                                        </AggregateColumnsDirective>
+                                    </AggregateDirective>
+                                </AggregatesDirective>
+
+                                <Inject services={[Filter, Page, Sort, VirtualScroll, Aggregate]} />
+                            </GridComponent>
+                            ) : (
+                                <p>No records to display</p>
+                            )}
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Grid>
+
+
+
 
             <Grid item xs={12}>
                 <Paper className={classes.paper} elevation={3}>
@@ -1192,179 +1332,13 @@ const PurchaseOrderDetail = () => {
                     </Grid>
                 </Paper>
             </Grid>
-            { statusDescription == "CANCELLED" && 
-                <Grid item xs={12} style={{marginBottom: isTablet ? 0 : isLaptop ? (freezeNotes == null ? 110 : 310) : 0}}>
-                    <Paper className={classes.paper} elevation={3}>
-                        <Grid container style={{height: 355}}>
-                            <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginLeft: 3
-                                    }}
-                                >
-                                    Status Cancel:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 4,
-                                        padding: 0
-                                    }}
-                                    value={cancellationStatusDescription} 
-                                />
-                            </Grid> 
-                            <Grid item xs={6}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginLeft: 8
-                                    }}
-                                >
-                                    Requestor:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "95%",
-                                        marginTop: 0,
-                                        marginBottom: 4,
-                                        marginLeft: 5,
-                                        padding: 0
-                                    }}
-                                    value={cancellationRequestorName} 
-                                />
-                            </Grid>  
-                            <Grid item xs={6}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginLeft: 8
-                                    }}
-                                >
-                                    Tgl. Request:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "95%",
-                                        marginTop: 0,
-                                        marginBottom: 4,
-                                        marginLeft: 5,
-                                        padding: 0
-                                    }}
-                                    value={cancellationRequestDate} 
-                                />
-                            </Grid>  
-                            <Grid item xs={6}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginLeft: 8
-                                    }}
-                                >
-                                    Approver/Rejector:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "95%",
-                                        marginTop: 0,
-                                        marginBottom: 4,
-                                        marginLeft: 5,
-                                        padding: 0
-                                    }}
-                                    value={approverRequestorName} 
-                                />
-                            </Grid>  
-                            <Grid item xs={6}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginLeft: 8
-                                    }}
-                                >
-                                    Tgl. Approve/Reject:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "95%",
-                                        marginTop: 0,
-                                        marginBottom: 4,
-                                        marginLeft: 5,
-                                        padding: 0
-                                    }}
-                                    value={cancellationApproveDate} 
-                                />
-                            </Grid> 
-                            <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginLeft: 3
-                                    }}
-                                >
-                                    Alasan Cancel:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    multiline
-                                    minRows={4}
-                                    maxRows={4}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 0,
-                                        padding: 0
-                                    }}
-                                    value={cancellationReason} 
-                                />
-                            </Grid>           
-                        </Grid>
-                    </Paper>
-                </Grid>
-            }
-          </Grid>
-          <Grid container sm={12} md={7} lg={8}>
+           
+        </Grid>
+        {/* TITIKNYA DISINI */}
+
+
+
+          <Grid container sm={12} md={7} lg={12}>
             <Grid item xs={12} md={12} lg={6}>
                 <Paper className={classes.paper} elevation={3}>
                     <Grid container style={{height: 250}}>
@@ -1494,114 +1468,6 @@ const PurchaseOrderDetail = () => {
                                         headerText="Status"
                                         width="150"
                                         template={PaymentStatusDescriptionTemplate}
-                                    />
-                                </ColumnsDirective>
-                                <Inject services={[Filter, Page, Sort, VirtualScroll]} />
-                            </GridComponent>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Grid>
-            <Grid item xs={12}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 500}}>
-                        <Grid item xs={12}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Produk
-                            </Typography>
-                            <GridComponent
-                                dataSource={purchaseOrderItemsData}
-                                allowSorting={true}
-                                allowPaging={false}
-                                pageSettings={{ pageSize: 50 }}
-                                ref={(grid) => setGridInstance(grid)}
-                                allowFiltering={true}
-                                filterSettings={filterSettings}
-                                height={420}
-                                enableVirtualization={true}
-                                resizeSettings={{mode: 'Normal'}} 
-                                style={{margin: 5}}
-                                allowTextWrap={true}
-                            >
-                                <ColumnsDirective>
-                                    <ColumnDirective
-                                        field="ProductID"
-                                        headerText="ID"
-                                        width="100"
-                                    />
-                                    <ColumnDirective
-                                        field="ProductName"
-                                        headerText="Nama"
-                                        width="350"
-                                    />
-                                    <ColumnDirective
-                                        field="Quantity"
-                                        headerText="Jumlah"
-                                        width="130"
-                                        format="N0"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="UnitPrice"
-                                        headerText="Harga Satuan"
-                                        width="170"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="DPPPrice"
-                                        headerText="DPP"
-                                        width="150"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="PPNPrice"
-                                        headerText="PPN"
-                                        width="150"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="TotalPrice"
-                                        headerText="Total"
-                                        width="150"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="TotalReceivedPrice"
-                                        headerText="Total Nominal Diterima"
-                                        width="210"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="TotalRemainedPrice"
-                                        headerText="Total Nominal Tersisa"
-                                        width="210"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="Received"
-                                        headerText="Diterima"
-                                        width="130"
-                                        format="N0"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="Remained"
-                                        headerText="Sisa"
-                                        width="130"
-                                        format="N0"
-                                        textAlign="Right"
                                     />
                                 </ColumnsDirective>
                                 <Inject services={[Filter, Page, Sort, VirtualScroll]} />
