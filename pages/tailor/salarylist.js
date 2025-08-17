@@ -159,6 +159,7 @@ const TailorSalary = () => {
   const [tailorSalaryStartDate, setTailorSalaryStartDate] = React.useState(getCurrentTime());
   const [tailorSalaryEndDate, setTailorSalaryEndDate] = React.useState(getCurrentTime());
   const [tailorSalaryPaymentDate, setTailorSalaryPaymentDate] = React.useState(getCurrentTime());
+  const [recordClickIndex, setRecordClickIndex] = React.useState(-1);
 
   const [open, setOpen] = React.useState(false);
   const [paymentFetchActive, setPaymentFetchActive] = React.useState(false);
@@ -205,9 +206,20 @@ const TailorSalary = () => {
   }
 
   const RowSelected = (props) => {
-    setInvoiceTitle("Nota Pembayaran " + props.data.RequestDate);
-    setInvoicePath(props.data.InvoicePath);
-    setFileFetchActive(true);
+			
+    let currentCount = 0;
+    if (props.rowIndex != recordClickIndex) {
+      setRecordClickIndex(props.rowIndex);
+      currentCount = 1;
+    }
+    else {
+      currentCount = 2;
+    }
+
+    if (currentCount == 2) {
+      window.open(`/purchase-order/${props.rowData.TailorSalaryID}`, '_blank')
+      //Router.push(`/purchase-order/${props.rowData.PurchaseOrderID}`);
+    }
   };
 
 
@@ -215,8 +227,8 @@ const TailorSalary = () => {
     const fetchTailorSalaryData = async (startDate, endDate, userid) => {
       setDataLoading(true);
 
-      //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalary?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalary?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
+      //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalarylist?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
+      const result = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalarylist?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
 
       let processedData;
       processedData = result.data;
@@ -515,6 +527,7 @@ const TailorSalary = () => {
                         resizeSettings={{mode: 'Normal'}}
                         style={{margin: 10}}
                         allowTextWrap={true}
+                        recordClick={RowSelected}
                         queryCellInfo={CustomizeCell}
                         gridLines='Both'
                     >
