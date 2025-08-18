@@ -87,230 +87,47 @@ const PurchaseOrderDetail = () => {
   const [dataLoading, setDataLoading] = React.useState(false);
 
   const [fetchActive, setFetchActive] = React.useState(false);
-  const [approveActive, setApproveActive] = React.useState(false);
-  const [rejectActive, setRejectActive] = React.useState(false);
-
-
-  const [name, setName] = React.useState();
-  const [dealType, setDealType] = React.useState();
-  const [contractType, setContractType] = React.useState();
-  const [purchaseOrderNumber, setPurchaseOrderNumber] = React.useState();
-  const [notes, setNotes] = React.useState();
-
-  const [dueDate, setDueDate] = React.useState();
-  const [estimationDate, setEstimationDate] = React.useState();
-  const [statusDescription, setStatusDescription] = React.useState();
-  const [shippingCost, setShippingCost] = React.useState();
-  const [createDate, setCreateDate] = React.useState();
-  const [assuranceValue, setAssuranceValue] = React.useState();
-  const [createdBy, setCreatedBy] = React.useState();
-  const [adminValue, setAdminValue] = React.useState();
-
-  const [approvalStatusDescription, setApprovalStatusDescription] = React.useState();
-  const [approverUsername, setApproverUsername] = React.useState();
-  const [approvalDate, setApprovalDate] = React.useState();
-  const [deliveryStatusDescription, setDeliveryStatusDescription] = React.useState();
-  const [payStatusDescription, setPayStatusDescription] = React.useState();
-  
-  const [cancellationStatusDescription, setCancellationStatusDescription] = React.useState();
-  const [cancellationRequestorName, setCancellationRequestorName] = React.useState();
-  const [cancellationRequestDate, setCancellationRequestDate] = React.useState();
-  const [approverRequestorName, setApproverRequestorName] = React.useState();
-  const [cancellationApproveDate, setCancellationApproveDate] = React.useState();
-  const [cancellationReason, setCancellationReason] = React.useState();
-
-  const [ppnPercentage, setPPNPercentage] = React.useState();
-  const [freezeNotes, setFreezeNotes] = React.useState();
-
-  const [deliveryOrdersData, setDeliveryOrdersData] = React.useState();
-  const [purchaseOrderPaymentsData, setPurchaseOrderPaymentsData] = React.useState();
-  const [purchaseOrderItemsData, setPurchaseOrderItemsData] = React.useState();
 
   const [tailorSalaryItemsData, setTailorSalaryItemsData] = React.useState();
   const [tailorSalaryFineData, setTailorSalaryFineData] = React.useState();
+  const [tailorSalaryNotes, setTailorSalaryNotes] = React.useState();
 
-  const [purchaseOrderValue, setPurchaseOrderValue] = React.useState(0);
-  const [valueReceived, setValueReceived] = React.useState(0);
-  const [valueNotYetReceived, setValueNotYetReceived] = React.useState(0);
-  const [paymentValue, setPaymentValue] = React.useState(0);
-  const [valuePaid, setValuePaid] = React.useState(0);
-  const [valuePending, setValuePending] = React.useState(0);
-  const [valueCredit, setValueCredit] = React.useState(0);
 
-  const [totalQuantity, setTotalQuantity] = React.useState(0);
-  const [totalReceivedQuantity, setTotalReceivedQuantity] = React.useState(0);
-  const [totalRemainingQuantity, setTotalRemainingQuantity] = React.useState(0);
-  const [totalQuantityInValue, setTotalQuantityInValue] = React.useState(0);
-  const [totalReceivedInValue, setTotalReceivedInValue] = React.useState(0);
-  const [totalRemainingInValue, setTotalRemainingInValue] = React.useState(0);
+  const [tailorFullName, setTailorFullName] = React.useState('');
+  const [invoiceDocumentNumber, setInvoiceDocumentNumber] = React.useState('');
+  const [feeDate, setFeeDate] = React.useState('');
+
+  const [loadDataStatus, setLoadDataStatus] = React.useState('');
+  const [loadDataStatusCode, setLoadDataStatusCode] = React.useState(0);
+
+  const [extraFine, setExtraFineValue] = React.useState(0);
+  const [extraBonus, setExtraBonusValue] = React.useState(0);
+  const [subtotalJasa, setSubtotalJasaValue] = React.useState(0);
+  const [subtotalDenda, setSubtotalDendaValue] = React.useState(0);
+  const [subtotalBonus, setSubtotalBonusValue] = React.useState(0);
+  const [totalBayar, setTotalBayarValue] = React.useState(0);
+  const [tailorSalaryID, setTailorSalaryID] = React.useState(0);
 
   const [filterSettings, setFilterSettings] = React.useState({ type: 'Excel' });
   const [gridInstance, setGridInstance] = React.useState();
 
-  const StatusDescriptionColor = (status) => {
-    if (status == 'ONGOING') {
-        return '#F6AF43'
-    }
-    else if (status == 'CANCELLED') {
-        return '#F14343'
-    }
-    else if (status == 'SETTLED') {
-        return '#3C8F4A'
-    }
-    else {
-        return '#00000'
-    }
-  };
-
-  const ApprovalStatusDescriptionColor = (status) => {
-    if (status == 'PENDING') {
-        return '#F6AF43'
-    }
-    else if (status == 'REJECTED') {
-        return '#F14343'
-    }
-    else if (status == 'APPROVED') {
-        return '#3C8F4A'
-    }
-    else if (status == 'CANCELLED') {
-        return '#FC6F03'
-    }
-    else {
-        return '#00000'
-    }
-  };
-
-  const DOStatusDescriptionTemplate = (props) => {
-    if (props.StatusDescription == 'PENDING') {
-      return (
-        <span style={{color: '#F6AF43'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'REJECTED') {
-      return (
-        <span style={{color: '#F14343'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'APPROVED') {
-      return (
-        <span style={{color: '#3C8F4A'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'CANCELLED') {
-      return (
-        <span style={{color: '#FC6F03'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'PAID') {
-        return (
-          <span style={{color: '#536FB7'}}>
-            {props.StatusDescription}
-          </span>
-        );
-      }
-  };
-
-  const PaymentStatusDescriptionTemplate = (props) => {
-    if (props.StatusDescription == 'PENDING') {
-      return (
-        <span style={{color: '#F6AF43'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'REJECTED') {
-      return (
-        <span style={{color: '#F14343'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'APPROVED') {
-      return (
-        <span style={{color: '#3C8F4A'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'CANCELLED') {
-      return (
-        <span style={{color: '#FC6F03'}}>
-          {props.StatusDescription}
-        </span>
-      );
-    }
-    else if (props.StatusDescription == 'PAID') {
-        return (
-          <span style={{color: '#536FB7'}}>
-            {props.StatusDescription}
-          </span>
-        );
-      }
-  };
-
   useEffect(() => {
-    const fetchPurchaseOrderDetailData = async (purchaseOrderID) => {
+    const fetchTailorSalaryData = async (tailorSalaryID, userID) => {
         setDataLoading(true);
 
-        const result = await axios.get(`https://api.ultige.com/ultigeapi/web/purchaseorder/getpurchaseorderdetail?purchaseOrderID=${purchaseOrderID}`);
-        //const resultTailorSalary = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${purchaseOrderID}`);
-        const resultTailorSalary = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=40533`);
-
-        let processedData;
-        processedData = result.data;
+        //const resultTailorSalary = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${tailorSalaryID}&userid=${userID}`);
+        const resultTailorSalary = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${tailorSalaryID}&userid=${userID}`);
 
         let tailorSalaryProcessedData;
         tailorSalaryProcessedData = resultTailorSalary.data;
 
-      
-        //console.log(processedData);
-
-        setName(processedData.Data.PurchaseOrderDetail.Name);
-        setDealType(processedData.Data.PurchaseOrderDetail.DealType);
-        setContractType(processedData.Data.PurchaseOrderDetail.ContractType);
-        setPurchaseOrderNumber(processedData.Data.PurchaseOrderDetail.PurchaseOrderNumber);
-        setNotes(processedData.Data.PurchaseOrderDetail.Notes);
-
-        if (processedData.Data.PurchaseOrderDetail.DueDate != null)
-            setDueDate(moment(processedData.Data.PurchaseOrderDetail.DueDate).format("DD/MM/YYYY"));
-        if (processedData.Data.PurchaseOrderDetail.EstimationDate != null)
-            setEstimationDate(moment(processedData.Data.PurchaseOrderDetail.EstimationDate).format("DD/MM/YYYY"));
-        setStatusDescription(processedData.Data.PurchaseOrderDetail.StatusDescription);
-        //setStatusDescription("CANCELLED");
-        setShippingCost("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(processedData.Data.PurchaseOrderDetail.ShippingCost));
-        if (processedData.Data.PurchaseOrderDetail.CreateDate != null)
-            setCreateDate(moment(processedData.Data.PurchaseOrderDetail.CreateDate).format("DD/MM/YYYY"));
-        setAssuranceValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(processedData.Data.PurchaseOrderDetail.AssuranceValue));    
-        setCreatedBy(processedData.Data.PurchaseOrderDetail.CreatedBy);
-        setAdminValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(processedData.Data.PurchaseOrderDetail.AdminValue));    
-
-        setApprovalStatusDescription(processedData.Data.PurchaseOrderDetail.ApprovalStatusDescription);
-        setApproverUsername(processedData.Data.PurchaseOrderDetail.ApproverUsername);
-        if (processedData.Data.PurchaseOrderDetail.ApprovalDate != null)
-            setApprovalDate(moment(processedData.Data.PurchaseOrderDetail.ApprovalDate).format("DD/MM/YYYY HH:mm:ss"));
-        setDeliveryStatusDescription(processedData.Data.PurchaseOrderDetail.DeliveryStatusDescription);
-        setPayStatusDescription(processedData.Data.PurchaseOrderDetail.PayStatusDescription);
-
-        setCancellationStatusDescription(processedData.Data.PurchaseOrderDetail.CancellationStatusDescription);
-        setCancellationRequestorName(processedData.Data.PurchaseOrderDetail.CancellationRequestorName);
-        if (processedData.Data.PurchaseOrderDetail.CancellationRequestDate != null)
-            setCancellationRequestDate(moment(processedData.Data.PurchaseOrderDetail.CancellationRequestDate).format("DD/MM/YYYY HH:mm:ss"));
-        setApproverRequestorName(processedData.Data.PurchaseOrderDetail.ApproverRequestorName);
-        if (processedData.Data.PurchaseOrderDetail.CancellationApproveDate != null)
-            setCancellationApproveDate(moment(processedData.Data.PurchaseOrderDetail.CancellationApproveDate).format("DD/MM/YYYY HH:mm:ss"));
-        setCancellationReason(processedData.Data.PurchaseOrderDetail.CancellationReason);
-
-        setPPNPercentage(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(processedData.Data.PurchaseOrderDetail.PPNPercentage) + "%");
-        setFreezeNotes(processedData.Data.PurchaseOrderDetail.FreezeNotes);
-        //setFreezeNotes("TEST");
+        // ✅ Cek apakah response valid dan punya property Data
+        if (!tailorSalaryProcessedData || !tailorSalaryProcessedData.Data) {
+            setLoadDataStatus(tailorSalaryProcessedData.Status.Message);
+            setLoadDataStatusCode(tailorSalaryProcessedData.Status.Code);
+            setDataLoading(false);
+            return; // stop eksekusi biar gak error
+        }
 
         //////
         let newData = new Array();
@@ -341,1526 +158,690 @@ const PurchaseOrderDetail = () => {
         });
         setTailorSalaryFineData(newData);
 
+        // Untuk Detail
+        newData = new Array();
+        setTailorSalaryNotes(tailorSalaryProcessedData.Data.TailorSalaryDetail.Notes);
+        setExtraFineValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(tailorSalaryProcessedData.Data.TailorSalaryDetail.ExtraFine));
+        setExtraBonusValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(tailorSalaryProcessedData.Data.TailorSalaryDetail.ExtraBonus));
+        setSubtotalDendaValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(tailorSalaryProcessedData.Data.TailorSalaryDetail.SubtotalDenda));
+        setSubtotalJasaValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(tailorSalaryProcessedData.Data.TailorSalaryDetail.SubtotalJasa));
+        setSubtotalBonusValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(tailorSalaryProcessedData.Data.TailorSalaryDetail.SubtotalBonus));
+        setTotalBayarValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(tailorSalaryProcessedData.Data.TailorSalaryDetail.TotalBayar));
+
+        setTailorFullName(tailorSalaryProcessedData.Data.TailorSalaryDetail.FullName);
+        setInvoiceDocumentNumber(tailorSalaryProcessedData.Data.TailorSalaryDetail.InvoiceDocumentNumber);
+        setFeeDate(tailorSalaryProcessedData.Data.TailorSalaryDetail.FeeDate);
+        setTailorSalaryID(tailorSalaryID);
 
         /////
-
-
-
-
-
-
-
-        newData = new Array();
-        let tempPurchaseOrderValue = 0;
-        let tempValueReceived = 0;
-        let tempValueNotYetReceived = 0;
-        let tempPaymentValue = 0;
-        let tempValuePaid = 0;
-        let tempValuePending = 0;
-        let tempValueCredit = 0;
-
-        let tempTotalQuantity = 0;
-        let tempTotalReceivedQuantity = 0;
-        let tempTotalRemainingQuantity = 0;
-        let tempTotalQuantityInValue = 0;
-        let tempTotalReceivedInValue = 0;
-        let tempTotalRemainingInValue = 0;
-
-        processedData.Data.DeliveryOrders.forEach(function (dataItem) {
-            let object = new Object();
-
-            object.DeliveryOrderID = dataItem.DeliveryOrderID;
-            object.CreateDate = dataItem.CreateDate;
-            object.DeliveryDate = dataItem.DeliveryDate;
-            object.CreatedBy = dataItem.CreatedBy;
-            object.DeliveryOrderNumber = dataItem.DeliveryOrderNumber;
-            object.StatusDescription = dataItem.StatusDescription;
-
-            newData.push(object);
-        });
-        setDeliveryOrdersData(newData);
-
-        newData = new Array();
-
-        processedData.Data.PurchaseOrderPayments.forEach(function (dataItem) {
-            let object = new Object();
-
-            object.PurchaseOrderPaymentID = dataItem.PurchaseOrderPaymentID;
-            object.InvoiceValue = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.InvoiceValue);
-            object.FinalValue = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.FinalValue);
-            object.Method = dataItem.Method;
-            object.StatusDescription = dataItem.StatusDescription;
-
-            if (dataItem.Status == 4) {
-                tempValuePaid += parseFloat(dataItem.FinalValue);
-            }
-            else if (dataItem.Status == 1 || dataItem.Status == 0) {
-                tempValuePending += parseFloat(dataItem.FinalValue);
-            }
-
-            tempPaymentValue += parseFloat(dataItem.FinalValue);
-
-            newData.push(object);
-        });
-        setPurchaseOrderPaymentsData(newData);
-
-        newData = new Array();
-
-        processedData.Data.PurchaseOrderItems.forEach(function (dataItem) {
-            let object = new Object();
-
-            object.ProductID = dataItem.ProductID;
-            object.ProductName = dataItem.ProductName;
-            object.Quantity = dataItem.Quantity;
-            object.UnitPrice = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.UnitPrice);
-            object.DPPPrice = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.DPPPrice);
-            object.PPNPrice = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.PPNPrice);
-            object.TotalPrice = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.TotalPrice);
-            object.TotalReceivedPrice = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.TotalReceivedPrice);
-            object.TotalRemainedPrice = Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataItem.TotalRemainedPrice);
-            object.Received = dataItem.Received;
-            object.Remained = dataItem.Remained;
-
-            tempPurchaseOrderValue += parseFloat(dataItem.TotalPrice);
-            tempValueReceived += parseFloat(dataItem.TotalReceivedPrice);
-
-            tempTotalQuantity += parseInt(dataItem.Quantity);
-            tempTotalReceivedQuantity += parseInt(dataItem.Received);
-            tempTotalRemainingQuantity += parseInt(dataItem.Remained);
-            tempTotalQuantityInValue += parseFloat(dataItem.TotalPrice);
-            tempTotalReceivedInValue += parseFloat(dataItem.TotalReceivedPrice);
-            tempTotalRemainingInValue += parseFloat(dataItem.TotalRemainedPrice);
-
-            newData.push(object);
-        });
-        setPurchaseOrderItemsData(newData);
-
-        tempValueNotYetReceived = tempPurchaseOrderValue - tempValueReceived;
-        tempValueCredit = tempPurchaseOrderValue - tempPaymentValue;
-
-        setPurchaseOrderValue(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempPurchaseOrderValue));
-        setValueReceived(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempValueReceived));
-        setValueNotYetReceived(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempValueNotYetReceived));
-        setPaymentValue(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempPaymentValue));
-        setValuePaid(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempValuePaid));
-        setValuePending(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempValuePending));
-        setValueCredit(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempValueCredit));
-
-        setTotalQuantity(Intl.NumberFormat('id').format(tempTotalQuantity));
-        setTotalReceivedQuantity(Intl.NumberFormat('id').format(tempTotalReceivedQuantity));
-        setTotalRemainingQuantity(Intl.NumberFormat('id').format(tempTotalRemainingQuantity));
-        setTotalQuantityInValue(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempTotalQuantityInValue));
-        setTotalReceivedInValue(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempTotalReceivedInValue));
-        setTotalRemainingInValue(Intl.NumberFormat('id', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tempTotalRemainingInValue));
-
         setDataLoading(false);
     };
 
     if (pid != undefined || fetchActive == true) {
-        fetchPurchaseOrderDetailData(pid);
+        let userID = Cookies.get("userid");  
+
+        fetchTailorSalaryData(pid, userID);
         setFetchActive(false);
     }
   }, [pid, fetchActive]);
 
-  useEffect(() => {
-    const processApprovePurchaseOrder = async (purchaseOrderID, approvalStatus, userID) => {
-        setDataLoading(true);
 
-        const result = await axios({
-            method: 'put',
-            url: 'https://api.ultige.com/ultigeapi/web/purchaseorder/updatepurchaseorder',
-            data: {
-                purchaseOrderID: purchaseOrderID,
-                approvalStatus: approvalStatus,
-                userID: userID
-            }
-        });
-
-        let processedData;
-        processedData = result.data;
-        
-        if (processedData.Status.Code == 200) {
-            window.alert("PO berhasil diapprove");
-            Router.push("/purchase-order");
-        }
-        else {
-            window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
-            setDataLoading(false);
-        }
-    };
-
-    if (approveActive == true) {
-        if (window.confirm("Approve PO?") == false) {
-            setApproveActive(false);
-            return;
-        } 
-
-        let userID = Cookies.get("userid");
-
-        processApprovePurchaseOrder(pid, 1, userID);
-        setApproveActive(false);
-    }
-  }, [approveActive]);
-
-  useEffect(() => {
-    const processRejectPurchaseOrder = async (purchaseOrderID, approvalStatus, userID) => {
-        setDataLoading(true);
-
-        const result = await axios({
-            method: 'put',
-            url: 'https://api.ultige.com/ultigeapi/web/purchaseorder/updatepurchaseorder',
-            data: {
-                purchaseOrderID: purchaseOrderID,
-                approvalStatus: approvalStatus,
-                userID: userID
-            }
-        });
-
-        let processedData;
-        processedData = result.data;
-        
-        if (processedData.Status.Code == 200) {
-            window.alert("Approval PO berhasil ditolak");
-            Router.push("/purchase-order");
-        }
-        else {
-            window.alert(processedData.Status.Message + "\nTerjadi kesalahan, mohon coba kembali atau hubungi administrator");
-            setDataLoading(false);
-        }
-    };
-
-    if (rejectActive == true) {
-        if (window.confirm("Tolak approval PO?") == false) {
-            setRejectActive(false);
-            return;
-        } 
-
-        let userID = Cookies.get("userid");
-
-        processRejectPurchaseOrder(pid, 2, userID);
-        setRejectActive(false);
-    }
-  }, [rejectActive]);
 
   return (
     <>
       <Layout>
         <Grid container style={{padding: 5}}>
-          <Grid container sm={12} md={12} lg={12}>
-            
-            <Grid item xs={12} md={12} lg={12}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 350}}>
-                    <Grid item xs={12}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 5,
-                                    fontWeight: "bold"
-                                }}
-                            >
-                                JASA BORDIR
-                            </Typography>
-                            {tailorSalaryItemsData && tailorSalaryItemsData.length > 0 ? (
-                            <GridComponent
-                                dataSource={tailorSalaryItemsData}
-                                allowSorting={true}
-                                allowPaging={false}
-                                pageSettings={{ pageSize: 50 }}
-                                ref={(grid) => setGridInstance(grid)}
-                                allowFiltering={true}
-                                filterSettings={filterSettings}
-                                height={220}
-                                enableVirtualization={true}
-                                resizeSettings={{mode: 'Normal'}} 
-                                style={{margin: 5}}
-                                allowTextWrap={true}
-                            >
-                                <ColumnsDirective>
-                                    <ColumnDirective
-                                        field="EmbroideryName"
-                                        headerText="Bordir"
-                                        width="150"
-                                    />
-                                    <ColumnDirective
-                                        field="StockCategoryName"
-                                        headerText="Kategori"
-                                        width="150"
-                                    />
-                                    <ColumnDirective
-                                        field="EmbroideryQuantity"
-                                        headerText="Jumlah"
-                                        width="150"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="EmbroideryFee"
-                                        headerText="Harga"
-                                        width="170"
-                                        format="#,##0.##"
-                                        template={(props2) => (
-                                            <span>Rp {props2.EmbroideryFeeTotal.toLocaleString('id-ID')}</span>
-                                        )}
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="EmbroideryFeeTotal"
-                                        headerText="Total"
-                                        width="170"
-                                        format="#,##0.##"
-                                        template={(props2) => (
-                                            <span>Rp {props2.EmbroideryFeeTotal.toLocaleString('id-ID')}</span>
-                                        )}
-                                        textAlign="Right"
-                                    />
-                                </ColumnsDirective>
-
-                                <AggregatesDirective>
-                                    <AggregateDirective>
-                                        <AggregateColumnsDirective>
-                                            <AggregateColumnDirective
-                                            field="EmbroideryFeeTotal"
-                                            type="Sum"
-                                            format="N0"
-                                             footerTemplate={(props) => (
-                                                <div
-                                                style={{
-                                                    display: "flex",
-                                                    justifyContent: "flex-end",
-                                                    fontWeight: "bold",
-                                                    fontSize: "15px",
-                                                }}
-                                                >
-                                                <span style={{ marginRight: "40px", letterSpacing: "1px" }}>
-                                                    SUBTOTAL
-                                                </span>
-                                                <span style={{ minWidth: "120px", textAlign: "right" }}>
-                                                    Rp {props.Sum.toLocaleString("id-ID")}
-                                                </span>
-                                                </div>
-                                            )}
-                                            />
-                                        </AggregateColumnsDirective>
-                                    </AggregateDirective>
-                                </AggregatesDirective>
-
-                                <Inject services={[Filter, Page, Sort, VirtualScroll, Aggregate]} />
-                            </GridComponent>
-                            ) : (
-                                <p>No records to display</p>
-                            )}
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={12} lg={12}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 350}}>
-                    <Grid item xs={12}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 5,
-                                    fontWeight: "bold"
-                                }}
-                            >
-                                DENDA
-                            </Typography>
-                            {tailorSalaryFineData && tailorSalaryFineData.length > 0 ? (
-                            <GridComponent
-                                dataSource={tailorSalaryFineData}
-                                allowSorting={true}
-                                allowPaging={false}
-                                pageSettings={{ pageSize: 50 }}
-                                ref={(grid) => setGridInstance(grid)}
-                                allowFiltering={true}
-                                filterSettings={filterSettings}
-                                height={220}
-                                enableVirtualization={true}
-                                resizeSettings={{mode: 'Normal'}} 
-                                style={{margin: 5}}
-                                allowTextWrap={true}
-                            >
-                                <ColumnsDirective>
-                                    <ColumnDirective
-                                        field="EventDate"
-                                        headerText="Tgl"
-                                        width="150"
-                                    />
-                                    <ColumnDirective
-                                        field="Notes"
-                                        headerText="Keterangan"
-                                        width="150"
-                                    />
-                                    <ColumnDirective
-                                        field="ItemName"
-                                        headerText="Barang"
-                                        width="250"
-                                    />
-                                    <ColumnDirective
-                                        field="Fine"
-                                        headerText="Denda"
-                                        width="170"
-                                        format="#,##0.##"
-                                        template={(props2) => (
-                                            <span>Rp {props2.Fine.toLocaleString('id-ID')}</span>
-                                        )}
-                                        textAlign="Right"
-                                    />
-                                </ColumnsDirective>
-
-                                <AggregatesDirective>
-                                    <AggregateDirective>
-                                        <AggregateColumnsDirective>
-                                            <AggregateColumnDirective
-                                            field="Fine"
-                                            type="Sum"
-                                            format="N0"
-                                             footerTemplate={(props) => (
-                                                <div
-                                                style={{
-                                                    display: "flex",
-                                                    justifyContent: "flex-end",
-                                                    fontWeight: "bold",
-                                                    fontSize: "15px",
-                                                }}
-                                                >
-                                                <span style={{ marginRight: "40px", letterSpacing: "1px" }}>
-                                                    SUBTOTAL
-                                                </span>
-                                                <span style={{ minWidth: "120px", textAlign: "right" }}>
-                                                    Rp {props.Sum.toLocaleString("id-ID")}
-                                                </span>
-                                                </div>
-                                            )}
-                                            />
-                                        </AggregateColumnsDirective>
-                                    </AggregateDirective>
-                                </AggregatesDirective>
-
-                                <Inject services={[Filter, Page, Sort, VirtualScroll, Aggregate]} />
-                            </GridComponent>
-                            ) : (
-                                <p>No records to display</p>
-                            )}
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Grid>
-
-
-
-
-            <Grid item xs={12}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 310}}>
-                        <Grid item xs={12} style={{marginTop: 5}}>
-                            <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginTop: 6,
-                                        width: 250
-                                    }}
-                                >
-                                    Vendor:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 0,
-                                        padding: 0
-                                    }}
-                                    value={name} 
-                                />
-                            </Box>
-                            <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginTop: 6,
-                                        width: 250
-                                    }}
-                                >
-                                    Jenis Deal:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 0,
-                                        padding: 0
-                                    }}
-                                    value={dealType} 
-                                />
-                            </Box>
-                            <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginTop: 6,
-                                        width: 250
-                                    }}
-                                >
-                                    Jenis Kontrak:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 0,
-                                        padding: 0
-                                    }}
-                                    value={contractType} 
-                                />
-                            </Box>
-                            <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginTop: 6,
-                                        width: 250
-                                    }}
-                                >
-                                    Nomor PO:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 0,
-                                        padding: 0
-                                    }}
-                                    value={purchaseOrderNumber} 
-                                />
-                            </Box>
-                            <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginTop: 35,
-                                        width: 250
-                                    }}
-                                >
-                                    Catatan:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    multiline
-                                    minRows={4}
-                                    maxRows={4}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 0,
-                                        padding: 0
-                                    }}
-                                    value={notes} 
-                                />
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Grid>
             
 
-            <Grid item xs={12}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 300}}>
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Tgl. Jatuh Tempo:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={dueDate} 
-                            />
-                        </Grid>  
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Tgl. Estimasi:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={estimationDate} 
-                            />
-                        </Grid> 
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Status PO:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    style: {color: StatusDescriptionColor(statusDescription)}
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={statusDescription} 
-                            />
-                        </Grid>  
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Biaya Pengiriman:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={shippingCost} 
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Tgl. Buat PO:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={createDate} 
-                            />
-                        </Grid>  
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Asuransi:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={assuranceValue} 
-                            />
-                        </Grid>     
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Dibuat Oleh:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={createdBy} 
-                            />
-                        </Grid>  
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Biaya Admin:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={adminValue} 
-                            />
-                        </Grid>                      
-                    </Grid>
-                </Paper>
-            </Grid>
 
-            <Grid item xs={12} style={{marginBottom: statusDescription == "CANCELLED" ? 0 : isTablet ? 0 : isLaptop ? (freezeNotes == null ? 480 : 680) : 120}}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 300}}>
-                        { approvalStatusDescription == "PENDING" ?
-                            <>
-                                <Grid item xs={6}>
+
+            {loadDataStatusCode === 0 ? (
+                <Grid container sm={12} md={12} lg={12}>
+                    <Grid item xs={12} md={12} lg={12}>
+                        <Paper className={classes.paper} elevation={3}>
+                            <Grid container style={{height: 110}}>
+                            <Grid item xs={12}>
+                                    <Typography 
+                                        align="center"
+                                        style={{
+                                            color: "#000", 
+                                            fontSize: 24,
+                                            marginLeft: 5,
+                                            fontWeight: "bold"
+                                        }}
+                                    >
+                                        ID: {tailorSalaryID}
+                                    </Typography>
+                                    <Typography 
+                                        style={{
+                                            color: "#000", 
+                                            fontSize: 16,
+                                            marginLeft: 5,
+                                            fontWeight: "bold"
+                                        }}
+                                    >
+                                        {tailorFullName}
+                                    </Typography>
+                                    <Typography 
+                                        style={{
+                                            color: "#000", 
+                                            fontSize: 16,
+                                            marginLeft: 5
+                                        }}
+                                    >
+                                        {feeDate}
+                                    </Typography>
+                                    
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                    
+                    <Grid item xs={12} md={12} lg={12}>
+                        <Paper className={classes.paper} elevation={3}>
+                            <Grid container style={{height: 350}}>
+                            <Grid item xs={12}>
                                     <Typography 
                                         style={{
                                             color: "#000", 
                                             fontSize: 18,
-                                            marginLeft: 8
+                                            marginLeft: 5,
+                                            fontWeight: "bold"
                                         }}
                                     >
-                                        Status Approval PO:
+                                        JASA BORDIR
                                     </Typography>
-                                    <TextField
-                                        variant="outlined"
-                                        margin="dense"
-                                        size="small"
-                                        InputProps={{
-                                            readOnly: true,
-                                            style: {color: ApprovalStatusDescriptionColor(approvalStatusDescription)}
-                                        }}
+                                    {tailorSalaryItemsData && tailorSalaryItemsData.length > 0 ? (
+                                    <GridComponent
+                                        dataSource={tailorSalaryItemsData}
+                                        allowSorting={true}
+                                        allowPaging={false}
+                                        pageSettings={{ pageSize: 50 }}
+                                        ref={(grid) => setGridInstance(grid)}
+                                        allowFiltering={true}
+                                        filterSettings={filterSettings}
+                                        height={220}
+                                        enableVirtualization={true}
+                                        resizeSettings={{mode: 'Normal'}} 
+                                        style={{margin: 5}}
+                                        allowTextWrap={true}
+                                    >
+                                        <ColumnsDirective>
+                                            <ColumnDirective
+                                                field="EmbroideryName"
+                                                headerText="Bordir"
+                                                width="150"
+                                            />
+                                            <ColumnDirective
+                                                field="StockCategoryName"
+                                                headerText="Kategori"
+                                                width="150"
+                                            />
+                                            <ColumnDirective
+                                                field="EmbroideryQuantity"
+                                                headerText="Jumlah"
+                                                width="150"
+                                                textAlign="Right"
+                                            />
+                                            <ColumnDirective
+                                                field="EmbroideryFee"
+                                                headerText="Harga"
+                                                width="170"
+                                                format="#,##0.##"
+                                                template={(props2) => (
+                                                    <span>Rp {props2.EmbroideryFeeTotal.toLocaleString('id-ID')}</span>
+                                                )}
+                                                textAlign="Right"
+                                            />
+                                            <ColumnDirective
+                                                field="EmbroideryFeeTotal"
+                                                headerText="Total"
+                                                width="170"
+                                                format="#,##0.##"
+                                                template={(props2) => (
+                                                    <span>Rp {props2.EmbroideryFeeTotal.toLocaleString('id-ID')}</span>
+                                                )}
+                                                textAlign="Right"
+                                            />
+                                        </ColumnsDirective>
+
+                                        <AggregatesDirective>
+                                            <AggregateDirective>
+                                                <AggregateColumnsDirective>
+                                                    <AggregateColumnDirective
+                                                    field="EmbroideryFeeTotal"
+                                                    type="Sum"
+                                                    format="N0"
+                                                    footerTemplate={(props) => (
+                                                        <div
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent: "flex-end",
+                                                            fontWeight: "bold",
+                                                            fontSize: "15px",
+                                                        }}
+                                                        >
+                                                        <span style={{ marginRight: "40px", letterSpacing: "1px" }}>
+                                                            SUBTOTAL
+                                                        </span>
+                                                        <span style={{ minWidth: "120px", textAlign: "right" }}>
+                                                            Rp {props.Sum.toLocaleString("id-ID")}
+                                                        </span>
+                                                        </div>
+                                                    )}
+                                                    />
+                                                </AggregateColumnsDirective>
+                                            </AggregateDirective>
+                                        </AggregatesDirective>
+
+                                        <Inject services={[Filter, Page, Sort, VirtualScroll, Aggregate]} />
+                                    </GridComponent>
+                                    ) : (
+                                        <p>No records to display</p>
+                                    )}
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={12} md={12} lg={12}>
+                        <Paper className={classes.paper} elevation={3}>
+                            <Grid container style={{height: 350}}>
+                            <Grid item xs={12}>
+                                    <Typography 
                                         style={{
-                                            width: "95%",
-                                            marginTop: 0,
-                                            marginBottom: 4,
+                                            color: "#000", 
+                                            fontSize: 18,
                                             marginLeft: 5,
-                                            padding: 0
+                                            fontWeight: "bold"
                                         }}
-                                        value={approvalStatusDescription} 
-                                    />
-                                </Grid>  
-                                <Grid item xs={6} style={{marginTop: 26}}>
-                                    <Box className={classes.inlineReverse} style={{marginLeft: 5, marginRight: 5}}>
-                                        <Button 
-                                            variant="contained"
+                                    >
+                                        DENDA
+                                    </Typography>
+                                    {tailorSalaryFineData && tailorSalaryFineData.length > 0 ? (
+                                    <GridComponent
+                                        dataSource={tailorSalaryFineData}
+                                        allowSorting={true}
+                                        allowPaging={false}
+                                        pageSettings={{ pageSize: 50 }}
+                                        ref={(grid) => setGridInstance(grid)}
+                                        allowFiltering={true}
+                                        filterSettings={filterSettings}
+                                        height={220}
+                                        enableVirtualization={true}
+                                        resizeSettings={{mode: 'Normal'}} 
+                                        style={{margin: 5}}
+                                        allowTextWrap={true}
+                                    >
+                                        <ColumnsDirective>
+                                            <ColumnDirective
+                                                field="EventDate"
+                                                headerText="Tgl"
+                                                width="150"
+                                            />
+                                            <ColumnDirective
+                                                field="Notes"
+                                                headerText="Keterangan"
+                                                width="150"
+                                            />
+                                            <ColumnDirective
+                                                field="ItemName"
+                                                headerText="Barang"
+                                                width="250"
+                                            />
+                                            <ColumnDirective
+                                                field="Fine"
+                                                headerText="Denda"
+                                                width="170"
+                                                format="#,##0.##"
+                                                template={(props2) => (
+                                                    <span>Rp {props2.Fine.toLocaleString('id-ID')}</span>
+                                                )}
+                                                textAlign="Right"
+                                            />
+                                        </ColumnsDirective>
+
+                                        <AggregatesDirective>
+                                            <AggregateDirective>
+                                                <AggregateColumnsDirective>
+                                                    <AggregateColumnDirective
+                                                    field="Fine"
+                                                    type="Sum"
+                                                    format="N0"
+                                                    footerTemplate={(props) => (
+                                                        <div
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent: "flex-end",
+                                                            fontWeight: "bold",
+                                                            fontSize: "15px",
+                                                        }}
+                                                        >
+                                                        <span style={{ marginRight: "40px", letterSpacing: "1px" }}>
+                                                            SUBTOTAL
+                                                        </span>
+                                                        <span style={{ minWidth: "120px", textAlign: "right" }}>
+                                                            Rp {props.Sum.toLocaleString("id-ID")}
+                                                        </span>
+                                                        </div>
+                                                    )}
+                                                    />
+                                                </AggregateColumnsDirective>
+                                            </AggregateDirective>
+                                        </AggregatesDirective>
+
+                                        <Inject services={[Filter, Page, Sort, VirtualScroll, Aggregate]} />
+                                    </GridComponent>
+                                    ) : (
+                                        <p>No records to display</p>
+                                    )}
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={6}>
+                        <Paper className={classes.paper} elevation={3}>
+                            <Grid container style={{height: 200}}>
+                                <Grid item xs={12} style={{marginTop: 0}}>
+                                    <Box className={classes.inline} style={{marginLeft: 5, marginRight: 5, marginBottom: 7, flexDirection: "column"}}>
+                                        <Typography 
                                             style={{
-                                                borderRadius: 4,
-                                                textTransform: "none",
-                                                backgroundColor: "#F14343",
-                                                color: "#FFFFFF",
-                                                height: 40
+                                                color: "#000", 
+                                                fontSize: 18,
+                                                marginTop: 0,
+                                                width: 250
                                             }}
-                                            disableRipple
-                                            disableElevation
-                                            onClick={() => setRejectActive(true)}
                                         >
-                                            Reject
-                                        </Button>
-                                        <Button 
-                                            variant="contained"
+                                            Catatan:
+                                        </Typography>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="dense"
+                                            size="small"
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                            multiline
+                                            minRows={6}
+                                            maxRows={6}
                                             style={{
-                                                borderRadius: 4,
-                                                textTransform: "none",
-                                                marginRight: 5,
-                                                backgroundColor: "#3C8F4A",
-                                                color: "#FFFFFF",
-                                                height: 40
+                                                width: "100%",
+                                                marginTop: 0,
+                                                marginBottom: 0,
+                                                padding: 0
                                             }}
-                                            disableRipple
-                                            disableElevation
-                                            onClick={() => setApproveActive(true)}
-                                        >
-                                            Approve
-                                        </Button>
+                                            value={tailorSalaryNotes} 
+                                        />
                                     </Box>
                                 </Grid>
-                            </> :
-                            <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
-                                <Typography 
-                                    style={{
-                                        color: "#000", 
-                                        fontSize: 18,
-                                        marginLeft: 3
-                                    }}
-                                >
-                                    Status Approval PO:
-                                </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                        style: {color: ApprovalStatusDescriptionColor(approvalStatusDescription)}
-                                    }}
-                                    style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 4,
-                                        padding: 0
-                                    }}
-                                    value={approvalStatusDescription} 
-                                />
-                            </Grid> 
-                        }
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Approver/Rejector:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={approverUsername} 
-                            />
-                        </Grid>  
-                        <Grid item xs={6}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 8
-                                }}
-                            >
-                                Tgl. Approve/Reject:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "95%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    marginLeft: 5,
-                                    padding: 0
-                                }}
-                                value={approvalDate} 
-                            />
-                        </Grid>  
-                        <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 3
-                                }}
-                            >
-                                Status Pengiriman:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "100%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    padding: 0
-                                }}
-                                value={deliveryStatusDescription} 
-                            />
-                        </Grid> 
-                        <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 3
-                                }}
-                            >
-                                Status Pembayaran:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "100%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    padding: 0
-                                }}
-                                value={payStatusDescription} 
-                            />
-                        </Grid>           
+                            </Grid>
+                        </Paper>
                     </Grid>
-                </Paper>
-            </Grid>
-           
-        </Grid>
-        {/* TITIKNYA DISINI */}
+                    
+                    <Grid item xs={12} md={6} lg={6}>
+                        <Paper className={classes.paper} elevation={3}>
+                            <Grid container spacing={0} style={{height: 300}}>
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Box display="flex" alignItems="center" mb={1}>
+                                        <Typography
+                                            sx={{ color: "#000", fontSize: 16, minWidth: 150 }}
+                                        >
+                                            Subtotal Jasa:   
+                                        </Typography>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="dense"
+                                            size="small"
+                                            InputProps={{
+                                                readOnly: true
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: "right" } // ini yang bikin teks rata kanan
+                                            }}
+                                            style={{
+                                                width: "95%",
+                                                marginTop: 0,
+                                                marginBottom: 4,
+                                                marginLeft: 5,
+                                                padding: 0
+                                            }}
+                                            value={subtotalJasa} 
+                                        />
+                                    </Box>
+                                </Grid>  
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Box display="flex" alignItems="center" mb={1}>
+                                        <Typography
+                                            sx={{ color: "#000", fontSize: 16, minWidth: 150 }}
+                                        >
+                                            Subtotal Denda:   
+                                        </Typography>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="dense"
+                                            size="small"
+                                            InputProps={{
+                                                readOnly: true
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: "right" } // ini yang bikin teks rata kanan
+                                            }}
+                                            style={{
+                                                width: "95%",
+                                                marginTop: 0,
+                                                marginBottom: 4,
+                                                marginLeft: 5,
+                                                padding: 0
+                                            }}
+                                            value={subtotalDenda} 
+                                        />
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Box display="flex" alignItems="center" mb={1}>
+                                        <Typography
+                                            sx={{ color: "#000", fontSize: 16, minWidth: 150 }}
+                                        >
+                                            Denda Tambahan:   
+                                        </Typography>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="dense"
+                                            size="small"
+                                            InputProps={{
+                                                readOnly: true
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: "right" } // ini yang bikin teks rata kanan
+                                            }}
+                                            style={{
+                                                width: "95%",
+                                                marginTop: 0,
+                                                marginBottom: 4,
+                                                marginLeft: 5,
+                                                padding: 0
+                                            }}
+                                            value={extraFine} 
+                                        />
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Box display="flex" alignItems="center" mb={1}>
+                                        <Typography
+                                            sx={{ color: "#000", fontSize: 16, minWidth: 150 }}
+                                        >
+                                            Subtotal Bonus:   
+                                        </Typography>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="dense"
+                                            size="small"
+                                            InputProps={{
+                                                readOnly: true
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: "right" } // ini yang bikin teks rata kanan
+                                            }}
+                                            style={{
+                                                width: "95%",
+                                                marginTop: 0,
+                                                marginBottom: 4,
+                                                marginLeft: 5,
+                                                padding: 0
+                                            }}
+                                            value={subtotalBonus} 
+                                        />
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Box display="flex" alignItems="center" mb={1}>
+                                        <Typography
+                                            sx={{ color: "#000", fontSize: 16, minWidth: 150 }}
+                                        >
+                                            Bonus Tambahan:   
+                                        </Typography>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="dense"
+                                            size="small"
+                                            InputProps={{
+                                                readOnly: true
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: "right" } // ini yang bikin teks rata kanan
+                                            }}
+                                            style={{
+                                                width: "95%",
+                                                marginTop: 0,
+                                                marginBottom: 4,
+                                                marginLeft: 5,
+                                                padding: 0
+                                            }}
+                                            value={extraBonus} 
+                                        />
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Box display="flex" alignItems="center" mb={1}>
+                                        <Typography
+                                            sx={{ color: "#000", fontSize: 16, minWidth: 150 }}
+                                            fontWeight={"bold"}
+                                        >
+                                            TOTAL BAYAR:   
+                                        </Typography>
+                                        <TextField
+                                            variant="outlined"
+                                            margin="dense"
+                                            size="small"
+                                            InputProps={{
+                                                readOnly: true
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: "right" } // ini yang bikin teks rata kanan
+                                            }}
+                                            style={{
+                                                width: "95%",
+                                                marginTop: 0,
+                                                marginBottom: 4,
+                                                marginLeft: 5,
+                                                padding: 0
+                                            }}
+                                            value={totalBayar} 
+                                        />
+                                    </Box>
+                                </Grid>                        
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            ):(
+                <Grid container sm={12} md={12} lg={12}>
+                    <Grid item xs={12} md={12} lg={12}>
+                        <Paper className={classes.paper} elevation={3}>
+                            <Grid container style={{height: 110}}>
+                            <Grid item xs={12}>
+                                    <Typography 
+                                        align="center"
+                                        style={{
+                                            color: "#000", 
+                                            fontSize: 24,
+                                            marginLeft: 5,
+                                            fontWeight: "bold"
+                                        }}
+                                    >
+                                        {loadDataStatus}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            )}
+            
 
 
 
-          <Grid container sm={12} md={7} lg={12}>
-            <Grid item xs={12} md={12} lg={6}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 250}}>
-                        <Grid item xs={12}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Delivery Order
-                            </Typography>
-                            <GridComponent
-                                dataSource={deliveryOrdersData}
-                                allowSorting={true}
-                                allowPaging={false}
-                                pageSettings={{ pageSize: 50 }}
-                                ref={(grid) => setGridInstance(grid)}
-                                allowFiltering={true}
-                                filterSettings={filterSettings}
-                                height={170}
-                                enableVirtualization={true}
-                                resizeSettings={{mode: 'Normal'}} 
-                                style={{margin: 5}}
-                                allowTextWrap={true}
-                            >
-                                <ColumnsDirective>
-                                    <ColumnDirective
-                                        field="DeliveryOrderID"
-                                        headerText="ID"
-                                        width="100"
-                                    />
-                                    <ColumnDirective
-                                        field="CreateDate"
-                                        headerText="Create Date"
-                                        width="160"
-                                        type="date"
-                                        format="dd/MM/yyyy"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="DeliveryDate"
-                                        headerText="Delivery Date"
-                                        width="160"
-                                        type="date"
-                                        format="dd/MM/yyyy"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="CreatedBy"
-                                        headerText="Created By"
-                                        width="150"
-                                    />
-                                    <ColumnDirective
-                                        field="DeliveryOrderNumber"
-                                        headerText="DO Number"
-                                        width="170"
-                                    />
-                                    <ColumnDirective
-                                        field="StatusDescription"
-                                        headerText="Status"
-                                        width="150"
-                                        template={DOStatusDescriptionTemplate}
-                                    />
-                                </ColumnsDirective>
-                                <Inject services={[Filter, Page, Sort, VirtualScroll]} />
-                            </GridComponent>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Grid>
-            <Grid item xs={12} md={12} lg={6}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: 250}}>
-                    <Grid item xs={12}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Histori Pembayaran
-                            </Typography>
-                            <GridComponent
-                                dataSource={purchaseOrderPaymentsData}
-                                allowSorting={true}
-                                allowPaging={false}
-                                pageSettings={{ pageSize: 50 }}
-                                ref={(grid) => setGridInstance(grid)}
-                                allowFiltering={true}
-                                filterSettings={filterSettings}
-                                height={170}
-                                enableVirtualization={true}
-                                resizeSettings={{mode: 'Normal'}} 
-                                style={{margin: 5}}
-                                allowTextWrap={true}
-                            >
-                                <ColumnsDirective>
-                                    <ColumnDirective
-                                        field="PurchaseOrderPaymentID"
-                                        headerText="ID"
-                                        width="100"
-                                    />
-                                    <ColumnDirective
-                                        field="InvoiceValue"
-                                        headerText="Nilai Invoice"
-                                        width="170"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="FinalValue"
-                                        headerText="Nilai Tagihan"
-                                        width="170"
-                                        format="#,##0.##"
-                                        textAlign="Right"
-                                    />
-                                    <ColumnDirective
-                                        field="Method"
-                                        headerText="Method"
-                                        width="150"
-                                    />
-                                    <ColumnDirective
-                                        field="StatusDescription"
-                                        headerText="Status"
-                                        width="150"
-                                        template={PaymentStatusDescriptionTemplate}
-                                    />
-                                </ColumnsDirective>
-                                <Inject services={[Filter, Page, Sort, VirtualScroll]} />
-                            </GridComponent>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Grid>
-            <Grid item xs={12} md={12} lg={3}>
-                <Paper className={classes.paper} style={{marginBottom: 10}} elevation={3}>
-                    <Grid container style={{height: 75}}>
-                        <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 3
-                                }}
-                            >
-                                PPN:
-                            </Typography>
-                            <TextField
-                                variant="outlined"
-                                margin="dense"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    width: "100%",
-                                    marginTop: 0,
-                                    marginBottom: 4,
-                                    padding: 0
-                                }}
-                                value={ppnPercentage} 
-                            />
-                        </Grid> 
-                    </Grid>
-                </Paper>
-                { freezeNotes != null && 
+            {/* <Grid container sm={12} md={7} lg={12}>
+                <Grid item md={12} lg={6} style={{marginBottom: isTablet ? 10 : isLaptop ? 0 : statusDescription == "CANCELLED" ? 310 : 0}}>
                     <Paper className={classes.paper} elevation={3}>
-                        <Grid container style={{height: 175}}>
-                            <Grid item xs={12} style={{marginLeft: 5, marginRight: 5}}>
+                        <Grid container style={{height: isMobile ? 250 : 170}}>
+                            <Grid item xs={12}>
                                 <Typography 
                                     style={{
                                         color: "#000", 
                                         fontSize: 18,
-                                        marginLeft: 3
+                                        marginLeft: 5,
+                                        fontWeight: 'bold'
                                     }}
                                 >
-                                    Freeze Notes:
+                                    Total
                                 </Typography>
-                                <TextField
-                                    variant="outlined"
-                                    margin="dense"
-                                    size="small"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    multiline
-                                    minRows={6}
-                                    maxRows={6}
+                            </Grid>    
+                            <Grid item xs={8} sm={4} lg={3}>
+                                <Typography 
                                     style={{
-                                        width: "100%",
-                                        marginTop: 0,
-                                        marginBottom: 0,
-                                        padding: 0
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginLeft: 5
                                     }}
-                                    value={freezeNotes} 
-                                />
-                            </Grid> 
+                                >
+                                    Subtotal Jasa:
+                                </Typography>
+                            </Grid>    
+                            <Grid item xs={4} sm={2} lg={3} container justifyContent="flex-end">
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginRight: 10,
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {subtotalJasa}
+                                </Typography>
+                            </Grid>  
+                            <Grid item xs={8} sm={4}>
+                                <Typography 
+                                    style={{
+                                        color: "#F14343", 
+                                        fontSize: 16,
+                                        marginLeft: 5
+                                    }}
+                                >
+                                    Subtotal Denda:
+                                </Typography>
+                            </Grid>    
+                            <Grid item xs={4} sm={2} container justifyContent="flex-end">
+                                <Typography 
+                                    style={{
+                                        color: "#F14343", 
+                                        fontSize: 16,
+                                        marginRight: 10,
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {subtotalDenda}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={8} sm={4} lg={3}>
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginLeft: 5
+                                    }}
+                                >
+                                    Subtotal Bonus:
+                                </Typography>
+                            </Grid>    
+                            <Grid item xs={4} sm={2} lg={3} container justifyContent="flex-end">
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginRight: 10,
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {subtotalBonus}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={8} sm={4}>
+                                <Typography 
+                                    style={{
+                                        color: "#F14343", 
+                                        fontSize: 16,
+                                        marginLeft: 5
+                                    }}
+                                >
+                                    Denda Tambahan:
+                                </Typography>
+                            </Grid>    
+                            <Grid item xs={4} sm={2} container justifyContent="flex-end">
+                                <Typography 
+                                    style={{
+                                        color: "#F14343", 
+                                        fontSize: 16,
+                                        marginRight: 10,
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {extraFine}
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={8} sm={4} lg={3}>
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginLeft: 5
+                                    }}
+                                >
+                                    Bonus Tambahan:
+                                </Typography>
+                            </Grid>    
+                            <Grid item xs={4} sm={2} lg={3} container justifyContent="flex-end">
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginRight: 10,
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {extraBonus}
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={8} sm={4} lg={3}>
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginLeft: 5
+                                    }}
+                                >
+                                    Total Bayar:
+                                </Typography>
+                            </Grid>    
+                            <Grid item xs={4} sm={2} lg={3} container justifyContent="flex-end">
+                                <Typography 
+                                    style={{
+                                        color: "#000", 
+                                        fontSize: 16,
+                                        marginRight: 10,
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {totalBayar}
+                                </Typography>
+                            </Grid>  
                         </Grid>
                     </Paper>
-                }
-            </Grid>
-            <Grid item md={12} lg={9} style={{marginBottom: isTablet ? 10 : isLaptop ? 0 : statusDescription == "CANCELLED" ? 310 : 0}}>
-                <Paper className={classes.paper} elevation={3}>
-                    <Grid container style={{height: isMobile ? 350 : 270}}>
-                        <Grid item xs={12}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 18,
-                                    marginLeft: 5,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                Total
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Nilai PO:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {purchaseOrderValue}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Qty
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {totalQuantity}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Nilai brg diterima:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {valueReceived}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Qty diterima:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {totalReceivedQuantity}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Nilai brg blm diterima:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {valueNotYetReceived}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Qty blm diterima:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {totalRemainingQuantity}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Total bayar:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {paymentValue}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Nilai qty:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {totalQuantityInValue}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Total terbayar:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {valuePaid}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Nilai qty diterima:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {totalReceivedInValue}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Total bayar pending:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#000", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {valuePending}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Nilai qty blm diterima:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {totalRemainingInValue}
-                            </Typography>
-                        </Grid>  
-                        <Grid item xs={8} sm={4}>
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginLeft: 5
-                                }}
-                            >
-                                Total hutang:
-                            </Typography>
-                        </Grid>    
-                        <Grid item xs={4} sm={2} container justifyContent="flex-end">
-                            <Typography 
-                                style={{
-                                    color: "#F14343", 
-                                    fontSize: 16,
-                                    marginRight: 10,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                {valueCredit}
-                            </Typography>
-                        </Grid>  
-                    </Grid>
-                </Paper>
-            </Grid>
-          </Grid>
+                </Grid>
+            </Grid> */}
         </Grid>
       </Layout>
 

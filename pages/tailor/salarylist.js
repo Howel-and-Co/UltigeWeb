@@ -113,7 +113,7 @@ const useStyles = makeStyles()((theme) => {
 
 const CustomizeCell = (args) => {
   if (args.column.field === "PayStatusDescription" && args.data && args.cell) {
-    if (getValue('PayStatusDescription', args.data) == 'PENDING') {
+    if (getValue('PayStatusDescription', args.data) == 'PENDING' || getValue('PayStatusDescription', args.data) == 'SUBMITTED') {
       args.cell.style.backgroundColor = '#FFFF00'
     }
     else if (getValue('PayStatusDescription', args.data) == 'REJECTED') {
@@ -217,7 +217,7 @@ const TailorSalary = () => {
     }
 
     if (currentCount == 2) {
-      window.open(`/purchase-order/${props.rowData.TailorSalaryID}`, '_blank')
+      window.open(`/tailor/salary/${props.rowData.TailorSalaryID}`, '_blank')
       //Router.push(`/purchase-order/${props.rowData.PurchaseOrderID}`);
     }
   };
@@ -245,6 +245,7 @@ const TailorSalary = () => {
         object.FineTotal = Intl.NumberFormat('id').format(dataItem.TotalDenda);
         object.BonusTotal = Intl.NumberFormat('id').format(dataItem.TotalBonus);
         object.Total = Intl.NumberFormat('id').format(dataItem.TotalAkhir);
+        object.PayStatusDescription = dataItem.PayStatusDescription;
 				object.PayDate = dataItem.PayDate;
 
         newData.push(object);
@@ -577,6 +578,11 @@ const TailorSalary = () => {
                               width="130"
                               format="#,##0.##"
                               textAlign="Right"
+                          />
+                          <ColumnDirective
+                              field="PayStatusDescription"
+                              headerText="Status"
+                              width="120"
                           />
                           <ColumnDirective
                               field="PayDate"
