@@ -94,8 +94,9 @@ const PurchaseOrderDetail = () => {
 
 
   const [tailorFullName, setTailorFullName] = React.useState('');
-  const [invoiceDocumentNumber, setInvoiceDocumentNumber] = React.useState('');
   const [feeDate, setFeeDate] = React.useState('');
+  const [paymentStatus, setPaymentStatus] = React.useState('');
+  const [invoiceStatus, setInvoiceStatus] = React.useState('');
 
   const [loadDataStatus, setLoadDataStatus] = React.useState('');
   const [loadDataStatusCode, setLoadDataStatusCode] = React.useState(0);
@@ -169,8 +170,9 @@ const PurchaseOrderDetail = () => {
         setTotalBayarValue("Rp " + Intl.NumberFormat('id', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(tailorSalaryProcessedData.Data.TailorSalaryDetail.TotalBayar));
 
         setTailorFullName(tailorSalaryProcessedData.Data.TailorSalaryDetail.FullName);
-        setInvoiceDocumentNumber(tailorSalaryProcessedData.Data.TailorSalaryDetail.InvoiceDocumentNumber);
         setFeeDate(tailorSalaryProcessedData.Data.TailorSalaryDetail.FeeDate);
+        setPaymentStatus(tailorSalaryProcessedData.Data.TailorSalaryDetail.PaymentStatus);
+        setInvoiceStatus(tailorSalaryProcessedData.Data.TailorSalaryDetail.InvoiceStatus);
         setTailorSalaryID(tailorSalaryID);
 
         /////
@@ -198,43 +200,132 @@ const PurchaseOrderDetail = () => {
             {loadDataStatusCode === 0 ? (
                 <Grid container sm={12} md={12} lg={12}>
                     <Grid item xs={12} md={12} lg={12}>
-                        <Paper className={classes.paper} elevation={3}>
-                            <Grid container style={{height: 110}}>
-                            <Grid item xs={12}>
-                                    <Typography 
-                                        align="center"
-                                        style={{
-                                            color: "#000", 
-                                            fontSize: 24,
-                                            marginLeft: 5,
-                                            fontWeight: "bold"
-                                        }}
-                                    >
-                                        ID: {tailorSalaryID}
-                                    </Typography>
-                                    <Typography 
-                                        style={{
-                                            color: "#000", 
+                        
+                        <Paper className={classes.paper} elevation={3} style={{ padding: 16}}>
+                            <Grid container direction="column" spacing={2} xs={12} md={12} lg={12}>
+                                {/* Baris 1: ID di tengah */}
+                                <Grid item xs={12} style={{ textAlign: "center" }}>
+                                <Typography
+                                    style={{
+                                    color: "#000",
+                                    fontSize: 24,
+                                    fontWeight: "bold",
+                                    }}
+                                >
+                                    ID: {tailorSalaryID}
+                                </Typography>
+                                </Grid>
+
+                                {/* Baris 2: 3 kolom */}
+                                <Grid item xs={12}>
+                                    <Grid container alignItems="center">
+                                        {/* Nama di kiri */}
+                                        <Grid item xs={12} md={3} lg={3}>
+                                        <Typography
+                                            style={{
+                                            color: "#333",
+                                            fontSize: 20,
+                                            fontWeight: "bold",
+                                            }}
+                                        >
+                                            {tailorFullName}
+                                        </Typography>
+                                        </Grid>
+
+                                        {/* Tanggal di tengah */}
+                                        <Grid item xs={12} md={3} lg={3} style={{ textAlign: "left" }}>
+                                        <Typography
+                                            style={{
+                                            color: "#555",
                                             fontSize: 16,
-                                            marginLeft: 5,
-                                            fontWeight: "bold"
-                                        }}
-                                    >
-                                        {tailorFullName}
-                                    </Typography>
-                                    <Typography 
-                                        style={{
-                                            color: "#000", 
-                                            fontSize: 16,
-                                            marginLeft: 5
-                                        }}
-                                    >
-                                        {feeDate}
-                                    </Typography>
-                                    
+                                            }}
+                                        >
+                                            {feeDate}
+                                        </Typography>
+                                        </Grid>
+
+                                        {/* Status di kanan */}
+                                        <Grid item xs={12} md={3} lg={3} textAlign="left">
+                                            <Grid container direction={isMobile ? "column" : "row"} justifyContent="flex-end" alignItems="left" spacing={1}>
+                                                <Grid item>
+                                                <Typography
+                                                    sx={{
+                                                    fontSize: 14,
+                                                    fontWeight: "bold",
+                                                    color: "#555",
+                                                    }}
+                                                >
+                                                    Status Invoice:
+                                                </Typography>
+                                                </Grid>
+                                                <Grid item>
+                                                <Typography
+                                                    style={{
+                                                    fontSize: 16,
+                                                    fontWeight: "bold",
+                                                    padding: "4px 12px",
+                                                    borderRadius: 12,
+                                                    display: "inline-block",
+                                                    backgroundColor:
+                                                        paymentStatus === "PAID"
+                                                        ? "#0a11edff"
+                                                        : paymentStatus === "PENDING"
+                                                        ? "#e5ff00ff"
+                                                        : "#f44336",
+                                                    color: "#fff",
+                                                    }}
+                                                >
+                                                    {invoiceStatus}
+                                                </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+
+
+
+                                        {/* Status di kanan */}
+                                        <Grid item xs={12} md={3} lg={3} textAlign="left">
+                                            <Grid container direction={isMobile ? "column" : "row"} justifyContent="flex-end" alignItems="left" spacing={1}>
+                                                <Grid item>
+                                                <Typography
+                                                    sx={{
+                                                    fontSize: 14,
+                                                    fontWeight: "bold",
+                                                    color: "#555",
+                                                    }}
+                                                >
+                                                    Status Bayar:
+                                                </Typography>
+                                                </Grid>
+                                                <Grid item>
+                                                <Typography
+                                                    style={{
+                                                    fontSize: 16,
+                                                    fontWeight: "bold",
+                                                    padding: "4px 12px",
+                                                    borderRadius: 12,
+                                                    display: "inline-block",
+                                                    backgroundColor:
+                                                        paymentStatus === "PAID"
+                                                        ? "#0a11edff"
+                                                        : paymentStatus === "PENDING"
+                                                        ? "#e5ff00ff"
+                                                        : "#f44336",
+                                                    color: "#fff",
+                                                    }}
+                                                >
+                                                    {paymentStatus}
+                                                </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Paper>
+
+
+
                     </Grid>
                     
                     <Grid item xs={12} md={12} lg={12}>

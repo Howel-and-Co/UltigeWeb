@@ -581,7 +581,7 @@ const TailorSalary = () => {
                           />
                           <ColumnDirective
                               field="PayStatusDescription"
-                              headerText="Status"
+                              headerText="Status Invoice"
                               width="120"
                           />
                           <ColumnDirective
