@@ -227,8 +227,8 @@ const TailorSalary = () => {
     const fetchTailorSalaryData = async (startDate, endDate, userid) => {
       setDataLoading(true);
 
-      //const result = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalarylist?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
-      const result = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalarylist?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
+      const result = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalarylist?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
+      //const result = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalarylist?startDate=${startDate}&endDate=${endDate}&userID=${userid}`);
 
       let processedData;
       processedData = result.data;
