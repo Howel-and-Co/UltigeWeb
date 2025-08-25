@@ -116,8 +116,8 @@ const PurchaseOrderDetail = () => {
     const fetchTailorSalaryData = async (tailorSalaryID, userID) => {
         setDataLoading(true);
 
-        //const resultTailorSalary = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${tailorSalaryID}&userid=${userID}`);
-        const resultTailorSalary = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${tailorSalaryID}&userid=${userID}`);
+        const resultTailorSalary = await axios.get(`https://api.ultige.com/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${tailorSalaryID}&userid=${userID}`);
+        //const resultTailorSalary = await axios.get(`http://localhost:5000/ultigeapi/web/tailor/gettailorsalary?tailorSalaryID=${tailorSalaryID}&userid=${userID}`);
 
         let tailorSalaryProcessedData;
         tailorSalaryProcessedData = resultTailorSalary.data;
